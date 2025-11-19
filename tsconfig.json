@@ -22,6 +22,7 @@
               "node_modules/exceljs/dist/exceljs.min"
             ]
           },
+        "skipLibCheck": true
     },
     "angularCompilerOptions": {
         "enableI18nLegacyMessageIdFormat": false
