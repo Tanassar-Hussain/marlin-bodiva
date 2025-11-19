@@ -1,0 +1,93 @@
+<div class="row" style="width: 100%;">
+    <div class="col-lg-12 col-md-offset-0 col-xs-12 widget-container">
+
+      <section class="widget" widget>
+        <div class="dashboard_data_grid mw-grid">
+            <h1>{{ 'Market Watch' | translate }}</h1>
+            <div class="row py-3">
+                  <div class="col-md-3">
+                    <kendo-formfield >
+                      <kendo-combobox [data]="symbolListItems"  placeholder="Add Symbol" ></kendo-combobox>
+                     </kendo-formfield> 
+                  </div>
+                  <div class="col-md-2 flex justify-center pt-1">
+                    <kendo-label
+                    class="k-checkbox-label"
+                    [for]="traded"
+                    text="Traded Only"
+                  ><input type="checkbox" #traded kendoCheckBox /></kendo-label>
+                  </div>
+                  <div class="col-md-2">
+                    <kendo-formfield>
+                      <kendo-combobox [data]="symbolListItems" placeholder="Select Exchange"></kendo-combobox>
+                     </kendo-formfield>
+                  </div>
+                  <div class="col-md-2">
+                    <kendo-formfield >
+                      <kendo-combobox [data]="symbolListItems" placeholder="Select Commodity"></kendo-combobox>
+                     </kendo-formfield> 
+                  </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-12" style="height: 30px; width: 100%; background-color: #182131;"></div>
+            </div>
+
+             <!----------------------------------------------------------------------------------------------- -->
+             <!------------------------------------------------------------------------------------------------->
+             <!------------------------------------------------------------------------------------------------->
+            <kendo-grid [kendoGridBinding]="DATA"
+            filterable="menu"
+            [sortable]="true"
+            [resizable]="true"
+            [height]="500">
+                <kendo-grid-column field="symbol_code" title="Symbol" [width]="200"  [locked]="true"> 
+                  <ng-template kendoGridCellTemplate let-dataItem>
+                  <span class="linkTag">
+                      {{dataItem.symbol_code}}
+                  </span>
+                  </ng-template> 
+                </kendo-grid-column>
+                <kendo-grid-column field="bid" title="Bid" [width]="200">
+                  <ng-template kendoGridCellTemplate let-dataItem>
+                    <span>
+                      {{ dataItem.bid | number  : '1.2-2' }}
+                    </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="ask" title="Ask" [width]="200">
+                  <ng-template kendoGridCellTemplate let-dataItem>
+                  <span>
+                  {{ dataItem.ask | number   : '1.2-2'}}
+                </span>
+                </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="latency" title="Latency" [width]="200"> </kendo-grid-column>
+                <kendo-grid-column field="feed_type" title="Feed Type" [width]="200"> </kendo-grid-column>
+                <kendo-grid-column field="original_ask" title="Original Ask" [width]="200"> </kendo-grid-column>
+                <kendo-grid-column field="original_bid" title="Original Bid" [width]="200"> </kendo-grid-column>
+                <!-- <kendo-grid-column field="UnitPrice" title="Change %" [width]="100"> </kendo-grid-column>
+                <kendo-grid-column field="UnitPrice" title="Last Traded Price" [width]="140"> </kendo-grid-column>
+                <kendo-grid-column field="UnitPrice" title="Last Traded Volume" [width]="150"> </kendo-grid-column>
+                <kendo-grid-column field="UnitPrice" title="LDCP" [width]="100"> </kendo-grid-column>
+                <kendo-grid-column field="UnitPrice" title="Open" [width]="100"> </kendo-grid-column>
+                <kendo-grid-column field="UnitPrice" title="Day High" [width]="100"> </kendo-grid-column>
+                <kendo-grid-column field="UnitPrice" title="Day Low" [width]="100"> </kendo-grid-column>
+                <kendo-grid-column field="UnitPrice" title="Spread" [width]="100"> </kendo-grid-column>
+                <kendo-grid-column field="UnitPrice" title="Previous Settlement Price" [width]="150"> </kendo-grid-column>
+                <kendo-grid-column field="UnitPrice" title="Contract Status" [width]="120"> </kendo-grid-column>
+                <kendo-grid-column field="UnitPrice" title="Open Interest" [width]="110"> </kendo-grid-column> -->
+            </kendo-grid>
+             <!------------------------------------------------------------------------------------------------->
+             <!------------------------------------------------------------------------------------------------->
+            <!------------------------------------------------------------------------------------------------->
+
+
+          </div>  
+
+       </section>
+       
+</div>
+
+</div>

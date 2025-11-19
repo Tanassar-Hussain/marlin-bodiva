@@ -1,0 +1,815 @@
+<order-new-all #newOrderAll [modalId]="'new-order-all-market'"></order-new-all>
+
+
+
+
+
+
+
+<div style="background-image: url('assets/images/marlin-dashboard/dashboard-back.png'); width: 100%;">
+    <div class="bg-transparent m-8 w-auto box-borders">
+
+        <section class="widget" style="padding: 0px; margin-bottom: 0px;"
+            *ngIf="userType === 'PARTICIPANT' || userType === 'PARTICIPANT ADMIN'">
+            <header>
+                <h3><span class="fw-semi-bold">{{ 'Menu.Portfolio' | translate }} </span></h3>
+            </header>
+
+            <div class="row" *ngIf="tradeType === actualTradeType">
+                <div class="col-md-3 fields_box pt-2 px-5">
+                    <label for="search-input">{{ 'Translation.Client' | translate }} </label>
+                    <wj-auto-complete id="cmbClient" [isEditable]="true" #cmbClient style="width: 100%;"
+                        [itemsSource]="fromClientList" displayMemberPath="displayValue_" selectedValuePath="clientId"
+                        [isEditable]="true" (selectedIndexChanged)="onChangeSearchClient(cmbClient.selectedValue)"
+                        name="cmbClient">
+                    </wj-auto-complete>
+                </div>
+                <div class="col-sm-1">
+                    <div class="form_search">
+                        <button [class]="'btn btn-success btn-sm'" title="{{ 'Translation.Search' | translate }}"
+                            data-toggle="collapse in" data-target="#filter_box" (click)="onSearchAction()"
+                            role="button"><span class="fa fa-search"></span> </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" *ngIf="tradeType === virtualTradeType">
+                <div class="col-md-3 fields_box pt-2 px-5">
+                    <label for="search-input">{{ 'Translation.User' | translate }} </label>
+                    <wj-auto-complete id="cmbUser" [isEditable]="true" #cmbUser style="width: 100%;"
+                        [itemsSource]="fromUserList" displayMemberPath="userName" selectedValuePath="userId"
+                        [isEditable]="true" (selectedIndexChanged)="onChangeSearchUser(cmbUser.selectedValue)"
+                        name="cmbClient">
+                    </wj-auto-complete>
+                </div>
+                <div class="col-sm-1">
+                    <div class="form_search">
+                        <button [class]="'btn btn-success btn-sm'" title="{{ 'Translation.Search' | translate }}"
+                            data-toggle="collapse in" data-target="#filter_box" (click)="onSearchUserAction()"
+                            role="button"><span class="fa fa-search"></span> </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <div class="theme" style="height: 380px;">
+            <div class="row header-portfolio"
+                style="display: flex !important; justify-content: space-between !important;">
+                <span class="font-bold text-xl ml-2 mt-1 text-color-light">{{'Translation.MY PORTFOLIO' |
+                    translate}}</span>
+                <ng-container
+                    *ngIf="userType === 'CLIENT' && participantId !== null && (tradeType === actualTradeType)">
+                    <span class="text-color-light mt-1 mr-3 cursor-pointer"
+                        title="{{ 'Translation.Refresh' | translate }}" (click)="getUserProfileStatus()"><i
+                            class="fa fa-refresh"></i></span>
+                </ng-container>
+                <ng-container
+                    *ngIf="(userType === 'PARTICIPANT' || userType === 'PARTICIPANT ADMIN') && (tradeType === actualTradeType)">
+                    <span class="text-color-light mt-1 mr-3 cursor-pointer"
+                        title="{{ 'Translation.Refresh' | translate }}" (click)="getClientsList()"><i
+                            class="fa fa-refresh"></i></span>
+                </ng-container>
+                <ng-container
+                    *ngIf="(userType === 'PARTICIPANT' || userType === 'PARTICIPANT ADMIN') && (tradeType === virtualTradeType)">
+                    <span class="text-color-light mt-1 mr-3 cursor-pointer"
+                        title="{{ 'Translation.Refresh' | translate }}" (click)="getUsersList()">
+                        <i class="fa fa-refresh"></i></span>
+                </ng-container>
+                <ng-container *ngIf="(userType === 'CLIENT') && (tradeType === virtualTradeType)">
+                    <span class="text-color-light mt-1 mr-3 cursor-pointer"
+                        title="{{ 'Translation.Refresh' | translate }}" (click)="getPortfolioByUser()"><i
+                            class="fa fa-refresh"></i></span>
+                </ng-container>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-9">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="flex sm:py-1 text-center percentageBar-actual text-black font-bold">
+                                <ng-container *ngIf="!NoDataFound">
+                                    <div *ngIf="(equityBarPercent) !='0.00%'" title="Equities"
+                                        (mouseenter)="mouseHovering('equities')" (mouseleave)="mouseLeft()"
+                                        [ngStyle]="{'width': (equityBarPercent),'background-color': equityColor , 'min-width' : minWidth}">
+                                        <h5 class="mt-1 text-black"> <span style="font-size: 11px; margin-right: 5px;"
+                                                *ngIf="showEquitiesTitle">{{'Translation.Equities' |
+                                                translate}}</span><span
+                                                class="text-md font-semibold">{{equityBarPercent}}</span></h5>
+                                    </div>
+                                    <div *ngIf="(bondsBarPercent) !='0.00%'" title="Bonds"
+                                        (mouseenter)="mouseHovering('bonds')" (mouseleave)="mouseLeft()"
+                                        [ngStyle]="{'width': (bondsBarPercent),'background-color': bondsColor,  'min-width' : minWidth}">
+                                        <h5 class="mt-1 text-black"><span style="font-size: 11px; margin-right: 5px;"
+                                                *ngIf="showBondsTitle">{{'Translation.Bonds' | translate}}</span><span
+                                                class="text-md font-semibold">{{bondsBarPercent}}</span></h5>
+                                    </div>
+                                    <div *ngIf="(etfBarPercent) !='0.00%'" title="ETFs"
+                                        (mouseenter)="mouseHovering('etf')" (mouseleave)="mouseLeft()"
+                                        [ngStyle]="{'width': (etfBarPercent ),'background-color': etfColor, 'min-width' : minWidth}">
+                                        <h5 class="mt-1 text-black"><span style="font-size: 11px; margin-right: 5px;"
+                                                *ngIf="showETFTitle">ETFs</span><span
+                                                class="text-md font-semibold">{{etfBarPercent}}</span></h5>
+                                    </div>
+                                </ng-container>
+
+                                <div *ngIf="loading" class="w-full bg-gray-500">
+                                    <h5 class="mt-1">Loading...</h5>
+                                </div>
+                                <div *ngIf="NoDataFound" class="w-full bg-gray-500">
+                                    <h5 class="mt-1">No Data Found</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mt-2">
+                            <div class="display-flex">
+                                <div class="card" style="width: 100%;">
+                                    <div class="card-body card-bg box-borders mr-3">
+                                        <h5 class="card-title yellow-text">{{'Translation.Summary' | translate |
+                                            uppercase }}</h5>
+
+                                        <div class="row mt-3 font-12">
+
+                                            <div class="col-md-7">
+                                                <table class="font-12">
+                                                    <tr>
+                                                        <th><span class="text-white font-12">{{'Translation.Total
+                                                                Investment' |
+                                                                translate}}:</span></th>
+                                                        <td> <span class="text-white font-12"><span
+                                                                    style="font-size: 10px !important;">({{localCurrencyCode}})</span>
+                                                                &nbsp;{{summaryTotalInvestment | number:
+                                                                '1.2-2'}}</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th><span class="text-white font-12">{{'Translation.Current
+                                                                Value' |
+                                                                translate}}:</span></th>
+                                                        <td> <span class="text-white font-12"><span
+                                                                    style="font-size: 10px !important;">({{localCurrencyCode}})</span>
+                                                                &nbsp;{{summaryCurrentValue | number : '1.2-2'}}</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th> <span class="text-white font-12">{{'Translation.Local
+                                                                Investment' |
+                                                                translate}}:</span></th>
+                                                        <td> <span class="text-white font-12"><span
+                                                                    style="font-size: 10px !important;">({{localCurrencyCode}})</span>
+                                                                &nbsp;{{summaryLocalInvestment | number :
+                                                                '1.2-2'}}</span> </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th><span class="text-white font-12">{{'Translation.Foreign
+                                                                Investment' |
+                                                                translate}}:</span></th>
+                                                        <td> <span class="text-white font-12"><span
+                                                                    style="font-size: 10px !important;">({{foreignCurrencyCode}})</span>
+                                                                &nbsp;{{summaryForeignInvestment | number :
+                                                                '1.2-2'}}</span> </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <table>
+                                                    <tr>
+                                                        <th> <span class="text-white">{{'Translation.Volume' |
+                                                                translate}}:</span></th>
+                                                        <td> <span class="text-white ml-5">{{summaryTotalVolume |
+                                                                number}}</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th> <span [class.text-danger]="summaryNetPL < 0"
+                                                                class="font-12" [class.text-success]="summaryNetPL > 0"
+                                                                [class.text-color-light]="summaryNetPL == 0">{{'
+                                                                P/L' | translate}}:</span></th>
+                                                        <td> <span class="ml-5" [class.text-danger]="summaryNetPL < 0"
+                                                                class="font-12"
+                                                                [class.text-color-light]="summaryNetPL == 0"
+                                                                [class.text-success]="summaryNetPL > 0">{{summaryNetPL
+                                                                | number : '1.2-2'}} <i *ngIf="summaryNetPL < 0"
+                                                                    class="fa fa-arrow-down" aria-hidden="true"></i> <i
+                                                                    *ngIf="summaryNetPL > 0" class="fa fa-arrow-up"
+                                                                    aria-hidden="true"></i></span></td>
+                                                    </tr>
+
+                                                </table>
+                                            </div>
+
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="card" style="width: 100%;"
+                                    *ngIf="equitiesPortfolioSum !== null && equitiesPortfolioSum !== undefined">
+                                    <div class="card-body card-bg box-borders  mr-0">
+                                        <h5 class="card-title green-text">{{'Translation.Equities' | translate |
+                                            uppercase }}</h5>
+
+                                        <div class="row mt-3 font-12">
+
+
+                                            <div class="col-md-7">
+                                                <table class="font-12">
+                                                    <tr>
+                                                        <th><span class="text-white font-12">{{'Translation.Total
+                                                                Investment' |
+                                                                translate}}:</span></th>
+                                                        <td> <span class="text-white font-12"><span
+                                                                    style="font-size: 10px !important;">({{localCurrencyCode}})</span>
+                                                                &nbsp;{{equitiesPortfolioSum.totalInvestment | number:
+                                                                '1.2-2'}}</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th><span class="text-white font-12">{{'Translation.Current
+                                                                Value' |
+                                                                translate}}:</span></th>
+                                                        <td> <span class="text-white font-12"><span
+                                                                    style="font-size: 10px !important;">({{localCurrencyCode}})</span>
+                                                                &nbsp;{{equitiesPortfolioSum.currentValue | number :
+                                                                '1.2-2'}}</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th> <span class="text-white font-12">{{'Translation.Local
+                                                                Investment' |
+                                                                translate}}:</span></th>
+                                                        <td> <span class="text-white font-12"><span
+                                                                    style="font-size: 10px !important;">({{localCurrencyCode}})</span>
+                                                                &nbsp;{{equitiesPortfolioSum.localInvestment | number :
+                                                                '1.2-2'}}</span> </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th><span class="text-white font-12">{{'Translation.Foreign
+                                                                Investment' |
+                                                                translate}}:</span></th>
+                                                        <td> <span class="text-white font-12"><span
+                                                                    style="font-size: 10px !important;">({{foreignCurrencyCode}})</span>
+                                                                &nbsp;{{equitiesPortfolioSum.foreignInvestment | number
+                                                                :
+                                                                '1.2-2'}}</span> </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <table>
+                                                    <tr>
+                                                        <th> <span class="text-white">{{'Translation.Volume' |
+                                                                translate}}:</span></th>
+                                                        <td> <span
+                                                                class="text-white ml-5">{{equitiesPortfolioSum.holding |
+                                                                number}}</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th> <span [class.text-danger]="equitiesPortfolioSum.netPL < 0"
+                                                                class="font-12"
+                                                                [class.text-success]="equitiesPortfolioSum.netPL > 0"
+                                                                [class.text-color-light]="equitiesPortfolioSum.netPL == 0">{{'
+                                                                P/L' | translate}}:</span></th>
+                                                        <td> <span class="ml-5"
+                                                                [class.text-danger]="equitiesPortfolioSum.netPL < 0"
+                                                                class="font-12"
+                                                                [class.text-color-light]="equitiesPortfolioSum.netPL == 0"
+                                                                [class.text-success]="equitiesPortfolioSum.netPL > 0">{{equitiesPortfolioSum.netPL
+                                                                | number : '1.2-2'}} <i
+                                                                    *ngIf="equitiesPortfolioSum.netPL < 0"
+                                                                    class="fa fa-arrow-down" aria-hidden="true"></i> <i
+                                                                    *ngIf="equitiesPortfolioSum.netPL > 0"
+                                                                    class="fa fa-arrow-up"
+                                                                    aria-hidden="true"></i></span></td>
+                                                    </tr>
+
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <div class="display-flex">
+                                <div class="card" style="width: 100%;"
+                                    *ngIf="bondsPortfolioSum !== null && bondsPortfolioSum !== undefined">
+                                    <div class="card-body card-bg box-borders  mr-3">
+                                        <h5 class="card-title orange-text">{{'Translation.Bonds' | translate |
+                                            uppercase}}</h5>
+                                        <div class="row mt-3 font-12">
+
+                                            <div class="col-md-7">
+                                                <table class="font-12">
+                                                    <tr>
+                                                        <th><span class="text-white font-12">{{'Translation.Total
+                                                                Investment' |
+                                                                translate}}:</span></th>
+                                                        <td> <span class="text-white font-12"><span
+                                                                    style="font-size: 10px !important;">({{localCurrencyCode}})</span>
+                                                                &nbsp;{{bondsPortfolioSum.totalInvestment | number:
+                                                                '1.2-2'}}</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th><span class="text-white font-12">{{'Translation.Current
+                                                                Value' |
+                                                                translate}}:</span></th>
+                                                        <td> <span class="text-white font-12"><span
+                                                                    style="font-size: 10px !important;">({{localCurrencyCode}})</span>
+                                                                &nbsp;{{bondsPortfolioSum.currentValue | number :
+                                                                '1.2-2'}}</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th> <span class="text-white font-12">{{'Translation.Local
+                                                                Investment' |
+                                                                translate}}:</span></th>
+                                                        <td> <span class="text-white font-12"><span
+                                                                    style="font-size: 10px !important;">({{localCurrencyCode}})</span>
+                                                                &nbsp;{{bondsPortfolioSum.localInvestment | number :
+                                                                '1.2-2'}}</span> </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th><span class="text-white font-12">{{'Translation.Foreign
+                                                                Investment' |
+                                                                translate}}:</span></th>
+                                                        <td> <span class="text-white font-12"><span
+                                                                    style="font-size: 10px !important;">({{foreignCurrencyCode}})</span>
+                                                                &nbsp;{{bondsPortfolioSum.foreignInvestment | number :
+                                                                '1.2-2'}}</span> </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <table>
+                                                    <tr>
+                                                        <th> <span class="text-white">{{'Translation.Volume' |
+                                                                translate}}:</span></th>
+                                                        <td> <span class="text-white ml-5">{{bondsPortfolioSum.holding |
+                                                                number}}</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th> <span [class.text-danger]="bondsPortfolioSum.netPL < 0"
+                                                                class="font-12"
+                                                                [class.text-success]="bondsPortfolioSum.netPL > 0"
+                                                                [class.text-color-light]="bondsPortfolioSum.netPL == 0">{{'
+                                                                P/L' | translate}}:</span></th>
+                                                        <td> <span class="ml-5"
+                                                                [class.text-danger]="bondsPortfolioSum.netPL < 0"
+                                                                class="font-12"
+                                                                [class.text-color-light]="bondsPortfolioSum.netPL == 0"
+                                                                [class.text-success]="bondsPortfolioSum.netPL > 0">{{bondsPortfolioSum.netPL
+                                                                | number : '1.2-2'}} <i
+                                                                    *ngIf="bondsPortfolioSum.netPL < 0"
+                                                                    class="fa fa-arrow-down" aria-hidden="true"></i> <i
+                                                                    *ngIf="bondsPortfolioSum.netPL > 0"
+                                                                    class="fa fa-arrow-up"
+                                                                    aria-hidden="true"></i></span></td>
+                                                    </tr>
+
+                                                </table>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="card" style="width: 100%;"
+                                    *ngIf="etfPortfolioSum !== null && etfPortfolioSum !== undefined">
+                                    <div class="card-body card-bg mr-0 box-borders">
+                                        <h5 class="card-title blue-text">{{'Translation.ETFs' | translate }}</h5>
+                                        <div class="row mt-3 font-12">
+
+                                            <div class="col-md-7">
+                                                <table class="font-12">
+                                                    <tr>
+                                                        <th><span class="text-white font-12">{{'Translation.Total
+                                                                Investment' |
+                                                                translate}}:</span></th>
+                                                        <td> <span class="text-white font-12"><span
+                                                                    style="font-size: 10px !important;">({{localCurrencyCode}})</span>
+                                                                &nbsp;{{etfPortfolioSum.totalInvestment | number:
+                                                                '1.2-2'}}</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th><span class="text-white font-12">{{'Translation.Current
+                                                                Value' |
+                                                                translate}}:</span></th>
+                                                        <td> <span class="text-white font-12"><span
+                                                                    style="font-size: 10px !important;">({{localCurrencyCode}})</span>
+                                                                &nbsp;{{etfPortfolioSum.currentValue | number :
+                                                                '1.2-2'}}</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th> <span class="text-white font-12">{{'Translation.Local
+                                                                Investment' |
+                                                                translate}}:</span></th>
+                                                        <td> <span class="text-white font-12"><span
+                                                                    style="font-size: 10px !important;">({{localCurrencyCode}})</span>
+                                                                &nbsp;{{etfPortfolioSum.localInvestment | number :
+                                                                '1.2-2'}}</span> </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th><span class="text-white font-12">{{'Translation.Foreign
+                                                                Investment' |
+                                                                translate}}:</span></th>
+                                                        <td> <span class="text-white font-12"><span
+                                                                    style="font-size: 10px !important;">({{foreignCurrencyCode}})</span>
+                                                                &nbsp;{{etfPortfolioSum.foreignInvestment | number :
+                                                                '1.2-2'}}</span> </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <table>
+                                                    <tr>
+                                                        <th> <span class="text-white">{{'Translation.Volume' |
+                                                                translate}}:</span></th>
+                                                        <td> <span class="text-white ml-5">{{etfPortfolioSum.holding |
+                                                                number}}</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th> <span [class.text-danger]="etfPortfolioSum.netPL < 0"
+                                                                class="font-12"
+                                                                [class.text-success]="etfPortfolioSum.netPL > 0"
+                                                                [class.text-color-light]="etfPortfolioSum.netPL == 0">{{'
+                                                                P/L' | translate}}:</span></th>
+                                                        <td> <span class="ml-5"
+                                                                [class.text-danger]="etfPortfolioSum.netPL < 0"
+                                                                class="font-12"
+                                                                [class.text-color-light]="etfPortfolioSum.netPL == 0"
+                                                                [class.text-success]="etfPortfolioSum.netPL > 0">{{etfPortfolioSum.netPL
+                                                                | number : '1.2-2'}} <i
+                                                                    *ngIf="etfPortfolioSum.netPL < 0"
+                                                                    class="fa fa-arrow-down" aria-hidden="true"></i> <i
+                                                                    *ngIf="etfPortfolioSum.netPL > 0"
+                                                                    class="fa fa-arrow-up"
+                                                                    aria-hidden="true"></i></span></td>
+                                                    </tr>
+
+                                                </table>
+                                            </div>
+
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-3" style="margin-top : -15px; ">
+                    <wj-flex-pie [bindingName]="'type'" [binding]="'trade'" [itemsSource]="Wjdata" selectionMode="Point"
+                        selectedItemPosition="Top" [selectedItemOffset]="0.0" [isAnimated]="true"
+                        [tooltipContent]="tooltipContentPie" [palette]="palleteColors" class="box-borders">
+                        <wj-flex-pie-data-label [content]="getLabelContent"></wj-flex-pie-data-label>
+                        <wj-flex-chart-legend position="Bottom"></wj-flex-chart-legend>
+                    </wj-flex-pie>
+                </div>
+            </div>
+        </div>
+
+        <div class="row my-2">
+            <span class="font-bold text-xl ml-2 mt-1 text-color-light">{{'Translation.Breakdown' |
+                translate | uppercase}}</span>
+        </div>
+        <div class="row header-portfolio mt-1">
+            <div class="col-md-6 mt-1">
+                <a class="font-bold text-xl mx-5  text-color-light" [class.tab-active]="selectedTab === 'equities'"
+                    (click)="onChangeTab('equities')">{{'Translation.Equities' | translate | uppercase}}</a>
+                <a class="font-bold text-xl mx-5  text-color-light" [class.tab-active]="selectedTab === 'bonds'"
+                    (click)="onChangeTab('bonds')">{{'Translation.Bonds' | translate | uppercase}}</a>
+                <a class="font-bold text-xl mx-4  text-color-light" [class.tab-active]="selectedTab === 'etf'"
+                    (click)="onChangeTab('etf')">{{'Translation.ETFs' | translate}}</a>
+            </div>
+            <div class="col-md-6" style="display: flex; justify-content: end;">
+                <span class="mx-2 cursor-pointer" style="color : #02b102 !important; font-size: 15px;"
+                    (click)="exportExcel()"><i class="fa fa-file-excel-o"
+                        title="{{ 'Translation.Export' | translate }} Excel" aria-hidden="true"></i></span>
+                <span class="ml-2 mr-3 cursor-pointer" style="color : #d70909; font-size: 15px; "
+                    (click)="exportPDF()"><i class="fa fa-file-pdf-o" title="{{ 'Translation.Export' | translate }} PDF"
+                        aria-hidden="true"></i></span>
+
+            </div>
+        </div>
+        <div class="row px-0">
+            <div class="col-md-12 px-0">
+                <section style="width: 100%;   overflow-y: auto; background-color: #1E293B"
+                    *ngIf="selectedTab === 'equities'">
+                    <wj-flex-grid id="theGridTallRows" class="gridDashboard" style="height:20px !important;"
+                        [isReadOnly]="true" [itemsSource]="portfolioSummaryGridData" [selectionMode]="'Row'"
+                        [autoSizeMode]="'Headers'" [headersVisibility]="'Column'" #flexGrid
+                        style="grid-auto-flow : column;">
+
+                        <wj-flex-grid-filter
+                            [filterColumns]="['symbol', 'holding','avgPrice','currentPrice' , 'mktValue' , 'todayPL' , 'totalPL' , 'lastTradeDate']">
+                        </wj-flex-grid-filter>
+                        <wj-flex-grid-column [header]="'Translation.Name' | translate" [binding]="'symbol'"
+                            [width]="'0.5*'" [minWidth]="85" [align]="'left'"></wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Translation.Volume' | translate" [binding]="'holding'"
+                            [width]="'0.3*'" [minWidth]="90" [align]="'left'"> </wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Translation.Average Price' | translate" [binding]="'avgPrice'"
+                            [width]="'0.3*'" [minWidth]="90" [align]="'left'">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                <span>{{item.avgPrice | number : '1.4-4'}}</span>
+                            </ng-template>
+                        </wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Translation.Current Price' | translate"
+                            [binding]="'currentPrice'" [width]="'0.5*'" [minWidth]="90" [align]="'left'"
+                            [isReadOnly]="false">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                <span>{{item.currentPrice | number : '1.4-4'}}</span>
+                            </ng-template>
+                        </wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Translation.Market Value' | translate" [binding]="'mktValue'"
+                            [width]="'0.5*'" [minWidth]="140" [align]="'left'">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                <span>{{item.mktValue | number : '1.4-4'}}</span>
+                            </ng-template>
+                        </wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Translation.Currency' | translate" [binding]="'currencyCode'"
+                            [width]="'0.3*'" [minWidth]="90" [align]="'left'"> </wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Translation.Day P/L' | translate" [binding]="'todayPL'"
+                            [width]="'0.5*'" [minWidth]="140" [align]="'left'">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                <span class="leading-none mb-px"
+                                    [ngClass]="{'text-green-500': item.todayPL > 0 , 'text-red-500': item.todayPL < 0}">{{item.todayPL
+                                    | number : '1.2-2'}}</span>
+                            </ng-template>
+                        </wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Translation.Total P/L' | translate" [binding]="'totalPL'"
+                            [width]="'0.5*'" [minWidth]="140" type="datetime" [align]="'left'">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                <span class="leading-none mb-px"
+                                    [ngClass]="{'text-green-500': item.totalPL > 0 , 'text-red-500': item.totalPL < 0}">{{item.totalPL
+                                    | number : '1.2-2'}}</span>
+                            </ng-template>
+                        </wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Translation.Last Purchase Date' | translate"
+                            [binding]="'lastTradeDate'" [width]="'0.3*'" [minWidth]="100" type="datetime"
+                            [align]="'left'">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                <span> {{item.lastTradeDate | date: 'yyyy-MM-dd'}}</span>
+                            </ng-template>
+                        </wj-flex-grid-column>
+
+
+
+                        <wj-flex-grid-column [header]="" [binding]="''" [width]="'0.5*'" [minWidth]="140"
+                            [align]="'left'">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                <span (click)="showModalForOrder(item , 'B' , 'equities')"
+                                    class="ml-4 transformHover cursor-pointer  items-center font-bold text-md lg:text-md sm:text-sm px-2.5 lg:px-1.5 md:px-1.0  py-0.5 tracking-wider uppercase border-green-600 border-2 text-green-600"
+                                    style="border-radius:4px;">
+                                    <span class="leading-relaxed whitespace-nowrap">{{"Translation.BUY" |
+                                        translate}}</span>
+                                </span>
+                                <span (click)="showModalForOrder(item , 'S' , 'equities')"
+                                    class="cursor-pointer transformHover ml-4  items-center font-bold text-md lg:text-md sm:text-sm px-2.5 lg:px-1.5 md:px-1.0  py-0.5 tracking-wider uppercase border-red-600 border-2 text-red-600"
+                                    style="border-radius:4px;">
+                                    <span class="leading-relaxed whitespace-nowrap">{{"Translation.SELL" |
+                                        translate}}</span>
+                                </span>
+                            </ng-template>
+                        </wj-flex-grid-column>
+
+                    </wj-flex-grid>
+                </section>
+                <section style="width: 100%;   overflow-y: auto; background-color: #1E293B"
+                    *ngIf="selectedTab === 'bonds'">
+                    <wj-flex-grid id="theGridTallRows" class="gridDashboard" style="height:20px !important;"
+                        [isReadOnly]="true" [itemsSource]="portfolioSummaryGridData" [selectionMode]="'Row'"
+                        [autoSizeMode]="'Headers'" [headersVisibility]="'Column'" #flexGrid
+                        style="grid-auto-flow : column;">
+
+                        <wj-flex-grid-filter
+                            [filterColumns]="['symbol', 'holding','avgPrice','currentPrice' , 'mktValue' , 'todayPL' , 'totalPL' , 'lastTradeDate']">
+                        </wj-flex-grid-filter>
+                        <wj-flex-grid-column [header]="'Translation.Name' | translate" [binding]="'symbol'"
+                            [width]="'0.5*'" [minWidth]="85" [align]="'left'"></wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Translation.Volume' | translate" [binding]="'holding'"
+                            [width]="'0.3*'" [minWidth]="90" [align]="'left'"> </wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Translation.Average Price' | translate" [binding]="'avgPrice'"
+                            [width]="'0.3*'" [minWidth]="90" [align]="'left'">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                <span>{{item.avgPrice | number : '1.4-4'}}</span>
+                            </ng-template>
+                        </wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Translation.Current Price' | translate"
+                            [binding]="'currentPrice'" [width]="'0.5*'" [minWidth]="90" [align]="'left'"
+                            [isReadOnly]="false">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                <span>{{item.currentPrice | number : '1.4-4'}}</span>
+                            </ng-template>
+                        </wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Translation.Market Value' | translate" [binding]="'mktValue'"
+                            [width]="'0.5*'" [minWidth]="140" [align]="'left'">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                <span>{{item.mktValue | number : '1.4-4'}}</span>
+                            </ng-template>
+                        </wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Translation.Currency' | translate" [binding]="'currencyCode'"
+                            [width]="'0.3*'" [minWidth]="90" [align]="'left'"> </wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Translation.Day P/L' | translate" [binding]="'todayPL'"
+                            [width]="'0.5*'" [minWidth]="140" [align]="'left'">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                <span class="leading-none mb-px"
+                                    [ngClass]="{'text-green-500': item.todayPL > 0 , 'text-red-500': item.todayPL < 0}">{{item.todayPL
+                                    | number : '1.2-2'}}</span>
+                            </ng-template>
+                        </wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Translation.Total P/L' | translate" [binding]="'totalPL'"
+                            [width]="'0.5*'" [minWidth]="140" type="datetime" [align]="'left'">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                <span class="leading-none mb-px"
+                                    [ngClass]="{'text-green-500': item.totalPL > 0 , 'text-red-500': item.totalPL < 0}">{{item.totalPL
+                                    | number : '1.2-2'}}</span>
+                            </ng-template>
+                        </wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Translation.Last Purchase Date' | translate"
+                            [binding]="'lastTradeDate'" [width]="'0.3*'" [minWidth]="100" type="datetime"
+                            [align]="'left'">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                <span> {{item.lastTradeDate | date: 'yyyy-MM-dd'}}</span>
+                            </ng-template>
+                        </wj-flex-grid-column>
+
+
+
+                        <wj-flex-grid-column [header]="" [binding]="''" [width]="'0.5*'" [minWidth]="140"
+                            [align]="'left'">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                <span (click)="showModalForOrder(item , 'B' , 'bonds')"
+                                    class="ml-4 transformHover cursor-pointer  items-center font-bold text-md lg:text-md sm:text-sm px-2.5 lg:px-1.5 md:px-1.0  py-0.5 tracking-wider uppercase border-green-600 border-2 text-green-600"
+                                    style="border-radius:4px;">
+                                    <span class="leading-relaxed whitespace-nowrap">{{"Translation.BUY" |
+                                        translate}}</span>
+                                </span>
+                                <span (click)="showModalForOrder(item , 'S' , 'bonds')"
+                                    class="cursor-pointer transformHover ml-4  items-center font-bold text-md lg:text-md sm:text-sm px-2.5 lg:px-1.5 md:px-1.0  py-0.5 tracking-wider uppercase border-red-600 border-2 text-red-600"
+                                    style="border-radius:4px;">
+                                    <span class="leading-relaxed whitespace-nowrap">{{"Translation.SELL" |
+                                        translate}}</span>
+                                </span>
+                            </ng-template>
+                        </wj-flex-grid-column>
+
+                    </wj-flex-grid>
+                </section>
+                <section style="width: 100%;   overflow-y: auto; background-color: #1E293B"
+                    *ngIf="selectedTab === 'etf'">
+                    <wj-flex-grid id="theGridTallRows" class="gridDashboard" style="height:20px !important;"
+                        [isReadOnly]="true" [itemsSource]="portfolioSummaryGridData" [selectionMode]="'Row'"
+                        [autoSizeMode]="'Headers'" [headersVisibility]="'Column'" #flexGrid
+                        style="grid-auto-flow : column;">
+
+                        <wj-flex-grid-filter
+                            [filterColumns]="['symbol', 'holding','avgPrice','currentPrice' , 'mktValue' , 'todayPL' , 'totalPL' , 'lastTradeDate']">
+                        </wj-flex-grid-filter>
+                        <wj-flex-grid-column [header]="'Translation.Name' | translate" [binding]="'symbol'"
+                            [width]="'0.5*'" [minWidth]="85" [align]="'left'"></wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Translation.Volume' | translate" [binding]="'holding'"
+                            [width]="'0.3*'" [minWidth]="90" [align]="'left'"> </wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Translation.Average Price' | translate" [binding]="'avgPrice'"
+                            [width]="'0.3*'" [minWidth]="90" [align]="'left'">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                <span>{{item.avgPrice | number : '1.4-4'}}</span>
+                            </ng-template>
+                        </wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Translation.Current Price' | translate"
+                            [binding]="'currentPrice'" [width]="'0.5*'" [minWidth]="90" [align]="'left'"
+                            [isReadOnly]="false">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                <span>{{item.currentPrice | number : '1.4-4'}}</span>
+                            </ng-template>
+                        </wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Translation.Market Value' | translate" [binding]="'mktValue'"
+                            [width]="'0.5*'" [minWidth]="140" [align]="'left'">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                <span>{{item.mktValue | number : '1.4-4'}}</span>
+                            </ng-template>
+                        </wj-flex-grid-column>
+
+
+                        <wj-flex-grid-column [header]="'Translation.Currency' | translate" [binding]="'currencyCode'"
+                            [width]="'0.3*'" [minWidth]="90" [align]="'left'"> </wj-flex-grid-column>
+
+                        <wj-flex-grid-column [header]="'Translation.Day P/L' | translate" [binding]="'todayPL'"
+                            [width]="'0.5*'" [minWidth]="140" [align]="'left'">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                <span class="leading-none mb-px"
+                                    [ngClass]="{'text-green-500': item.todayPL > 0 , 'text-red-500': item.todayPL < 0}">{{item.todayPL
+                                    | number : '1.2-2'}}</span>
+                            </ng-template>
+                        </wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Translation.Total P/L' | translate" [binding]="'totalPL'"
+                            [width]="'0.5*'" [minWidth]="140" type="datetime" [align]="'left'">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                <span class="leading-none mb-px"
+                                    [ngClass]="{'text-green-500': item.totalPL > 0 , 'text-red-500': item.totalPL < 0}">{{item.totalPL
+                                    | number : '1.2-2'}}</span>
+                            </ng-template>
+                        </wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Translation.Last Purchase Date' | translate"
+                            [binding]="'lastTradeDate'" [width]="'0.3*'" [minWidth]="100" type="datetime"
+                            [align]="'left'">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                <span> {{item.lastTradeDate | date: 'yyyy-MM-dd'}}</span>
+                            </ng-template>
+                        </wj-flex-grid-column>
+
+
+
+                        <wj-flex-grid-column [header]="" [binding]="''" [width]="'0.5*'" [minWidth]="140"
+                            [align]="'left'">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                <span (click)="showModalForOrder(item , 'B' , 'etf')"
+                                    class="ml-4 transformHover cursor-pointer  items-center font-bold text-md lg:text-md sm:text-sm px-2.5 lg:px-1.5 md:px-1.0  py-0.5 tracking-wider uppercase border-green-600 border-2 text-green-600"
+                                    style="border-radius:4px;">
+                                    <span class="leading-relaxed whitespace-nowrap">{{"Translation.BUY" |
+                                        translate}}</span>
+                                </span>
+                                <span (click)="showModalForOrder(item , 'S' , 'etf')"
+                                    class="cursor-pointer transformHover ml-4  items-center font-bold text-md lg:text-md sm:text-sm px-2.5 lg:px-1.5 md:px-1.0  py-0.5 tracking-wider uppercase border-red-600 border-2 text-red-600"
+                                    style="border-radius:4px;">
+                                    <span class="leading-relaxed whitespace-nowrap">{{"Translation.SELL" |
+                                        translate}}</span>
+                                </span>
+                            </ng-template>
+                        </wj-flex-grid-column>
+
+                    </wj-flex-grid>
+                </section>
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+
+
+
+        <div style="background-color: #1E293B;">
+            <div class="row pt-5">
+                <div class="col-md-12 text-center">
+                    <h3 class="text-white">{{portfolioWeight}}</h3>
+                </div>
+                <div class="col-md-8"></div>
+                <div class="col-md-2">
+                    <wj-auto-complete id="cmbInvestment" [isEditable]="true" #cmbInvestment style="width: 100%;"
+                        [itemsSource]="investmentList" displayMemberPath="display" selectedValuePath="value"
+                        (selectedIndexChanged)="onChangeInvestmentChart(cmbInvestment.selectedValue)"
+                        [isEditable]="true" name="cmbInvestment">
+                    </wj-auto-complete>
+                </div>
+                <div class="col-md-2"></div>
+
+                <div class="col-md-2"></div>
+                <div class="col-md-4 p-5">
+                    <wj-flex-pie [bindingName]="'type'" [binding]="'trade'" [itemsSource]="WjdataWeight"
+                        selectionMode="Point" selectedItemPosition="Top" [selectedItemOffset]="0.0" [isAnimated]="true"
+                        [palette]="['rgba(119,179,0,1)', 'rgba(255,136,0,1)', 'l(0,0,0,1)#25D325-#5fe85f', 'l(0,0,0,1)#D6B800-#ffb300' , 'l(0,0,1,0)#3DA7FF-#63a6ff' ,'l(0,0,0,1)#25D325-#5fe85f',   'rgba(42,159,214,1)',  'rgba(153,51,204,1)', 'rgba(255,136,0,1)',]"
+                        class="box-borders text-white">
+                        <wj-flex-pie-data-label [content]="getLabelContentWeight"></wj-flex-pie-data-label>
+                        <wj-flex-chart-legend position="Right"></wj-flex-chart-legend>
+                    </wj-flex-pie>
+                </div>
+
+                <div class="col-md-4 p-5">
+                    <wj-flex-chart [selectionMode]="'Point'" [bindingX]="'type'" [itemsSource]="wjDataWeightBarChart"
+                        [tooltipContent]="tooltipContent" [palette]="['rgb(45, 159, 199,1)']"
+                        class="box-borders text-white">
+                        <wj-flex-chart-legend [position]="'Bottom'">
+                        </wj-flex-chart-legend>
+                        <wj-flex-chart-series [binding]="'trade'"></wj-flex-chart-series>
+                        <wj-flex-chart-animation></wj-flex-chart-animation>
+                    </wj-flex-chart>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+        </div>
+
+
+
+
+
+
+    </div>
+</div>
+
+
+
+
+<dialog-cmp-reports #dialogCmp (btnClick)="getNotification($event)"></dialog-cmp-reports>

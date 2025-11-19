@@ -1,0 +1,82 @@
+<section class="widgetDashboard" widget>
+
+    <div class="border">
+        <!-- bond data code starts here -->
+        <div class="accordian_adjs">
+
+            <div>
+                <div class="row mt-2">
+                    <div class="col-sm-3 fields_box">
+                        <label for="search-input">{{ 'Translation.Category' | translate }}</label>
+                        <wj-input-mask class="wijmo_style" [(ngModel)]="securityMarketDetails.fisDetail.bondCategory.category"
+                            [isDisabled]="true">
+                        </wj-input-mask>
+                    </div>
+                    <div class="col-sm-3 fields_box">
+                        <label for="search-input">{{ 'Translation.Bond Type' | translate }}</label>
+                        <wj-input-mask class="wijmo_style"
+                            [(ngModel)]="securityMarketDetails.fisDetail.bondType.bondType" [isDisabled]="true">
+                        </wj-input-mask>
+                    </div>
+                    <div class="col-sm-3 fields_box">
+                        <label for="search-input">{{ 'Translation.Issue Date' | translate }} </label>
+                        <wj-input-mask class="wijmo_style" [(ngModel)]="securityMarketDetails.issueDate"
+                            [isDisabled]="true">
+                        </wj-input-mask>
+                    </div>
+                    <div class="col-sm-3 fields_box">
+                        <label for="search-input">{{ 'Translation.Maturity Date' | translate }} </label>
+                        <wj-input-mask class="wijmo_style" [(ngModel)]="securityMarketDetails.maturityDate"
+                            [isDisabled]="true">
+                        </wj-input-mask>
+                    </div>
+                    <div class="col-sm-3 fields_box">
+                        <label for="search-input">{{ 'Translation.Tenure To Maturity' | translate }}
+                        </label>
+                        <wj-input-number class="wijmo_style" [(ngModel)]="securityMarketDetails.tenure"
+                            [isDisabled]="true">
+                        </wj-input-number>
+                    </div>
+                    <div class="col-sm-3 fields_box">
+                        <label for="search-input">{{ 'Translation.Last Coupon Date' | translate }} </label>
+                        <wj-input-mask class="wijmo_style" [(ngModel)]="securityMarketDetails.lastCouponDate"
+                            [isDisabled]="true">
+                        </wj-input-mask>
+                    </div>
+                    <div class="col-sm-3 fields_box">
+                        <label for="search-input">{{ 'Translation.Next Coupon Date' | translate }} </label>
+                        <wj-input-mask class="wijmo_style" [(ngModel)]="securityMarketDetails.nextCouponDate"
+                            [isDisabled]="true">
+                        </wj-input-mask>
+                    </div>
+                    <!-- <div class="col-sm-3 fields_box">
+                        <label for="search-input">{{ 'Translation.Accrued Interest' | translate }} </label>
+                        <wj-input-mask class="wijmo_style" #accrudeProfit
+                            [(ngModel)]="securityMarketDetails.accrudeProfit" [isDisabled]="true">
+                        </wj-input-mask>
+                    </div> -->
+                    <div class="col-sm-3 fields_box">
+                        <label for="search-input">{{ 'Translation.Currency' | translate }} </label>
+                        <wj-input-mask class="wijmo_style" [(ngModel)]="securityMarketDetails.currencyCode"
+                            [isDisabled]="true">
+                        </wj-input-mask>
+                    </div>
+                    <div class="col-sm-3 fields_box">
+                        <label for="search-input">PAR {{ 'Translation.Value' | translate }} </label>
+                        <wj-input-number class="wijmo_style" [(ngModel)]="securityMarketDetails.parValue" [format]="'n4'"
+                            [isDisabled]="true">
+                        </wj-input-number>
+                    </div>
+                    <div class="col-sm-3 fields_box">
+                        <label for="search-input">{{ 'Translation.Coupon Rate' | translate }} </label>
+                        <wj-input-number class="wijmo_style" [(ngModel)]="securityMarketDetails.fisDetail.couponRate" [format]="'n4'"
+                            [isDisabled]="true">
+                        </wj-input-number>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- bond data ends here -->
+    </div>
+</section>

@@ -1,0 +1,591 @@
+<repo-order #repoOrder [modalId]="'repo-order-reject-affirm'"></repo-order>
+
+
+<div class="row   w-full">
+    <div class="col-lg-12 col-md-offset-0 col-xs-12 widget-container">
+        <section class="widget" widget>
+            <header>
+                <h3>
+                    <span class="fw-semi-bold">{{ 'Translation.Repo Open Position' | translate }}</span>
+                </h3>
+                <div class="other_btns">
+                    <span class="fa fa-refresh hover:text-primary-500 pt-2" style="cursor: pointer;" type="button"
+                        (click)="getEventLog('', true, true)"></span>
+                </div>
+            </header>
+            <div class="mt-5 w-full">
+                <div class="w-full">
+                    <span class="font-bold">{{ 'Translation.Initiated By ME' | translate }}:</span>
+                    <section>
+                        <wj-flex-grid class="repoList" [isReadOnly]="true" [itemsSource]="dataInitiatedByMe"
+                            [selectionMode]="'Row'" [autoSizeMode]="'Headers'" [headersVisibility]="'Column'" #flexGrid
+                            style="grid-auto-flow : column;">
+                            <wj-flex-grid-filter [filterColumns]="filterColumns"></wj-flex-grid-filter>
+                            <wj-flex-grid-column [header]="'Translation.Order No' | translate" [binding]="'order_no'"
+                                [width]="'*'" [minWidth]="60" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.side === 'buy'"
+                                        [class.pink_text_grid]="item.side === 'sell'">
+                                        {{item.order_no}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Exchange' | translate" [binding]="'exchange'"
+                                [minWidth]="60" [width]="'*'" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.side === 'buy'"
+                                        [class.pink_text_grid]="item.side === 'sell'">
+                                        {{item.exchange}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Market' | translate" [binding]="'market'"
+                                [minWidth]="60" [width]="'*'" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.side === 'buy'"
+                                        [class.pink_text_grid]="item.side === 'sell'">
+                                        {{item.market}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Symbol' | translate" [binding]="'symbol'"
+                                [minWidth]="60" [width]="'*'" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.side === 'buy'"
+                                        [class.pink_text_grid]="item.side === 'sell'">
+                                        {{item.symbol}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Side' | translate" [binding]="'side'"
+                                [width]="'*'" [minWidth]="60" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.side === 'buy'"
+                                        [class.pink_text_grid]="item.side === 'sell'">
+                                        {{item.side}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Repo Type' | translate" [binding]="'repo_type'"
+                                [width]="'*'" [minWidth]="60" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.side === 'buy'"
+                                        [class.pink_text_grid]="item.side === 'sell'">
+                                        {{item.repo_type}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Initiator Broker' | translate"
+                                [binding]="'broker'" [width]="'*'" [minWidth]="60" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.side === 'buy'"
+                                        [class.pink_text_grid]="item.side === 'sell'">
+                                        {{item.broker}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Client Code' | translate"
+                                [binding]="'actual_client_code'" [width]="'*'" [minWidth]="60" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.side === 'buy'"
+                                        [class.pink_text_grid]="item.side === 'sell'">
+                                        {{item.actual_client_code}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Quantity' | translate" [binding]="'volume'"
+                                [width]="'*'" [minWidth]="100" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.side === 'buy'"
+                                        [class.pink_text_grid]="item.side === 'sell'">
+                                        {{item.volume}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Purchase Price' | translate"
+                                [binding]="'settlement_amount'" [width]="'*'" [minWidth]="100" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.side === 'buy'"
+                                        [class.pink_text_grid]="item.side === 'sell'">
+                                        {{item.settlement_amount}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Repurchase Price' | translate"
+                                [binding]="'repurchase_settlement_amount'" [width]="'*'" [minWidth]="120"
+                                [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.side === 'buy'"
+                                        [class.pink_text_grid]="item.side === 'sell'">
+                                        {{item.repurchase_settlement_amount}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Repo Interest Rate' | translate"
+                                [binding]="'repurchase_rate'" [width]="'*'" [minWidth]="120" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.side === 'buy'"
+                                        [class.pink_text_grid]="item.side === 'sell'">
+                                        {{item.repurchase_rate}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Haircut' | translate" [binding]="'repo_haircut'"
+                                [width]="'*'" [minWidth]="60" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.side === 'buy'"
+                                        [class.pink_text_grid]="item.side === 'sell'">
+                                        {{item.repo_haircut}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Initiate Date/Time' | translate"
+                                [binding]="'contract_initial_date'" [width]="'*'" [minWidth]="60" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.side === 'buy'"
+                                        [class.pink_text_grid]="item.side === 'sell'">
+                                        {{item.contract_initial_date | date : 'yyyy-MM-dd'}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Termination Date' | translate"
+                                [binding]="'expiry_date'" [width]="'*'" [minWidth]="60" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.side === 'buy'"
+                                        [class.pink_text_grid]="item.side === 'sell'">
+                                        {{item.expiry_date | date : 'yyyy-MM-dd'}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Counter Broker' | translate"
+                                [binding]="'actual_counter_broker_code'" [width]="'*'" [minWidth]="120"
+                                [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.side === 'buy'"
+                                        [class.pink_text_grid]="item.side === 'sell'">
+                                        {{item.actual_counter_broker_code}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Counter Trader' | translate"
+                                [binding]="'counter_username'" [width]="'*'" [minWidth]="120" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.side === 'buy'"
+                                        [class.pink_text_grid]="item.side === 'sell'">
+                                        {{item.counter_username}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Counter Client' | translate"
+                                [binding]="'counter_account'" [width]="'*'" [minWidth]="60" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.side === 'buy'"
+                                        [class.pink_text_grid]="item.side === 'sell'">
+                                        {{item.counter_account}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Status' | translate" [binding]="'status'"
+                                [minWidth]="60" [width]="'*'" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.side === 'buy'"
+                                        [class.pink_text_grid]="item.side === 'sell'">
+                                        {{item.negotiated_order_status}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.State' | translate" [binding]="'state'"
+                                [minWidth]="60" [width]="'*'" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.side === 'buy'"
+                                        [class.pink_text_grid]="item.side === 'sell'">
+                                        {{item.negotiated_order_state}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Common.Action' | translate" [align]="'center'"
+                                [minWidth]="90" [width]="'*'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+
+                                    <div class="flex justify-between">
+
+                                        <ng-container
+                                            *ngIf="(item.negotiated_order_state === 'Accept' || item.negotiated_order_state === 'Accepted')">
+                                            <span style="color: #C8950D; font-size: 15px; cursor: pointer;"
+                                                title="{{ 'Translation.Extend' | translate }}"
+                                                (click)="repoOrder.show(item , 'E')"><i class="fa fa-calendar"
+                                                    aria-hidden="true"></i></span>
+                                        </ng-container>
+
+                                        <ng-container
+                                        *ngIf="(item.negotiated_order_state === 'Accept' || item.negotiated_order_state === 'Accepted') && isNotDatesSame(item.contract_initial_date)">
+                                            <span style="color: #C8950D; font-size: 15px; cursor: pointer;"
+                                                title="{{ 'Translation.Reprice' | translate }}"
+                                                (click)="repoOrder.show(item , 'RP')"><i class="fa fa-exchange"
+                                                    aria-hidden="true"></i></span>
+                                        </ng-container>
+
+                                        <ng-container
+                                            *ngIf="((item.negotiated_order_state === 'Initiate')
+                                        && (item.negotiated_order_status === 'MaturityExtended' || item.negotiated_order_status === 'Normal' || item.negotiated_order_status === 'Repriced') 
+                                        && (item.sender_username !== loggedInUsername || item.username == item.counter_username))">
+                                            <span style="color: #C8950D; font-size: 15px; cursor: pointer;"
+                                                title="{{ 'Translation.Affirm' | translate }}"
+                                                (click)="repoOrder.show(item , 'AME')"><i class="fa fa-pencil-square-o"
+                                                    aria-hidden="true"></i>
+                                            </span>
+                                        </ng-container>
+                                    
+                                        <ng-container
+                                            *ngIf="((item.negotiated_order_state === 'Initiate')
+                                        && (item.negotiated_order_status === 'MaturityExtended' || item.negotiated_order_status === 'Normal' || item.negotiated_order_status === 'Repriced') 
+                                        && (item.sender_username !== loggedInUsername || item.username == item.counter_username))">
+                                            <span style="color: #b74a4a; font-size: 15px; cursor: pointer;"
+                                                title="{{ 'Translation.Reject' | translate }}"
+                                                (click)="repoOrder.show(item , 'R')"><i class="fa fa-times"
+                                                    aria-hidden="true"></i>
+                                            </span>
+                                        </ng-container>
+
+                                    </div>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+
+                        </wj-flex-grid>
+
+                        <div class="row">
+                            <div class="btn-group col-xs-12 align-right">
+                                <!-- Paginator -->
+                                <wj-collection-view-pager [cv]="flexGrid?.collectionView"></wj-collection-view-pager>
+                                <!-- page size -->
+                                <wj-menu [(value)]="pageSize1" [header]="'Common.Page Size' | translate">
+                                    <wj-menu-item [value]="0">{{ 'Common.No Paging' | translate }}</wj-menu-item>
+                                    <wj-menu-item [value]="5">5 {{ 'Common.items' | translate }}</wj-menu-item>
+                                    <wj-menu-item [value]="10">10 {{ 'Common.items' | translate }}</wj-menu-item>
+                                    <wj-menu-item [value]="20">20 {{ 'Common.items' | translate }}</wj-menu-item>
+                                    <wj-menu-item [value]="30">30 {{ 'Common.items' | translate }}</wj-menu-item>
+                                    <wj-menu-item [value]="60">60 {{ 'Common.items' | translate }}</wj-menu-item>
+                                    <wj-menu-item [value]="100">100 {{ 'Common.items' | translate }}</wj-menu-item>
+                                </wj-menu>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="w-full mt-10">
+                    <span class="font-bold">{{ 'Translation.Initiated For ME' | translate }}:</span>
+                    <section>
+                        <wj-flex-grid class="repoList" [isReadOnly]="true" [itemsSource]="dataInitiatedForMe"
+                            [selectionMode]="'Row'" [autoSizeMode]="'Headers'" [headersVisibility]="'Column'" #flexGrid2
+                            style="grid-auto-flow : column;">
+                            <wj-flex-grid-filter [filterColumns]="filterColumns"></wj-flex-grid-filter>
+                            <wj-flex-grid-column [header]="'Translation.Order No' | translate" [binding]="'order_no'"
+                                [width]="'*'" [minWidth]="60" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.counter_side === 'buy'"
+                                        [class.pink_text_grid]="item.counter_side === 'sell'">
+                                        {{item.order_no}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Exchange' | translate" [binding]="'exchange'"
+                                [minWidth]="60" [width]="'*'" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.counter_side === 'buy'"
+                                        [class.pink_text_grid]="item.counter_side === 'sell'">
+                                        {{item.exchange}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Market' | translate" [binding]="'market'"
+                                [minWidth]="60" [width]="'*'" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.counter_side === 'buy'"
+                                        [class.pink_text_grid]="item.counter_side === 'sell'">
+                                        {{item.market}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Symbol' | translate" [binding]="'symbol'"
+                                [minWidth]="60" [width]="'*'" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.counter_side === 'buy'"
+                                        [class.pink_text_grid]="item.counter_side === 'sell'">
+                                        {{item.symbol}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Side' | translate" [binding]="'counter_side'"
+                                [width]="'*'" [minWidth]="60" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.counter_side === 'buy'"
+                                        [class.pink_text_grid]="item.counter_side === 'sell'">
+                                        {{item.counter_side}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Repo Type' | translate" [binding]="'repo_type'"
+                                [width]="'*'" [minWidth]="60" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.counter_side === 'buy'"
+                                        [class.pink_text_grid]="item.counter_side === 'sell'">
+                                        {{item.repo_type}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Initiator Broker' | translate"
+                                [binding]="'actual_broker_code'" [width]="'*'" [minWidth]="60" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.counter_side === 'buy'"
+                                        [class.pink_text_grid]="item.counter_side === 'sell'">
+                                        {{item.actual_broker_code}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Client Code' | translate"
+                                [binding]="'actual_client_code'" [width]="'*'" [minWidth]="60" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.counter_side === 'buy'"
+                                        [class.pink_text_grid]="item.counter_side === 'sell'">
+                                        {{item.actual_client_code}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Quantity' | translate" [binding]="'volume'"
+                                [width]="'*'" [minWidth]="100" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.counter_side === 'buy'"
+                                        [class.pink_text_grid]="item.counter_side === 'sell'">
+                                        {{item.volume}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Purchase Price' | translate"
+                                [binding]="'settlement_amount'" [width]="'*'" [minWidth]="100" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.counter_side === 'buy'"
+                                        [class.pink_text_grid]="item.counter_side === 'sell'">
+                                        {{item.settlement_amount}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Repurchase Price' | translate"
+                                [binding]="'repurchase_settlement_amount'" [width]="'*'" [minWidth]="120"
+                                [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.counter_side === 'buy'"
+                                        [class.pink_text_grid]="item.counter_side === 'sell'">
+                                        {{item.repurchase_settlement_amount}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Repo Interest Rate' | translate"
+                                [binding]="'repurchase_rate'" [width]="'*'" [minWidth]="60" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.counter_side === 'buy'"
+                                        [class.pink_text_grid]="item.counter_side === 'sell'">
+                                        {{item.repurchase_rate}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Haircut' | translate" [binding]="'repo_haircut'"
+                                [width]="'*'" [minWidth]="60" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.counter_side === 'buy'"
+                                        [class.pink_text_grid]="item.counter_side === 'sell'">
+                                        {{item.repo_haircut}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Initiate Date/Time' | translate"
+                                [binding]="'contract_initial_date'" [width]="'*'" [minWidth]="60" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.counter_side === 'buy'"
+                                        [class.pink_text_grid]="item.counter_side === 'sell'">
+                                        {{item.contract_initial_date | date : 'yyyy-MM-dd'}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Termination Date' | translate"
+                                [binding]="'expiry_date'" [width]="'*'" [minWidth]="120" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.counter_side === 'buy'"
+                                        [class.pink_text_grid]="item.counter_side === 'sell'">
+                                        {{item.expiry_date | date : 'yyyy-MM-dd'}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Counter Broker' | translate"
+                                [binding]="'actual_counter_broker_code'" [width]="'*'" [minWidth]="120"
+                                [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.counter_side === 'buy'"
+                                        [class.pink_text_grid]="item.counter_side === 'sell'">
+                                        {{item.actual_counter_broker_code}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Counter Trader' | translate"
+                                [binding]="'counter_username'" [width]="'*'" [minWidth]="60" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.counter_side === 'buy'"
+                                        [class.pink_text_grid]="item.counter_side === 'sell'">
+                                        {{item.counter_username}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'Translation.Counter Client' | translate"
+                                [binding]="'counter_account'" [width]="'*'" [minWidth]="60" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.counter_side === 'buy'"
+                                        [class.pink_text_grid]="item.counter_side === 'sell'">
+                                        {{item.counter_account}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.Status' | translate" [binding]="'status'"
+                                [minWidth]="60" [width]="'*'" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.counter_side === 'buy'"
+                                        [class.pink_text_grid]="item.counter_side === 'sell'">
+                                        {{item.negotiated_order_status}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Translation.State' | translate" [binding]="'state'"
+                                [minWidth]="60" [width]="'*'" [align]="'left'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <span [class.blue_text_grid]="item.counter_side === 'buy'"
+                                        [class.pink_text_grid]="item.counter_side === 'sell'">
+                                        {{item.negotiated_order_state}}
+                                    </span>
+                                </ng-template>
+                            </wj-flex-grid-column>
+
+                            <wj-flex-grid-column [header]="'Common.Action' | translate" [align]="'center'"
+                            [minWidth]="90" [width]="'*'">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                                    <div class="flex justify-between">
+                                        <ng-container
+                                        *ngIf="(item.negotiated_order_state === 'Accept' || item.negotiated_order_state === 'Accepted')">
+                                        <span style="color: #C8950D; font-size: 15px; cursor: pointer;"
+                                            title="{{ 'Translation.Extend' | translate }}"
+                                            (click)="repoOrder.show(item , 'E')"><i class="fa fa-calendar"
+                                                aria-hidden="true"></i></span>
+                                    </ng-container>
+
+
+
+                                    <ng-container
+                                    *ngIf="(item.negotiated_order_state === 'Accept' || item.negotiated_order_state === 'Accepted') && isNotDatesSame(item.contract_initial_date)">
+                                        <span style="color: #C8950D; font-size: 15px; cursor: pointer;"
+                                            title="{{ 'Translation.Reprice' | translate }}"
+                                            (click)="repoOrder.show(item , 'RP')"><i class="fa fa-exchange"
+                                                aria-hidden="true"></i></span>
+                                    </ng-container>
+
+
+                                    <ng-container
+                                    *ngIf="((item.negotiated_order_state === 'Initiate')
+                                && (item.negotiated_order_status === 'MaturityExtended' || item.negotiated_order_status === 'Normal' || item.negotiated_order_status === 'Repriced') 
+                                && (item.sender_username !== loggedInUsername || item.username == item.counter_username))">
+                                    <span style="color: #C8950D; font-size: 15px; cursor: pointer;"
+                                        title="{{ 'Translation.Affirm' | translate }}"
+                                        (click)="repoOrder.show(item , 'AME')"><i class="fa fa-pencil-square-o"
+                                            aria-hidden="true"></i>
+                                    </span>
+                                </ng-container>
+
+
+
+                                <ng-container
+                                    *ngIf="((item.negotiated_order_state === 'Initiate')
+                                && (item.negotiated_order_status === 'MaturityExtended' || item.negotiated_order_status === 'Normal' || item.negotiated_order_status === 'Repriced') 
+                                && (item.sender_username !== loggedInUsername || item.username == item.counter_username))">
+                                    <span style="color: #b74a4a; font-size: 15px; cursor: pointer;"
+                                        title="{{ 'Translation.Reject' | translate }}"
+                                        (click)="repoOrder.show(item , 'R')"><i class="fa fa-times"
+                                            aria-hidden="true"></i>
+                                    </span>
+                                </ng-container>
+                                    
+                                      
+                                    </div>
+                                </ng-template>
+                            </wj-flex-grid-column>
+                        </wj-flex-grid>
+
+                        <div class="row">
+                            <div class="btn-group col-xs-12 align-right">
+                                <!-- Paginator -->
+                                <wj-collection-view-pager [cv]="flexGrid2?.collectionView"></wj-collection-view-pager>
+                                <!-- page size -->
+                                <wj-menu [(value)]="pageSize2" [header]="'Common.Page Size' | translate">
+                                    <wj-menu-item [value]="0">{{ 'Common.No Paging' | translate }}</wj-menu-item>
+                                    <wj-menu-item [value]="5">5 {{ 'Common.items' | translate }}</wj-menu-item>
+                                    <wj-menu-item [value]="10">10 {{ 'Common.items' | translate }}</wj-menu-item>
+                                    <wj-menu-item [value]="20">20 {{ 'Common.items' | translate }}</wj-menu-item>
+                                    <wj-menu-item [value]="30">30 {{ 'Common.items' | translate }}</wj-menu-item>
+                                    <wj-menu-item [value]="60">60 {{ 'Common.items' | translate }}</wj-menu-item>
+                                    <wj-menu-item [value]="100">100 {{ 'Common.items' | translate }}</wj-menu-item>
+                                </wj-menu>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+
+
+        </section>
+
+
+    </div>
+
+
+
+
+
+
+
+
+</div>

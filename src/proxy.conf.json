@@ -1,0 +1,12 @@
+
+
+  {
+    "/api": {
+      "target": "https://noticiasdeangola.co.ao/feed/",
+      "secure": true,
+      "changeOrigin": true,
+      "pathRewrite": {
+        "^/api": ""
+      }
+    }
+  }

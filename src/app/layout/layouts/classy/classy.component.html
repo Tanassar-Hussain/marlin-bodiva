@@ -1,0 +1,199 @@
+ 
+
+<div class="flex flex-col flex-auto w-full min-w-0">
+    <!----------------------------------------- Top Bar  ------------------------------------------>
+    <div class="">
+        <div id="marlin-top-bar"
+            style="background-image: linear-gradient(to right, #3d3d43 0%, #ABB0B8 0%, #193c5d  100%);"
+            class="relative flex items-center w-full h-16 sm:h-14 px-4 md:px-6 z-49 shadow dark:shadow-none dark:border-b bg-card dark:bg-transparent">
+ 
+
+            <div *ngIf="publicMenu" class="hvr" style="height: 37px; width: 125px;">
+                <a [routerLink]=" ['/dashboard'] "> <img src="assets/images/logo/marlinNewLogo.png" class="mr-4 "
+                        style="height: 27px; width: 122px; margin-top: 4px;margin-left: 5px;cursor: pointer;" /> </a>
+            </div>
+            <div *ngIf="!publicMenu" class="hvr" style="height: 37px; width: 125px;">
+                <a [routerLink]=" ['/admin/dashboard-admin'] "> <img src="assets/images/logo/marlinNewLogo.png"
+                        class="mr-4 "
+                        style="height: 27px; width: 122px; margin-top: 4px;margin-left: 5px;cursor: pointer;" /> </a>
+            </div>
+       
+            <div *ngIf="userType != marlinAdmin" class="cardContainer">
+                <fuse-card class="card_  flex   w-36 p-2 cursor-pointer hover:bg-primary"
+                    *ngFor="let security of allSecurities; let index = i;" (click)="onClickCard(security)"
+                    [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}"
+                    [ngStyle]="{'border-top-width':'3px' ,'border-top-color': security.borderColor}"
+                    style="height: 44px;">
+
+                    <div class="row p-0">
+                    
+                        <div class="col-sm-8 mr-2 ml-1">
+                            <div class="row">
+                                <div class="text-sm font-semibold leading-tight"> {{security?.securityCode}} </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="text-sm text-gray-280" style="white-space: nowrap !important;"> LTP: {{security?.currentPrice || 'N/A' | number : '1.2-2'}}</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2  -mt-2">
+                            <mat-icon (click)="onRemoveSymbol(security)" [matTooltip]="'Remove'"
+                                [svgIcon]="'heroicons_outline:x'" style="min-width: 20px; width: 20px !important;">
+                            </mat-icon>
+                        </div>
+
+                    </div>
+
+                </fuse-card>
+            </div>
+
+               
+
+
+            <div class="otherToolsContainer flex items-center pl-2 ml-auto space-x-0.5 sm:space-x-2">
+               <span *ngIf="userType != marlinAdmin">
+                <button title="Add Symbols" (click)="onClickAddSymbols()" mat-icon-button>
+                    <mat-icon class="icon-size-10" [svgIcon]="'add'"></mat-icon>
+                </button>
+               </span>
+                
+                   <!-- .......................................Participant Subscription................................................... -->
+                <div *ngIf="userType === 'PARTICIPANT' || userType === 'PARTICIPANT ADMIN'" [routerLink]="['/oms-reports/subscription-details']">
+                        <span type="button" class="subscriptionText" (mouseenter)="isOpened = true" (mouseleave)="isOpened = false">{{subscriptionName}}</span>
+                        
+                        <div [class.bg-green]="subscriptionStrength != 0" [class.bg-red-darker]="subscriptionStrength == 0" class="subscription-bar">
+                            <progress class="progress progress-sm progress-success"  value="100" max="100" 
+                                [class.progress-bar-light]="(subscriptionStrength <= 100 && subscriptionStrength > 0) && !isAdvancedPayment"
+                                [class.progress-bar-success]="isAdvancedPayment" [style.width.%]="subscriptionStrength">
+                            </progress>
+                        </div>
+                        
+                        <div style="position: absolute; right: auto; margin-top: 10px;" *ngIf="isOpened">
+                            <section class="card notifications" style="width: 250px !important;" >
+                                <header class="card-header" style="border-bottom: 1px solid rgb(0, 0, 0);">
+                                    <h6 class="text-center text-primary" >{{remainingDaysTitle}}</h6>
+                                </header>
+                                <div class="list-group thin-scroll"  style="background: #121B2C; height: 90px !important; overflow-y: hidden !important;" *ngIf="!isNoPayment && !isAdvancedPayment">
+                                  <div class="list-group-item" >
+                                    <table class='table'>
+                                        <tr>
+                                            <td class="text-md text-primary">{{'Translation.Start Date' | translate}}</td>
+                                            <td style="text-align: right;" class="text-md ">{{dueDate | date : 'yyyy-MM-dd'}}</td>
+                                        </tr>
+                                        <tr *ngIf="validTill !== dueDate">
+                                            <td class="text-md text-primary">{{'Translation.End Date' | translate}}</td>
+                                            <td  style="text-align: right;" class="text-md ">{{validTill | date : 'yyyy-MM-dd'}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-md text-primary">{{'Translation.Cycle' | translate}}</td>
+                                            <td  style="text-align: right;" class="text-md ">{{billing}}</td>
+                                        </tr>
+                                     </table>   
+                                     
+                                  
+                                  </div>
+                                </div>  
+                              </section>
+                        </div>
+                        
+
+                </div>
+                  <!-- .......................................Participant Subscription................................................... -->
+               
+
+               
+                <!-- <search class="" [appearance]="'bar'"></search> -->
+                <!-- .......................................Language.............................................................................................. -->
+                <button mat-button class="text-accent-100 px-3 " [matMenuTriggerFor]="menu" *ngIf="activelang=== 'en'">
+                    <!-- <span class="material-icons" style="font-size: 22px; margin-right: 2px;line-height: 1;">language</span> -->
+                    <span class="relative shadow rounded-sm overflow-hidden  w-8 h-6 mt-2 "
+                        style=" margin-bottom: 5px;">
+                        <img [src]="'assets/images/flags/US.svg'">
+                    </span>
+                </button>
+                <button mat-button class="text-accent-100 px-3" [matMenuTriggerFor]="menu" *ngIf="activelang=== 'pt'">
+                    <!-- <span class="material-icons" style="font-size: 22px; margin-right: 2px;line-height: 1;">language</span>  -->
+
+                    <span class="relative shadow rounded-sm overflow-hidden  w-8 h-6 " style="margin-bottom: -3px;">
+                        <img [src]="'assets/images/flags/Angola.png'">
+                    </span>
+                </button>
+
+                <mat-menu #menu="matMenu">
+
+                    <button mat-menu-item (click)="setActiveLang('en')"><span
+                            class="relative shadow rounded-sm overflow-hidden  w-7 h-5 mt-2"
+                            style="margin-left: 2px; margin-right : 3px; margin-bottom: 5px;">
+
+                            <img [src]="'assets/images/flags/US.svg'">
+
+                        </span>English</button>
+
+                    <button mat-menu-item (click)="setActiveLang('pt')"><span
+                            class="relative shadow rounded-sm overflow-hidden w-7 h-5 "
+                            style="margin-left: 2px; margin-right : 3px; margin-bottom: -3px;">
+
+                            <img [src]="'assets/images/flags/Angola.png'">
+
+                        </span> Portuguese</button>
+
+                </mat-menu>
+
+
+
+                <!-- .......................................Language................................................................................................ -->
+
+
+
+                <span class="border-2 h-12"></span>
+
+                <messages-alerts-announcements></messages-alerts-announcements>
+
+                <span class="border-2 h-12"></span>
+                <!-----------------------Trade Switch------------------------>
+                <ui-switch (change)="onChangeTrade($event)" [(ngModel)]="tradeType" [disabled]="tradeTypeDisabled"
+                    [checkedLabel]="actualTradeText" [uncheckedLabel]="virtualTradeText" >
+                </ui-switch>
+
+                <span *ngIf="isConnected === true" class="green_circle green_circle_bg" [title]="nodeStatusConnected"></span>
+                <span *ngIf="isConnected === false" class="red_circle red_circle_bg" [title]="nodeStatusDisConnected"></span>
+                <!-----------------------Trade Switch------------------------>
+                <user class="w-76" style="margin: 0 !important;"></user>
+ 
+            </div>
+        </div>
+    </div>
+    <!----------------------------------------- Top Bar  ------------------------------------------>
+
+ 
+    <menubar></menubar>
+
+    <div class="flex flex-col flex-auto" >
+        <router-outlet *ngIf="true"></router-outlet>
+    </div>
+
+</div>
+
+
+
+
+ 
+<!-- ------------------------------------------------------------------------------------------------- -->
+<!-- ---------------------------------------Modal For Subscription------------------------------------ -->
+<!-- ------------------------------------------------------------------------------------------------- -->
+<wj-popup class="popover" #popup1 >
+     <h3 class="popover-title" style="font-weight: 700; border-bottom: 1px solid transparent;">
+        {{'Translation.Subscription Details' | translate}}
+        <button type="button" class="close" (click)="leave()" >&times;</button>
+      </h3>
+    <div class="popover-content">
+        <h6 class="text-center text-primary">{{remainingDaysTitle}}</h6><br>
+        <span style="display: flex; justify-content: center;">
+            <button type="button" class="btn btn-primary px-5" (click)="leave()"> OK </button>
+        </span>
+    </div>
+</wj-popup>
+<!-- ------------------------------------------------------------------------------------------------- -->
+<!-- ---------------------------------------Modal For Subscription------------------------------------ -->
+<!-- ------------------------------------------------------------------------------------------------- -->
+ 

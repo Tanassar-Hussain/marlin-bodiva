@@ -1,0 +1,241 @@
+<div class="signInRouterImg w-full overflow-y-auto" style="position: relative;">
+    <div class=" w-full h-20 mb-4" style="padding-top: 14px;">
+        <span class="flex justify-center text-primary text-2xl font-medium font-serif">{{'WELCOME' | translate}}</span>
+        <span class="flex justify-center"> <img class="w-auto h-auto" src="assets/images/auth/Underline.png"> </span>
+    </div>
+    <div class="ml-10 mr-10 border-2 border-gray-500 mb-20  p-5" style="margin-top:-10px;">
+        <span [innerHTML]="welcomeMsg" ></span>
+     
+        <!-- in english -->
+        <!-- <div>
+            <span class='mb-4'>Hello Dear <span class='text-primary'>&nbsp;{{CLIENT_FIRST_NAME}}</span>,</span>
+
+            <br><br>
+            Thank you so much for allowing us to help you with your recent account opening. We are committed to
+            providing our customers with the highest level of service and the most innovative intermediate and broker
+            products possible.
+
+            <br><br>
+            We are very glad you chose us as your financial institution and hope you will take advantage of our wide
+            variety of products, all designed to meet your specific needs.
+
+            <br>
+            For more detailed information about any of our products and services, please refer to our website,
+
+            <span class='text-primary'>{{PARTICIPANT_WEBSITE}}</span>,
+
+            or your account manager. You may contact us by phone at
+
+            <span class='text-primary'>{{PARTICIPANT_PHONE_NUMBER}}</span>&nbsp;
+
+            Please find bellow your account information detail:
+
+            <div class='row -ml-2 mb-2 mt-4'>
+                <div class='row w-full'>
+                    <div class='col-sm-4 text-primary text-right'>
+                        Client Code:
+                    </div>
+                    <div class='col-sm-4 border-b-2 border-solid border-primary' >
+                        {{CLIENT_CODE}}
+                    </div>
+                </div>
+                <div class='row w-full mt-1'>
+                    <div class='col-sm-4 text-primary text-right'>
+                        Account Type:
+                    </div>
+                    <div class='col-sm-4 border-b-2 border-solid border-primary' >
+                        {{ACCOUNT_TYPE}}
+                    </div>
+                </div>
+                <div class='row w-full mt-1'>
+                    <div class='col-sm-4 text-primary text-right'>
+                        Participant Branch:
+                    </div>
+                    <div class='col-sm-4 border-b-2 border-solid border-primary' >
+                        {{CLIENT_BRANCH}}
+                    </div>
+                </div>
+                <div class='row w-full mt-1'>
+                    <div class='col-sm-4 text-primary text-right'>
+                        Bank:
+                    </div>
+                    <div class='col-sm-4 border-b-2 border-solid border-primary' >
+                        {{CLIENT_BANK_ACCOUNT}}
+                    </div>
+                </div>
+                <div class='row w-full mt-1'>
+                    <div class='col-sm-4 text-primary text-right'>
+                        Bank Account Number:
+                    </div>
+                    <div class='col-sm-4 border-b-2 border-solid border-primary' >
+                        {{CLIENT_BANK_ACCOUNT_NUMBER}}
+                    </div>
+                </div>
+            </div>
+
+            <br>
+            Please do not hesitate to contact us, should you have any questions. We will contact you in the very near
+            future to insure you are completely satisfied with the services you have received thus far.
+            <br><br>
+            Respectfully,
+
+        </div> -->
+
+        <!-- in portuguese -->
+        <!-- <div>
+            <span class='mb-4'>Olá Querido <span class='text-primary'>&nbsp;{{CLIENT_FIRST_NAME}}</span>,</span>
+
+            <br><br>
+            Muito obrigado por nos permitir ajudá-lo com sua recente abertura de conta. Nos estamos comprometidos em
+            fornecer aos nossos clientes o mais alto nível de serviço e os produtos intermediários e corretores mais
+            inovadores possíveis.
+
+            <br><br>
+            Estamos muito satisfeitos por você ter nos escolhido como sua instituição financeira e esperamos que você
+            aproveite nossa ampla variedade de produtos, todos projetados para atender às suas necessidades específicas.
+
+            <br>
+            Para obter informações mais detalhadas sobre qualquer um de nossos produtos e serviços, consulte nosso site,
+
+            <span class='text-primary'>{{PARTICIPANT_WEBSITE}}</span>,
+
+            ou seu gerente de conta. Você pode entrar em contato conosco por telefone em
+
+            <span class='text-primary'>{{PARTICIPANT_PHONE_NUMBER}}</span>&nbsp;
+
+            Encontre abaixo os detalhes das informações da sua conta:
+
+            <div class='row -ml-2 mb-2 mt-4'>
+                <div class='row w-full'>
+                    <div class='col-sm-4 text-primary text-right'>
+                        Código do Cliente:
+                    </div>
+                    <div class='col-sm-4 border-b-2 border-solid border-primary' >
+                        {{CLIENT_CODE}}
+                    </div>
+                </div>
+                <div class='row w-full mt-1'>
+                    <div class='col-sm-4 text-primary text-right'>
+                        Tipo de Conta:
+                    </div>
+                    <div class='col-sm-4 border-b-2 border-solid border-primary' >
+                        {{ACCOUNT_TYPE}}
+                    </div>
+                </div>
+                <div class='row w-full mt-1'>
+                    <div class='col-sm-4 text-primary text-right'>
+                        Filial Participante:
+                    </div>
+                    <div class='col-sm-4 border-b-2 border-solid border-primary' >
+                        {{CLIENT_BRANCH}}
+                    </div>
+                </div>
+                <div class='row w-full mt-1'>
+                    <div class='col-sm-4 text-primary text-right'>
+                        Banco:
+                    </div>
+                    <div class='col-sm-4 border-b-2 border-solid border-primary' >
+                        {{CLIENT_BANK_ACCOUNT}}
+                    </div>
+                </div>
+                <div class='row w-full mt-1'>
+                    <div class='col-sm-4 text-primary text-right'>
+                        Número da conta de banco:
+                    </div>
+                    <div class='col-sm-4 border-b-2 border-solid border-primary' >
+                        {{CLIENT_BANK_ACCOUNT_NUMBER}}
+                    </div>
+                </div>
+            </div>
+
+            <br>
+            Por favor, não hesite em nos contatar, caso tenha alguma dúvida. Entraremos em contato com você em um futuro
+            muito próximo para garantir que você esteja completamente satisfeito com os serviços que recebeu até agora.
+            <br><br>
+            Respeitosamente,
+
+        </div> -->
+
+
+        <!-- in english by default -->
+        <!-- <div>
+            <span class="mb-4">Hello Dear <span class="text-primary">&nbsp;{{userName}}</span>,</span>
+
+            <br><br>
+            Thank you so much for allowing us to help you with your recent account opening. We are committed to
+            providing our customers with the highest level of service and the most innovative intermediate and broker
+            products possible.
+
+            <br><br>
+            We are very glad you chose us as your financial institution and hope you will take advantage of our wide
+            variety of products, all designed to meet your specific needs.
+
+            <br>
+            For more detailed information about any of our products and services, please refer to our website,
+
+            <span class="text-primary">www.primesolutions.ao</span>,
+
+            or your account manager. You may contact us by phone at
+
+            <span class="text-primary">{{phoneNumber}}</span>&nbsp;
+
+            Please find bellow your account information detail:
+
+            <div class="row -ml-2 mb-2 mt-4">
+                <div class="row w-full">
+                    <div class="col-sm-4 text-primary text-right">
+                        Client Code:
+                    </div>
+                    <div class="col-sm-4 border-b-2 border-solid border-primary" >
+                        Code
+                    </div>
+                </div>
+                <div class="row w-full mt-1">
+                    <div class="col-sm-4 text-primary text-right">
+                        Account Type:
+                    </div>
+                    <div class="col-sm-4 border-b-2 border-solid border-primary" >
+                        Code
+                    </div>
+                </div>
+                <div class="row w-full mt-1">
+                    <div class="col-sm-4 text-primary text-right">
+                        Participant Branch:
+                    </div>
+                    <div class="col-sm-4 border-b-2 border-solid border-primary" >
+                        Code
+                    </div>
+                </div>
+                <div class="row w-full mt-1">
+                    <div class="col-sm-4 text-primary text-right">
+                        Bank:
+                    </div>
+                    <div class="col-sm-4 border-b-2 border-solid border-primary" >
+                        Code
+                    </div>
+                </div>
+                <div class="row w-full mt-1">
+                    <div class="col-sm-4 text-primary text-right">
+                        Bank Account Number:
+                    </div>
+                    <div class="col-sm-4 border-b-2 border-solid border-primary" >
+                        Code
+                    </div>
+                </div>
+            </div>
+
+            <br>
+            Please do not hesitate to contact us, should you have any questions. We will contact you in the very near
+            future to insure you are completely satisfied with the services you have received thus far.
+            <br><br>
+            Respectfully,
+
+        </div> -->
+    </div>
+
+    <div id="footer" style="position:relative !important ;">
+        <span class="flex justify-end pt-2 pr-6"> <img style="width: 160px;"
+                src="assets/images/auth/infotech-briliantly-built.png" alt=""> </span>
+
+    </div>
+</div>

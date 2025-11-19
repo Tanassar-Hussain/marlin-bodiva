@@ -1,0 +1,83 @@
+.input-fields{
+    flex-basis: 70% !important; 
+    margin-left:5% !important;
+    // background-color: rgb(255, 255, 255) !important;
+    // border: 1px solid black !important;
+    
+}
+
+.input-div{
+    display: flex; align-items: center;
+}
+
+ 
+
+.subsription_accordian{
+    color: #fff !important;
+    margin-bottom: 2px;
+    border-radius: 5px;
+}
+
+
+
+.wj-input-group .wj-form-control{
+    color: black !important;
+}
+
+
+.subsription_accordian .subscription-default>.subscription-heading {
+    background-color: rgba(19, 64, 106, 0.5);
+    color: #fff;
+    margin: 5px 0px 5px 0px;
+    border-radius: 5px;
+}
+
+.subscription-panel-body {
+  //  background-color: rgba(19, 64, 106, 0.5);
+    padding: 10px;
+    border-radius: 6px;
+    margin: 5px 0px 5px 0px;
+
+}
+
+
+.subscription-heading h4 {
+    font-size: 18px; font-weight: 500;
+    text-decoration: none;
+   
+}
+
+.subscription-heading h4 a {
+    text-decoration: none;
+}
+
+.subscription-heading {
+    padding: 10px;
+}
+
+.subscription-panel-body {
+    padding: 0px;
+}
+
+.subscription-panel-body .grey_box {
+    margin-top: 0px;
+    border-radius: 0px;
+}
+
+
+.ul_borders {
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+.first_box {
+    background-color: rgba(19, 64, 106, 0.5);
+    color: #fff;
+}
+
+.check_box_subscription {
+    float: right;
+    padding: 6px 15px !important;
+    margin: -6px;
+}

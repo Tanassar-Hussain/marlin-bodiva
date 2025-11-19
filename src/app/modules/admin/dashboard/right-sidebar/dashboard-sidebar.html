@@ -1,0 +1,73 @@
+<div class="py-2 overflow-x-hidden">
+    <div class="extra-content">
+        <ng-content></ng-content>
+    </div>
+
+    <!-- <div class="flex items-center">
+        <div class="m-2 ml-4 text-xl font-bold tracking-tighter text-primary">TIPS</div>
+    </div> -->
+
+    <!-- <ng-container *ngIf="lang === 'en'">
+        <fuse-vertical-navigation
+        *ngIf="investorProfileStatus === '' && (userType !== 'PARTICIPANT' && userType !== 'PARTICIPANT ADMIN')"
+        [appearance]="'default'" [navigation]="menuDataBecomeInv" [inner]="true" [mode]="'side'"
+        [name]="'demo-sidebar-navigation'" [opened]="true"></fuse-vertical-navigation>
+
+    <fuse-vertical-navigation
+        *ngIf="investorProfileStatus !== '' && (userType !== 'PARTICIPANT' && userType !== 'PARTICIPANT ADMIN')"
+        [appearance]="'default'" [navigation]="menuDataViewDetail" [inner]="true" [mode]="'side'"
+        [name]="'demo-sidebar-navigation'" [opened]="true"></fuse-vertical-navigation>
+    </ng-container>
+
+    <ng-container  *ngIf="lang === 'pt'">
+        <fuse-vertical-navigation
+        *ngIf="investorProfileStatus === '' && (userType !== 'PARTICIPANT' && userType !== 'PARTICIPANT ADMIN')"
+        [appearance]="'default'" [navigation]="menuDataBecomeInvPT" [inner]="true" [mode]="'side'"
+        [name]="'demo-sidebar-navigation'" [opened]="true"></fuse-vertical-navigation>
+
+    <fuse-vertical-navigation
+        *ngIf="investorProfileStatus !== '' && (userType !== 'PARTICIPANT' && userType !== 'PARTICIPANT ADMIN')"
+        [appearance]="'default'" [navigation]="menuDataViewDetailPT" [inner]="true" [mode]="'side'"
+        [name]="'demo-sidebar-navigation'" [opened]="true"></fuse-vertical-navigation>
+    </ng-container> -->
+   
+
+    <!-- <fuse-vertical-navigation *ngIf="userType === 'PARTICIPANT' || userType === 'PARTICIPANT ADMIN'"  [appearance]="'default'" [navigation]="menuDataViewDetailParticipant" [inner]="true" [mode]="'side'"
+        [name]="'demo-sidebar-navigation'" [opened]="true"></fuse-vertical-navigation> -->
+
+    <div style="width:320px;">
+        <order-book-dashboard></order-book-dashboard>
+    </div>
+
+    <div class="flex">
+        <div class="containerrr">
+            <div class="box1"></div>
+            <div class="dashboardHeadings box2" style="padding-top: 6px;">{{'Translation.News & Advertisements' | translate}}</div>
+        </div>
+    </div>
+    <!-- <div>
+        <div *ngFor="let naData of naActiveDate" class="flex flex-col m-2 mt-4 w-full filter-article" style="max-width: 21rem;">
+            <div class="dashboardHeadings mb-2 text-primary leading-tight">
+                {{naData.naTitle}} 
+            </div>
+            <img class="object-cover h-30" [src]="naData.src || 'assets/images/marlin-dashboard/silver.png'"
+                alt="Card cover image">
+            <div class="mt-4 text-lg">
+                {{naData.naDetail}}
+            </div>
+            <div class="mt-4 text-lg">
+                {{naData.naWebLink}}
+            </div>
+        </div>
+    </div> -->
+
+    <!-- <div class="flex">
+        <div class="containerrr">
+            <div class="box1"></div>
+            <div class="text-lg tracking-tighter box2 pt-1">Recent News</div>
+        </div>
+    </div> -->
+    <recent-news></recent-news>
+
+
+</div>

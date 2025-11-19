@@ -1,0 +1,150 @@
+.cardContainer {
+    display: flex;
+    position: relative;
+    max-width: 60.7%;
+}
+
+@media(max-width : 1401px){
+    .cardContainer {
+        display: flex;
+        position: relative;
+        max-width: 45.7%;
+    }
+}
+
+.otherToolsContainer {
+    width: 39%;
+    justify-content: flex-end;
+}
+
+
+@media(max-width : 1401px){
+    .otherToolsContainer {
+        width: 55%;
+        justify-content: flex-end;
+    }
+}
+
+.bg-gray-darker{
+    
+        background-color: #918e8e !important;
+        color: #555555 !important;
+    
+}
+
+
+.bg-red-darker{
+    
+    background-color: #e53838 !important;
+    color: #e53838   !important;
+
+}
+
+.bg-green{
+    
+    background-color: #64BD63 !important;
+    color: #64BD63   !important;
+
+}
+
+
+
+.subscriptionText{
+    font-weight: 400;
+    font-family: 'Inter var';
+    // padding: 0px 0px;
+}
+
+.card_ {
+    display: flex;
+    left: 0;
+    background-color: #193c5d;
+    border-radius: 10px;
+    position: relative;
+    transition: 0.3s ease-out;
+
+
+}
+.card_:nth-child(n+9):nth-child(-n+100){
+    margin-left: -131.3px;
+}
+.card_:nth-child(n+1):nth-child(-n+11){
+    box-shadow:  -0.5rem 0 4rem #000000f7;
+}
+
+.card_:not(:first-child) {
+    margin-left: -30px;
+}
+
+.card_:hover ~ .card_ {
+    transform: translateX(29px);
+    position: relative;
+    transition: 0.4s ease-out;
+}
+.hvr:hover {
+    // background-color: #949eaa;
+    background-image: linear-gradient(to right, #9aa2ad, #a9aeb7);
+} 
+
+
+
+.green_circle, .red_circle {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.green_circle_bg {
+    background: #0be610;
+}
+
+.red_circle_bg{
+    background: #e60b0b;
+}
+
+
+.portfolioManagement {
+    overflow: hidden;
+    position: absolute;
+    // top: 61px;
+    // left: 359px;
+    z-index: 10040;
+
+ }
+
+
+.popover-title{
+    background: #19314b;
+    color: #f59e0b;
+}
+
+ .popover-content{
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-image: linear-gradient(#2a3b49e3, #21212b);
+    // opacity: 0.9;
+    color: #fff;
+    min-width: 270px;
+ }
+
+ .close{
+    margin-top: -5px !important;
+    color: #fff !important;
+ }
+
+ .table td {
+    border: none !important;
+}
+
+// .dropdown:hover .dropdown-menu {
+//     display: block !important;
+//     margin-top: 0; /* remove the gap so it doesn't close */
+// }
+
+
+.subscription-bar{
+    height: 5px; margin-top: 3px; border-radius: 5px;
+}
+ 

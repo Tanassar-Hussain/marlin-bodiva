@@ -1,0 +1,152 @@
+<order-new-all #newOrderAll [modalId]="'new-order-all-market'"></order-new-all>
+
+<div class="w-full" cdkScrollable>
+
+    <div id="mobile-graph-view" class="flex flex-auto  min-h-full">
+        <!-- .......................Symbol Detail.......................... -->
+        <div class="graphPagetheme mr-2 mt-4 ml-2 overflow-y-auto" style="flex: 0 1 34%;">
+            <div class="text-center mb-10">
+                <!-- <img class="mb-2 w-12 h-12 mx-auto block rounded-lg mt-10 " [src]='securityImage | async'> -->
+                <h1 class="mt-10 font-bold text-2xl text-primary">{{this.symbolCode}} <span
+                        class="text-white font-normal text-2xl italic">({{this.marketCode}})</span></h1>
+
+                <!-- <div class="text-l mb-1 mt-1">
+                    {{bondType}}
+                </div> -->
+
+                <h1 class="mt-4 mb-4 text-2xl">{{currentMarketPrice | async | number : '1.2-2'}}</h1>
+                <h1 class="mt-4 mb-0 text-xl text-lime-500" [ngStyle]="{'color': (colorOnChange | async)}">{{change |
+                    async | number : '1.2-2'}}({{changePercent | async | number : '1.2-2'}}%)</h1>
+
+
+                <div class="mt-6">
+                    <ng-container *ngIf="marketCode === 'DEBT' || marketCode === 'ETF'">
+                        <button *ngIf="userService.isAuhtorized(userService.OM_BOND_ORDER_NEW)"
+                        class="transformHover graphbtnstyle mr-5 font-medium text-sm  tracking-wider  uppercase border-green-600 border-2 text-green-600"
+                        (click)="showModalForOrder('B')">{{'Translation.Buy' | translate}}</button>
+
+                    <button *ngIf="userService.isAuhtorized(userService.OM_BOND_ORDER_NEW)"
+                        class="transformHover graphbtnstyle font-medium text-sm   tracking-wider  uppercase border-red-600 border-2 text-red-600"
+                        (click)="showModalForOrder('S')">{{'Translation.Sell' | translate}}</button>
+                    </ng-container>
+                    <ng-container *ngIf="marketCode === 'MAINBOARD'">
+                        <button *ngIf="userService.isAuhtorized(userService.OM_EQUITY_ORDER_NEW)"
+                        class="transformHover graphbtnstyle mr-5 font-medium text-sm  tracking-wider  uppercase border-green-600 border-2 text-green-600"
+                        (click)="showModalForOrder('B')">{{'Translation.Buy' | translate}}</button>
+
+                    <button *ngIf="userService.isAuhtorized(userService.OM_EQUITY_ORDER_NEW)"
+                        class="transformHover graphbtnstyle font-medium text-sm   tracking-wider  uppercase border-red-600 border-2 text-red-600"
+                        (click)="showModalForOrder('S')">{{'Translation.Sell' | translate}}</button>
+                    </ng-container>
+                  
+                </div>
+            </div>
+
+            <div>
+                <!-- <div class="ml-6 mr-4">
+                    <div class="flex justify-start text-md">
+                        <span class="text-primary">{{this.marketCode}} :</span> <span class="ml-1"
+                            [ngStyle]="{'color': activeColor}">{{marketStatus | async}}</span>
+                    </div>
+                </div> -->
+
+                <order-book-dashboard [symbolCode]="symbolCode" [marketCode]="marketCode" [marketStatus]="marketStatus | async" [isGraphComp]="isGraphComp" [inheritedSecurityDetail]="sharedOrderData">
+                </order-book-dashboard>
+            </div>
+
+        </div>
+        <!-- .......................Graph.................................. -->
+        <div class="flex flex-col flex-auto w-full  max-w-fit sm:max-w-full graphPagetheme mt-4">
+
+            <div class="flex justify-between  mr-12 border-l-2 border-t-2 border-b-2 ">
+                <button class="min-w-10 max-w-14  hover:text-primary " *ngFor="let interval of graphIntervals"
+                    (click)="setIntervalsGraph(interval.value)"
+                    [ngStyle]="{ color: interval.value == defaultCount ? '#f59e0b' : '#bfd5d6' }">
+                    <span class="">{{interval.key}}</span>
+                </button>
+
+                <div class="hidden md:block ml-auto ">
+                    <mat-label>{{'Translation.Chart Type' | translate}}</mat-label>
+                    <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript w-24 ml-2">
+                        <mat-select (selectionChange)="setChartType(viewChanger.value)" [value]="view"
+                            #viewChanger="matSelect">
+                            <mat-option *ngFor="let type of chartTypes" [value]="type.key">{{type.text}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div id="technical-indicator-k-line" class="k-line mt-4"></div>
+
+            <div class="flex justify-between mt-2 pl-1 pr-10 text-gray-500 text-lg font-bold">
+                <div>
+                    {{'Translation.Today'| translate}}
+                    <br>
+                    <span
+                        [ngClass]="{'text-green-600': periodicData.todayDir === 'up', 'text-red-600': periodicData.todayDir === 'down'}">{{periodicData.today
+                        | number : '1.2-2'}}%</span>
+                </div>
+                <div>
+                    7 {{'Translation.Days'| translate}}
+                    <br>
+                    <span
+                        [ngClass]="{'text-green-600': periodicData.days7Dir === 'up', 'text-red-600': periodicData.days7Dir === 'down'}">{{periodicData.days7
+                        | number : '1.2-2'}}%</span>
+                </div>
+                <div>
+                    30 {{'Translation.Days'| translate}}
+                    <br>
+                    <span
+                        [ngClass]="{'text-green-600': periodicData.days30Dir === 'up', 'text-red-600': periodicData.days30Dir === 'down'}">{{periodicData.days30
+                        | number : '1.2-2'}}%</span>
+                </div>
+                <div>
+                    90 {{'Translation.Days'| translate}}
+                    <br>
+                    <span
+                        [ngClass]="{'text-green-600': periodicData.days90Dir === 'up', 'text-red-600': periodicData.days90Dir === 'down'}">{{periodicData.days90
+                        | number : '1.2-2'}}%</span>
+                </div>
+                <div>
+                    1 {{'Translation.Year'| translate}}
+                    <br>
+                    <span
+                        [ngClass]="{'text-green-600': periodicData.year1Dir === 'up', 'text-red-600': periodicData.year1Dir === 'down'}">{{periodicData.year1
+                        | number : '1.2-2'}}%</span>
+                </div>
+                <div>
+                    {{'Translation.All'| translate}}
+                    <br>
+                    <span
+                        [ngClass]="{'text-green-600': periodicData.allDir === 'up', 'text-red-600': periodicData.allDir === 'down'}">{{periodicData.all
+                        | number : '1.2-2'}}%</span>
+                </div>
+            </div>
+
+            <div class="w-full mt-8">
+                <trading-dashboard-tabs (bondType)="setBondType($event)" [inheritedSecurityCode]="symbolCode">
+                </trading-dashboard-tabs>
+            </div>
+        </div>
+
+        <!-- ....................... Recent News.......................... -->
+        <div style="flex: 0 1 35%;" class=" ml-2 -mr-2 mt-2 graphPagetheme max-w-80 overflow-y-auto">
+            <!-- <order-book-shared></order-book-shared> -->
+            <div class="flex">
+                <div class="containerrr">
+                    <div class="box1"></div>
+                    <div class="dashboardHeadings box2" style="padding-top: 6px;">{{'Translation.News & Advertisements'
+                        | translate}}</div>
+                </div>
+            </div>
+            <div class="graphPagetheme " style="margin-top: 5px;">
+                <div class="mr-4">
+                    <recent-news></recent-news>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>

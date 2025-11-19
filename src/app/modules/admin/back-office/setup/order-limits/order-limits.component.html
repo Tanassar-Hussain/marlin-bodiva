@@ -1,0 +1,134 @@
+<section class="widget" widget="">
+    <header>
+        <h3><span class="fw-semi-bold">{{ 'Translation.Order Limits' | translate }}</span></h3>
+        <div class="other_btns">
+            <button (click)="addUpdateOrderLimit.showModal(null, false)" class="add_new_btn" data-backdrop="static"
+                id="btnNew" title="Add" type="button"><i aria-hidden="true" class="fa fa-plus"></i></button>
+            <a (click)="onRefresh()" class="mt-3">
+                <i aria-hidden="true" class="fa fa-refresh"></i>
+            </a>
+            <button class="filter_btn mx-2 ml-3" data-target="#filter_box" data-toggle="collapse">
+                <i aria-hidden="true" class="fa fa-filter"></i></button>
+        </div>
+    </header>
+
+    <div class="collapse in" id="filter_box">
+        <div class="row mt-2">
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label>{{ 'Translation.Participant' | translate }}</label>
+                    <div class="input-group">
+                        <wj-auto-complete [(ngModel)]="participantId" [headerPath]="'participantCode'"
+                            [isDisabled]="!isUserAdmin" [isEditable]="false" [isRequired]="false"
+                            [itemsSource]="participants" class="wijmo_style" displayMemberPath="participantCode"
+                            selectedValuePath="participantId"></wj-auto-complete>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-1 fields_box">
+                <div class="filter-buttons">
+                    <button (click)="onRefresh(true)" class="btn btn-success btn-sm" data-target="#filter_box"
+                        title="Search" type="submit">
+                        <span class="fa fa-search"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table_container">
+        <wj-flex-grid #flex [autoSizeMode]="'Headers'" [headersVisibility]="'Column'" [isReadOnly]="true"
+            [itemsSource]="orderLimits" [selectionMode]="'Row'" style="height: 550px;">
+            <wj-flex-grid-column [align]="'left'" [header]="'Translation.Order Limit Type' | translate" [minWidth]="30" [width]="'0.5*'">
+                <ng-template [cellType]="'Cell'" let-item="item" wjFlexGridCellTemplate>
+                    {{ item?.clientId ? 'Client Wise' : 'Default' }}
+                </ng-template>
+            </wj-flex-grid-column>
+
+            <wj-flex-grid-column [align]="'left'" [binding]="'participantCode'" [header]="'Translation.Participant' | translate" [minWidth]="30"
+                [width]="'0.5*'"></wj-flex-grid-column>
+
+            <wj-flex-grid-column [align]="'left'" [header]="'Translation.Client Code' | translate" [minWidth]="30" [width]="'0.5*'">
+                <ng-template [cellType]="'Cell'" let-item="item" wjFlexGridCellTemplate>
+                    {{ item?.clientCode ? item.clientCode : '-' }}
+                </ng-template>
+            </wj-flex-grid-column>
+
+            <wj-flex-grid-column [align]="'left'" [header]="'Translation.Client Name' | translate" [minWidth]="30" [width]="'0.5*'">
+                <ng-template [cellType]="'Cell'" let-item="item" wjFlexGridCellTemplate>
+                    {{ item?.clientName ? item.clientName : '-' }}
+                </ng-template>
+            </wj-flex-grid-column>
+
+            <wj-flex-grid-column [align]="'left'" [header]="'Translation.Exchange' | translate" [minWidth]="30" [width]="'0.5*'">
+                <ng-template [cellType]="'Cell'" let-item="item" wjFlexGridCellTemplate>
+                    {{ exchangeCode }}
+                </ng-template>
+            </wj-flex-grid-column>
+
+            <wj-flex-grid-column [align]="'left'" [header]="'Translation.Applicable' | translate" [minWidth]="30" [width]="'0.5*'">
+                <ng-template [cellType]="'Cell'" let-item="item" wjFlexGridCellTemplate>
+                    {{ item?.applicable === 'O' ? 'On Every Order' : 'Daily' }}
+                </ng-template>
+            </wj-flex-grid-column>
+
+            <wj-flex-grid-column [align]="'left'" [binding]="'normBuyLimit'" [header]="'Translation.Normal Buy Limit' | translate"
+                [minWidth]="30" [width]="'0.5*'"></wj-flex-grid-column>
+
+            <wj-flex-grid-column [align]="'left'" [binding]="'normSellLimit'" [header]="'Translation.Normal Sell Limit' | translate"
+                [minWidth]="30" [width]="'0.5*'"></wj-flex-grid-column>
+
+            <!-- <wj-flex-grid-column [align]="'left'" [binding]="'negoBuyLimit'" [header]="'Translation.Nego Buy Limit' | translate" [minWidth]="30"
+                [width]="'0.5*'"></wj-flex-grid-column>
+
+            <wj-flex-grid-column [align]="'left'" [binding]="'negoSellLimit'" [header]="'Translation.Nego Sell Limit' | translate"
+                [minWidth]="30" [width]="'0.5*'"></wj-flex-grid-column> -->
+
+            <wj-flex-grid-column [align]="'center'" [header]="'Common.Action' | translate" [minWidth]="30"
+                [width]="'0.5*'">
+                <ng-template [cellType]="'Cell'" let-item="item" wjFlexGridCellTemplate>
+                    <img (click)="addUpdateOrderLimit.showModal(item, true)" class="gridImg cursor-pointer"
+                        data-backdrop="static" data-target="#add_new" data-toggle="modal"
+                        src="assets/img/edit_orange.png" title="{{'Translation.Edit' | translate}}" />
+                        <img   class="gridImg cursor-pointer mx-2"  (click)="showDeleteDialog()"
+                        src="assets/img/cross_orange.png" title="{{'Translation.Delete' | translate}}" />
+                </ng-template>
+            </wj-flex-grid-column>
+        </wj-flex-grid>
+    </div>
+
+    <div class="row"></div>
+    <div class="btn-group col-xs-12 align-right">
+        <!-- Paginator -->
+        <wj-collection-view-pager [cv]="flex?.collectionView"></wj-collection-view-pager>
+        <!-- page size -->
+        <wj-menu [(value)]="pageSize" [header]="'Common.Page Size' | translate">
+            <wj-menu-item [value]="0">{{ 'Common.No Paging' | translate }}</wj-menu-item>
+            <wj-menu-item [value]="5">5 {{ 'Common.items' | translate }}</wj-menu-item>
+            <wj-menu-item [value]="10">10 {{ 'Common.items' | translate }}</wj-menu-item>
+            <wj-menu-item [value]="20">20 {{ 'Common.items' | translate }}</wj-menu-item>
+            <wj-menu-item [value]="30">30 {{ 'Common.items' | translate }}</wj-menu-item>
+            <wj-menu-item [value]="50">50 {{ 'Common.items' | translate }}</wj-menu-item>
+            <wj-menu-item [value]="100">100 {{ 'Common.items' | translate }}</wj-menu-item>
+        </wj-menu>
+    </div>
+</section>
+
+<app-add-update-order-limit #addUpdateOrderLimit (refresh)="onRefresh()"></app-add-update-order-limit>
+
+<dialog-cmp #dialogCmp></dialog-cmp>
+
+
+<wj-popup class="modal-dialog grey_Dialog" #deleteDialog  >
+    <div class="modal-content">
+      <div class="modal-body">
+        <h2 class="page-title"> {{ 'Translation.Confirmation Dialog' | translate }}</h2>
+        <p>{{'Translation.Are you sure to delete the record' | translate}}?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success wj-hide mx-1" style="outline:black;" (click)="deleteOrdersLimits()" >{{ 'Common.Yes' | translate }}</button>
+        <button type="button" class="btn btn-default wj-hide mx-1" style="outline:black;"  >{{ 'Common.No' | translate }}</button>
+      </div>
+    </div>
+  </wj-popup>

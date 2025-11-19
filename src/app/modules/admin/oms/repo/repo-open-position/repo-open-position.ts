@@ -1,0 +1,458 @@
+import { Component, Inject, ViewEncapsulation, ViewChild, Input, Output, EventEmitter } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { AppConstants, AppUtility } from 'app/app.utility';
+
+import * as wjcGrid from '@grapecity/wijmo.grid';
+import * as wjcCore from '@grapecity/wijmo';
+import * as wjcInput from '@grapecity/wijmo.input';
+import { DialogCmpReports } from '../../reports/dialog-cmp-reports';
+import { RepoBondOrderComponent } from '../repo-order/repo-bond-order/repo-bond-order';
+import { CancelOrder } from 'app/models/order-cancel';
+import { AuthService2 } from 'app/services/auth2.service';
+import { FuseLoaderScreenService } from '@fuse/services/splash-screen/loader-screen.service';
+import { ListingService } from 'app/services-oms/listing-oms.service';
+import { OrderService } from 'app/services-oms/order-oms.service';
+import { ToastrService } from 'ngx-toastr';
+import { AuthService } from 'app/services-oms/auth-oms.service';
+import { OrderTypes } from 'app/models/order-types';
+import { Order } from 'app/models/order';
+import { UsersOmsReports } from 'app/models/users-oms-reports';
+import { Router } from '@angular/router';
+
+@Component({
+    selector: 'repo-open-position',
+    templateUrl: './repo-open-position.html',
+})
+
+export class RepoOpenPositionComponent {
+
+    lang: string;
+    
+    filterColumns = ['assetClass', 'symbol', 'side', 'price', 'quantity', 'settlementAmount', 'sellerAccount', 'sellerBroker', 'sellerCustodian', 'sellerUser',
+    'buyerAccount', 'buyerBroker', 'buyerCustodian', 'buyerUser', 'initiator', 'status'];
+
+ 
+userType: string;
+private _pageSize = 0;
+private _pageSize2 = 0;
+dataInitiatedByMe: any = [];
+dataInitiatedForMe: any = [];
+traders: any[] = [];
+errorMsg: string = '';
+data: any = [];
+data_temp: any = [];
+assetclass = AppConstants.ASSET_CLASS_ID_BONDS
+modal = true;
+
+@ViewChild('flexGrid', { static: false }) flexGrid: wjcGrid.FlexGrid;
+@ViewChild('flexGrid2', { static: false }) flexGrid2: wjcGrid.FlexGrid;
+@ViewChild(DialogCmpReports) dialogCmp: DialogCmpReports;
+@ViewChild(RepoBondOrderComponent, { static: false }) repoBondOrderComponent: RepoBondOrderComponent;
+@ViewChild('orderCancleDlg', { static: false }) orderCancleDlg: wjcInput.Popup;
+statusMsg: string;
+cancleRecord: any;
+orderCancel: CancelOrder;
+public loggedInBroker: string = AppConstants.participantCode;
+public loggedInUsername: string = AppConstants.username;
+todayDateString : any = new Date().toDateString();
+
+
+constructor(private translate: TranslateService, public authService: AuthService2, private splash: FuseLoaderScreenService, private listingSvc: ListingService, 
+    private orderSvc: OrderService, private toast: ToastrService, public authServiceOMS: AuthService, public router : Router) {
+
+    //_______________________________for ngx_translate______________________________________________
+
+    this.lang = localStorage.getItem("lang");
+    if (this.lang == null) { this.lang = 'en' }
+    this.translate.use(this.lang)
+    //______________________________for ngx_translate_______________________________________________
+
+
+   
+
+}
+
+
+
+
+
+// -------------------------------------------------------------------------
+get pageSize1(): number {
+    return this._pageSize;
+}
+// -------------------------------------------------------------------------
+set pageSize1(value: number) {
+    if (this._pageSize !== value) {
+        this._pageSize = value;
+        if (this.flexGrid) {
+            (<wjcCore.IPagedCollectionView>this.flexGrid.collectionView).pageSize = value;
+        }
+    }
+}
+// -------------------------------------------------------------------------
+// -------------------------------------------------------------------------
+get pageSize2(): number {
+    return this._pageSize2;
+}
+// -------------------------------------------------------------------------
+set pageSize2(value: number) {
+    if (this._pageSize2 !== value) {
+        this._pageSize2 = value;
+        if (this.flexGrid2) {
+            (<wjcCore.IPagedCollectionView>this.flexGrid2.collectionView).pageSize = value;
+        }
+    }
+}
+// -------------------------------------------------------------------------
+
+
+ngOnInit() {
+
+    if (this.userType === AppConstants.USER_TYPE_PARTICIPANT_CODE || this.userType === AppConstants.USER_TYPE_PARTICIPANT_ADMIN_CODE) {
+        this.loadTraders();
+    }
+    else
+        this.getEventLog('', true, true);
+
+
+    this.orderCancel = new CancelOrder();
+    this.loggedInBroker = AppConstants.participantCode;
+    this.loggedInUsername = AppConstants.username;
+    
+
+}
+// -------------------------------------------------------------------------
+
+
+ngAfterViewInit(): void {
+    this.authServiceOMS.socket.on('order_confirmation', (dataorderConfirmation) => {   this.updateorderConfirmation(dataorderConfirmation); });
+}
+
+
+public updateorderConfirmation = (data) => {
+     
+    if(data.market === AppConstants.MARKET_TYPE_REPO_ && data.state !== 'filled' && this.router.url === '/repo/repo-open-position'){
+        if (this.userType === AppConstants.USER_TYPE_PARTICIPANT_CODE || this.userType === AppConstants.USER_TYPE_PARTICIPANT_ADMIN_CODE) {
+            this.loadTraders();
+        }
+        else
+            this.getEventLog('', true , false);
+    }
+}
+
+
+loadTraders(): void {
+     this.splash.show();
+    this.listingSvc.getUserList(AppConstants.participantId).subscribe(
+        users => {
+            this.splash.hide();
+            if (AppUtility.isEmptyArray(users)) {
+                this.errorMsg = AppConstants.MSG_NO_DATA_FOUND;
+                return;
+            }
+            this.traders = [];
+            let u: any = new Object();
+            u.userName = AppConstants.loginName;
+            u.email = AppConstants.username;
+            this.traders.push(u);
+            this.traders[0].selected = true;
+            this.traders[0].$checked = true;
+            for (let i = 1; i <= users.length; i++) {
+                this.traders[i] = users[i - 1];
+                if (this.traders[i].userName === AppConstants.loginName) {
+                    this.traders[i].selected = true;
+                    this.traders[i].$checked = true;
+                }
+            }
+
+            this.getEventLog('', true , false);
+        },
+        error => {
+            this.splash.hide();
+            this.errorMsg = <any>error;
+            this.dialogCmp.statusMsg = this.errorMsg;
+            this.dialogCmp.showAlartDialog('Error');
+        });
+}
+
+
+// -------------------------------------------------------------------------
+
+getEventLog(model: any, isValid: boolean , spinner : boolean): void {
+    this._pageSize = 0;
+    this._pageSize2 = 0;
+
+    let usersOmsReports: UsersOmsReports = null;
+    if (this.userType === AppConstants.USER_TYPE_PARTICIPANT_CODE || this.userType === AppConstants.USER_TYPE_PARTICIPANT_ADMIN_CODE) {
+
+        usersOmsReports = new UsersOmsReports();
+        for (let i = 0; i < this.traders.length; i++) {
+            usersOmsReports.users[i] = this.traders[i].email;
+        }
+        usersOmsReports.symbolType = AppConstants.SYMBOL_TYPE_REPO;
+        usersOmsReports.marketType = AppConstants.MARKET_TYPE_REPO;
+
+    } else {
+
+        usersOmsReports = new UsersOmsReports();
+        console.log("event log, User name: " + AppConstants.username);
+        usersOmsReports.users[0] = AppConstants.username
+        usersOmsReports.symbolType = AppConstants.SYMBOL_TYPE_REPO;
+        usersOmsReports.marketType = AppConstants.MARKET_TYPE_REPO;
+    }
+    AppUtility.printConsole("userOmsReports: " + usersOmsReports);
+   // if(spinner){
+        this.splash.show();
+   // }
+   
+    this.orderSvc.getEventLog(usersOmsReports).subscribe(
+        data => {
+             
+            this.splash.hide();
+            this.updateData(data);
+        },
+        error => {
+            this.splash.hide();
+            this.errorMsg = <any>error;
+        });
+}
+
+// -------------------------------------------------------------------------
+
+updateData(eventLog): void {
+    this.data = [];
+    this.data_temp = [];
+    let orders = eventLog.orders;
+
+    if (orders == null) { return; }
+    for (let i = 0; i < orders.length; i++) {
+
+        if (orders[i].order_state !== 'partial_filled' && orders[i].order_state !== 'filled' && orders[i].repo_leg === 2) {
+            Order.setStuffBasedOnType(orders[i], orders[i]);
+            if (orders[i].order_state === 'submitted') {
+                orders[i].filled_volume = '0';
+                orders[i].remaining_volume = orders[i].volume;
+            }
+            if (orders[i].order_state === 'canceled') {
+                orders[i].remaining_volume = orders[i].volume;
+                orders[i].volume = orders[i].actual_volume
+            }
+            orders[i].state_time = wjcCore.Globalize.formatDate(new Date(orders[i].state_time), AppConstants.DATE_TIME_FORMAT);
+            orders[i].type = OrderTypes.getOrderTypeViewStr(orders[i].type);
+            orders[i].order_state = AppUtility.ucFirstLetter(orders[i].order_state);
+            orders[i].order_no = orders[i].order_no.toString();
+            if (AppUtility.isValidVariable(orders[i].ticket_no)) {
+                orders[i].ticket_no = orders[i].ticket_no.toString();
+            }
+            orders[i].volume = (eventLog.orders[i].volume > 0) ? wjcCore.Globalize.format(eventLog.orders[i].volume, 'n0') : '';
+            orders[i].price = (Number(eventLog.orders[i].price) > 0) ? eventLog.orders[i].price : '';
+            orders[i].trigger_price = (Number(eventLog.orders[i].trigger_price) > 0) ? eventLog.orders[i].trigger_price : '';
+            this.data_temp.push(orders[i]);
+        }
+
+
+    }
+
+
+    this.data = this.data_temp.sort((n1, n2) => new Date(n1.state_time).getTime() - new Date(n2.state_time).getTime());
+    //for duplicates and initiate / accept / cancle = latest  repeated order_number should be selected
+    let uniqueData = this.data.filter((v, i, array) => array.findLastIndex(v2 => (v2.order_no === v.order_no)) === i)
+
+    this.data = uniqueData
+
+    let byMe = []
+    let forMe = []
+    this.data.map(a => {
+        if (a.order_type == 'negotiated' && a.asset_id == AppConstants.ASSET_CLASS_ID_BONDS) {
+
+            if (a.order_state === 'Canceled' || a.order_state === 'Rejected' || a.order_state === 'rejected' || a.order_state === 'canceled') {
+                a.negotiated_order_state = a.order_state
+            }
+            // ................................settingDataForCancel......................................
+            a.is_negotiated = true
+            a.counter_broker_code = a.counter_broker
+            a.counter_client_code = ''
+            a.counter_user_id = 0
+            a.custodian = ''
+
+            if(!AppUtility.isEmpty(a.yield)){
+                var purifiedYield = a.yield.replace(',', '')
+                a.yield = Number(purifiedYield)
+            }
+            // ................................settingDataForCancel......................................
+
+            a.assetClass = AppConstants.ASSET_CODE_BONDS
+            a.act_order_no = a.order_no
+            
+            if (AppConstants.username == a.counter_username) {
+                a.act_order_no = a.counter_order_no
+            }
+            if (a.side == 'buy') {
+                a.buyerAccount = a.actual_client_code;
+                a.buyerBroker = a.actual_broker_code;
+                a.buyerCustodian = ''
+                a.buyerUser = a.username
+                a.initiator = a.username
+
+                if (a.username === "dummyuser@infotechgroup.com") {
+                    a.buyerUser = ""
+                    a.initiator = ""
+                }
+
+                a.sellerAccount = a.actual_counter_client_code;
+                a.sellerBroker = a.actual_counter_broker_code;
+                a.sellerCustodian = ''
+                a.sellerUser = a.counter_username
+
+                if (a.counter_username === "dummyuser@infotechgroup.com") {
+                    a.sellerUser = ""
+                }
+
+                if (AppConstants.CUSTODIAN_MODEL) {
+                    if (a.actual_custodian_code != undefined && a.actual_custodian_code.length > 0)
+                        a.buyerCustodian = a.actual_custodian_code
+
+                    if (a.actual_counter_custodian_code != undefined && a.actual_counter_custodian_code.length > 0)
+                        a.sellerCustodian = a.actual_counter_custodian_code
+                }
+            }
+            if (a.side == 'sell') {
+                a.sellerAccount = a.actual_client_code;
+                a.sellerBroker = a.actual_broker_code;
+                a.sellerCustodian = ''
+                a.sellerUser = a.username
+                a.initiator = a.username
+
+                if (a.username === "dummyuser@infotechgroup.com") {
+                    a.sellerUser = ""
+                    a.initiator = ""
+                }
+
+                a.buyerAccount = a.actual_counter_client_code;
+                a.buyerBroker = a.actual_counter_broker_code;
+                a.buyerCustodian = ''
+                a.buyerUser = a.counter_username
+
+                if (a.counter_username === "dummyuser@infotechgroup.com") {
+                    a.buyerUser = ""
+                }
+
+                if (AppConstants.CUSTODIAN_MODEL) {
+                    if (a.actual_custodian_code != undefined && a.actual_custodian_code.length > 0)
+                        a.sellerCustodian = a.actual_custodian_code
+
+                    if (a.actual_counter_custodian_code != undefined && a.actual_counter_custodian_code.length > 0)
+                        a.buyerCustodian = a.actual_counter_custodian_code
+                }
+            }
+
+            if (a.negotiated_order_state === "Accept") {
+                a.negotiated_order_state = 'Accepted'
+            }
+            if (a.negotiated_order_state === "Reject") {
+                a.negotiated_order_state = 'Rejected'
+            }
+
+
+            if (a.username == AppConstants.username && (a.negotiated_order_state !== 'canceled' && a.negotiated_order_state !== 'Canceled')) {
+                byMe.push(a)
+            }
+            if (a.counter_username == AppConstants.username && (a.negotiated_order_state !== 'canceled' && a.negotiated_order_state !== 'Canceled')) {
+                forMe.push(a)
+            }
+        }
+    })
+
+    this.dataInitiatedByMe = byMe;
+    if(AppUtility.isValidVariable(forMe) && !AppUtility.isEmptyArray(forMe)){
+        forMe.map((element : any) => {
+           if(element.repo_leg === 2 && element.repo_type === 'BuyBack'){
+              element.counter_side = 'sell';
+           }else if(element.repo_leg === 2 && element.repo_type === 'SellBack'){
+              element.counter_side = 'buy';
+           }
+        })
+     }
+
+
+    this.dataInitiatedForMe = forMe;
+}
+
+showCancelDialog(dlg: wjcInput.Popup) {
+    if (dlg) {
+        let inputs = <NodeListOf<HTMLInputElement>>dlg.hostElement.querySelectorAll('input');
+        for (let i = 0; i < inputs.length; i++) {
+            if (inputs[i].type !== 'checkbox') {
+                inputs[i].value = '';
+            }
+        }
+
+        dlg.modal = this.modal;
+        dlg.hideTrigger = dlg.modal ? wjcInput.PopupTrigger.None : wjcInput.PopupTrigger.Blur;
+
+        dlg.show();
+    }
+}
+//...........................................................................
+cancelOrder(payLoad) {
+
+    if (payLoad.negotiated_order_state === 'Initiate') {
+        this.statusMsg = AppUtility.orderConfirmationMsg(payLoad, 'Cancel');
+        let selectedOrder = payLoad
+        selectedOrder.order_no = selectedOrder.order_no.replace(',', '');
+        selectedOrder.type_ = selectedOrder.type_.toLowerCase();
+        selectedOrder.type = selectedOrder.type_.toLowerCase();
+
+        selectedOrder.settlementValue = (AppUtility.isEmpty(selectedOrder.settlement_amount) ? 0 : Number(selectedOrder.settlement_amount));
+
+        if (typeof (selectedOrder.volume) === 'string') {
+            var purifiedVol = selectedOrder.volume.replace(',', '')
+            selectedOrder.volume = Number(purifiedVol)
+        }
+        this.orderCancel.order = selectedOrder;
+        this.showCancelDialog(this.orderCancleDlg);
+    }
+}
+
+// -----------------------------------------------------------------
+
+onAlertYes(): void {
+    this.splash.show();
+    this.orderSvc.cancelOrder(this.orderCancel).subscribe((res) => {
+        this.splash.hide();
+    }, error => {
+        this.splash.hide();
+    });
+}
+
+onAlertCancel(): void {
+    // this.getEventLog('', true , true);
+}
+
+// --------------------------------------------------------------
+
+
+
+public isNotDatesSame = (date) => {
+     
+    this.todayDateString = new Date().toDateString();
+    let itemDate = new Date(date).toDateString();
+    if(this.todayDateString == itemDate){
+        return false;
+    }else{
+        return true;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+}

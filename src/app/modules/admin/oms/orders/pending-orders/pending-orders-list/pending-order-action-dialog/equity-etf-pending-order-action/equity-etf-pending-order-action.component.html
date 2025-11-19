@@ -1,0 +1,320 @@
+<div class="row equity-etf-order-action">
+    <div class="col-md-12">
+        <form [formGroup]="orderForm" role="form" class="form-horizontal form-label-left parsleyjs"
+              method="post" data-parsley-priority-enabled="false" id="{{modalId}}"
+              novalidate>
+            <div class="modal-body" style="padding: 10px 0;">
+                <alert *ngIf="alertMessage.message && alertMessage.type === 'success'" [type]="'success alert-sm'" (close)="onAlertClose()" dismissible="true">
+                    <div [innerHTML]="alertMessage.message"></div>
+                </alert>
+                <alert *ngIf="alertMessage.message && alertMessage.type === 'danger'" [type]="'danger alert-sm'" (close)="onAlertClose()" dismissible="true">
+                    <div [innerHTML]="alertMessage.message"></div>
+                </alert>
+                <div class="col-sm-12" style="margin-bottom:10px; margin-top: -10px;">
+                    <div [class.stock_box_sell]="order.side === 'sell'"
+                         [class.stock_box_buy]="order.side === 'buy'"
+                         [class.stock_box]="order.side === '' || order.side === undefined">
+                        <div class="row stock_header">
+                            <div class="col-sm-6">
+                                <h3><b>{{ order.symbol }}</b></h3>
+                            </div>
+                            <div *ngIf="order.symbol.length > 0" class="col-sm-3"
+                                 style="text-align:left;">
+                                <h3 *ngIf="symbolStats.last_trade_price !== '0.0000'">{{ symbolStats.last_trade_price }}</h3>
+                                <h3 *ngIf="symbolStats.last_trade_price === '0.0000'">{{ symbolStats.last_day_close_price }}</h3>
+                            </div>
+                            <div *ngIf="order.symbol.length > 0" class="col-sm-3"
+                                 style="text-align:left;"> {{ symbolStats.net_change | number:'1.2-2' }}
+                                <span *ngIf="symbolStats.net_change > 0"><i
+                                    class="fa fa-arrow-up arrow-up-clr"></i></span>
+                                <span *ngIf="symbolStats.net_change < 0"><i
+                                    class="fa fa-arrow-down arrow-down-clr"></i></span>
+                            </div>
+                        </div>
+                        <div class="row stock_rates">
+                            <div class="col-sm-3">
+                                <div><b>LDCP</b></div>
+                                {{ symbolStats.last_day_close_price }}
+                            </div>
+                            <div class="col-sm-3">
+                                <div><b>{{ 'Translation.High' | translate }}</b></div>
+                                {{ symbolStats.high }}
+                            </div>
+                            <div class="col-sm-3">
+                                <div><b>{{ 'Translation.Low' | translate }}</b></div>
+                                {{ symbolStats.low }}
+                            </div>
+                            <div class="col-sm-3">
+                                <div><b>{{ 'Translation.Turnover' | translate }}</b></div>
+                                {{ symbolStats.turn_over }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>{{ 'Translation.Order No' | translate }}.</label>
+                            <div class="input-group">
+                                <wj-input-mask id="orderNo" [isDisabled]="true"
+                                               formControlName="order_no">
+                                </wj-input-mask>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>{{ 'Translation.Security' | translate }}</label>
+                            <div class="input-group">
+                                <wj-input-mask id="symbol" [isDisabled]="true" formControlName="symbol">
+                                </wj-input-mask>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>{{ 'Translation.Volume' | translate }}
+                                <span class="quantitylabels mx-0"
+                                      (click)="orderForm.controls['volume'].setValue(500)"
+                                      [class.quantitylabelsBG]="orderForm.controls['volume'].value == 500"
+                                      [class.disabled]="orderForm.controls['volume'].disabled">500</span>
+                                <span class="quantitylabels mx-0"
+                                      (click)="orderForm.controls['volume'].setValue(1000)"
+                                      [class.quantitylabelsBG]="orderForm.controls['volume'].value == 1000"
+                                      [class.disabled]="orderForm.controls['volume'].disabled">1000</span>
+                                <span class="quantitylabels mx-0"
+                                      (click)="orderForm.controls['volume'].setValue(5000)"
+                                      [class.quantitylabelsBG]="orderForm.controls['volume'].value == 5000"
+                                      [class.disabled]="orderForm.controls['volume'].disabled">5000</span>
+                            </label>
+                            <div class="input-group">
+                                <wj-input-number
+                                    (textChanged)="onVolumePriceChange()"
+                                    id="volume"
+                                    formControlName="volume"
+                                    [format]="'n0'"
+                                    maxlength="10"
+                                    [max]="999999999" [min]="0"
+                                    [isDisabled]="true"
+                                    required>
+                                </wj-input-number>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>{{ 'Translation.Price' | translate }}</label>
+                            <div class="input-group">
+                                <wj-input-number
+                                    (textChanged)="onVolumePriceChange()"
+                                    id="price"
+                                    formControlName="price_"
+                                    [format]="'n4'"
+                                    [max]="999999.9999"
+                                    [min]="0"
+                                    [isDisabled]="true"
+                                    required>
+                                </wj-input-number>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>{{ 'Translation.Value' | translate }}</label>
+                            <div class="input-group">
+                                <wj-input-number id="orderValue" formControlName="value"
+                                                 [isDisabled]="true" [format]="'n4'">
+                                </wj-input-number>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>{{ 'Translation.Client' | translate }}</label>
+                            <div class="input-group">
+                                <wj-input-mask id="account" formControlName="account" [required]="false"
+                                               [isDisabled]="true">
+                                </wj-input-mask>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4"
+                         *ngIf="userType === 'PARTICIPANT' || userType === 'PARTICIPANT ADMIN'">
+                        <div class="form-group">
+                            <label>{{ 'Translation.Trader' | translate }}</label>
+                            <div class="input-group">
+                                <wj-input-mask id="trader" formControlName="username" [required]="false"
+                                               [isDisabled]="true">
+                                </wj-input-mask>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>{{ 'Translation.Type' | translate }}</label>
+                            <div class="input-group">
+                                <wj-input-mask id="orderType" formControlName="type_"
+                                               [isDisabled]="true">
+                                </wj-input-mask>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="order?.type_ === 'SL' || order?.type_ === 'SM'" class="col-sm-4">
+                        <div class="form-group">
+                            <label>{{ 'Translation.Trigger Price' | translate }}</label>
+                            <div class="input-group">
+                                <wj-input-number id="triggerPrice" formControlName="triggerPrice_"
+                                                 [max]="100000"
+                                                 [min]="0" [isDisabled]="true" [format]="'n4'"
+                                                 [isRequired]="false">
+                                </wj-input-number>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div *ngIf="order?.type_ === 'Limit'" class="col-sm-4">
+                        <div class="form-group">
+                            <label>TIF {{ 'Translation.Option' | translate }}</label>
+                            <div class="input-group">
+                                <wj-input-mask id="tifOption" formControlName="tifOption"
+                                               [isDisabled]="true">
+                                </wj-input-mask>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4"
+                         *ngIf="order?.type_ === 'Limit' && (order?.tifOption === 'GTD')">
+                        <div class="form-group">
+                            <label>{{ 'Translation.Good Till Date' | translate }}</label>
+                            <div class="input-group">
+                                <wj-input-date id="gtd" formControlName="gtd" class="wijmo_style"
+                                               [format]="dateFormat"
+                                               [mask]="'0000-00-00'"
+                                               [isDisabled]="true"
+                                               [showYearPicker]="false">
+                                </wj-input-date>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="order?.type_ === 'Limit' && order?.tifOption === 'DO'" class="col-sm-4">
+                        <div class="form-group">
+                            <label> {{ 'Translation.Qualifier' | translate }}</label>
+                            <div class="input-group">
+                                <wj-input-mask id="qualifier" formControlName="qualifier"
+                                               [isDisabled]="true">
+                                </wj-input-mask>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        *ngIf="order?.type_ === 'Limit' && order?.tifOption === 'DO' && order?.qualifier === 'HO'"
+                        class="col-sm-4">
+                        <div class="form-group">
+                            <label>Disc. {{ 'Translation.Quantity' | translate }}</label>
+                            <div class="input-group">
+                                <wj-input-number id="discQuantity"
+                                                 formControlName="disclosedVolume"
+                                                 [max]="999999999"
+                                                 [min]="0"
+                                                 maxlength="10"
+                                                 [format]="'n0'"
+                                                 [isDisabled]="true">
+                                </wj-input-number>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <ng-container *ngIf="action === pendingOrderAction.REJECT">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>{{ 'Translation.Comment' | translate }}s  <span class="validation">*</span></label>
+                                <textarea
+                                    class="input-group"
+                                    formControlName="comments"
+                                    rows="5"
+                                    placeholder="{{ 'Translation.Comment' | translate }}s" style="width: 100%"></textarea>
+                            </div>
+                            <div *ngIf="orderForm.controls['comments'].hasError('required')" [hidden]="orderForm.controls.comments.valid || (orderForm.controls.comments.pristine && !invalidRejected)"
+                            class="text-danger">{{ 'Translation.Comment' | translate }}s {{ 'Translation.are required' | translate }}.</div>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+
+            <div class="modal-footer" style=" margin-left: -25px; margin-right: -25px;">
+
+                <ng-container *ngIf="action === pendingOrderAction.APPROVE">
+                    <button [disabled]="isSubmitted" (click)="showDialog(confirmationDialog)"
+                            [class.stock_box_buy-btn]="true"
+                            [class.stock_box_sell-btn-close]="order.side === '' || order.side === null"
+                            class="mx-3 btn stock_box_sell-btn-close">{{ 'Translation.Approve' | translate }}
+                        <i class="fa fa-check" aria-hidden="true"></i>
+                    </button>
+                </ng-container>
+
+                <ng-container *ngIf="action === pendingOrderAction.REJECT">
+                    <button [disabled]="isSubmitted" (click)="showDialog(confirmationDialog)"
+                            [class.stock_box_sell-btn]="true"
+                            [class.stock_box_sell-btn-close]="order.side === '' || order.side === null"
+                            class="mx-3 btn stock_box_sell-btn-close">{{ 'Translation.Reject' | translate }}
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                    </button>
+                </ng-container>
+
+                <ng-container *ngIf="action === pendingOrderAction.EDIT">
+                    <button [disabled]="!isFormModified() || isSubmitted" (click)="showDialog(confirmationDialog)"
+                            [class.stock_box_buy-btn]="true"
+                            [class.stock_box_sell-btn-close]="order.side === '' || order.side === null"
+                            class="mx-3 btn stock_box_sell-btn-close">{{ 'Translation.Edit' | translate }}
+                        <i class="fa fa-check" aria-hidden="true"></i>
+                    </button>
+                </ng-container>
+
+                <ng-container *ngIf="action === pendingOrderAction.CANCEL">
+                    <button [disabled]="isSubmitted" (click)="showDialog(confirmationDialog)"
+                            [class.stock_box_sell-btn]="true"
+                            [class.stock_box_sell-btn-close]="order.side === '' || order.side === null"
+                            class="mx-3 btn stock_box_sell-btn-close">{{ 'Translation.Cancel' | translate }}
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                    </button>
+                </ng-container>
+
+                <button type="button" class="btn stock_box_sell-btn-close"
+                        (click)="onClose()">{{ 'Translation.Close' | translate }} <i class="fa fa-times"
+                                                                                     aria-hidden="true"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<wj-popup class="modal-dialog grey_Dialog" #confirmationDialog>
+    <div class="modal-content">
+        <div class="modal-body">
+            <h2 class="page-title"> {{ 'Translation.Confirmation Dialog' | translate }}</h2>
+                <p>Are you sure you want to {{ action.toLowerCase() }} this pending order?</p>
+        </div>
+        <div class="modal-footer">
+            <button (click)="onConfirm()" type="button" class="btn btn-success wj-hide mx-1"
+                    style="outline:black;">{{ 'Common.Yes' | translate }}
+            </button>
+            <button type="button" class="btn btn-default wj-hide mx-1"
+                    style="outline:black;">{{ 'Common.No' | translate }}
+            </button>
+        </div>
+    </div>
+</wj-popup>

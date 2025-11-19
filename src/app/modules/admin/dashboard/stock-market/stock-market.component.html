@@ -1,0 +1,31 @@
+<swiper *ngIf="lang=='en'" class="flex-auto h-32 mySwiper" [spaceBetween]="30" [centeredSlides]="true"
+    [autoplay]="{ delay: 3500, disableOnInteraction: false }" [pagination]="{ clickable: true }" [navigation]="true">
+    <ng-template swiperSlide>
+        <img class="h-full w-full" src="assets/images/marlin-dashboard/bond.png" alt="Real Estate Trading">
+    </ng-template>
+    <ng-template swiperSlide>
+        <img class="h-full w-full" src="assets/images/marlin-dashboard/virtual-trading.png" alt="Vitual Trading">
+    </ng-template>
+    <ng-template swiperSlide>
+        <img class="h-full w-full" src="assets/images/marlin-dashboard/Equities-Tradings.png" alt="Equities Trading">
+    </ng-template>
+    <ng-template swiperSlide>
+        <img class="h-full w-full" src="assets/images/marlin-dashboard/etf-dashboard.png" alt="Commodities Trading">
+    </ng-template>
+</swiper>
+
+<swiper *ngIf="lang=='pt'" class="flex-auto h-32 mySwiper" [spaceBetween]="30" [centeredSlides]="true"
+    [autoplay]="{ delay: 3500, disableOnInteraction: false }" [pagination]="{ clickable: true }" [navigation]="true">
+    <ng-template swiperSlide>
+        <img class="h-full w-full" src="assets/images/marlin-dashboard/Bond-TRADING-portuguese.png" alt="Real Estate Trading">
+    </ng-template>
+    <ng-template swiperSlide>
+        <img class="h-full w-full" src="assets/images/marlin-dashboard/Virtual-Trading-portuguese.png" alt="Vitual Trading">
+    </ng-template>
+    <ng-template swiperSlide>
+        <img class="h-full w-full" src="assets/images/marlin-dashboard/Equities-Tradings-portuguese.png" alt="Equities Trading">
+    </ng-template>
+    <ng-template swiperSlide>
+        <img class="h-full w-full" src="assets/images/marlin-dashboard/ETF-TRADING-portuguese.png" alt="Commodities Trading">
+    </ng-template>
+</swiper>

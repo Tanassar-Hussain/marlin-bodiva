@@ -1,0 +1,115 @@
+<div class="flex flex-col flex-auto -m-6 overflow-y-auto md:w-180" >
+
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+        <div class="text-lg font-medium">{{'Translation.Add New' | translate}}</div>
+        <button mat-icon-button (click)="onCloseDialog()" [tabIndex]="-1">
+            <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+        </button>
+    </div>
+
+    <div class="flex flex-col flex-0 items-start w-full p-6 sm:p-8 space-y-6">
+        <div [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}" class="w-full">
+            <div class="mt-1 shadow-sm overflow-hidden">
+
+                <div class="leading-none overflow-y-hidden">
+                    <form [formGroup]="myForm"
+                        class="flex flex-col flex-0 items-start w-full space-y-6 overflow-y-auto">
+
+                        <!-- Section -->
+                        <div class="w-full">
+                            <div class="text-xl">{{'Translation.News & Advertisements' | translate}}</div>
+
+                        </div>
+                        <div class="grid sm:grid-cols-6 gap-6 w-full" style="height: 100%;">
+
+                            <div class="sm:col-span-6 ml-3 mt-4">
+                                <mat-radio-group [formControlName]="'naType'" class="fuse-mat-no-subscript w-full">
+                                    <mat-radio-button value="0" style="margin-right:20px;">{{'Translation.News' | translate}}</mat-radio-button>
+                                    <mat-radio-button value="1">{{'Translation.Advertisement' | translate}}</mat-radio-button>
+                                </mat-radio-group>
+                            </div>
+
+                            <div class="sm:col-span-3">
+                                <mat-form-field class="fuse-mat-no-subscript w-full">
+                                    <mat-label>{{'Translation.Title' | translate}}</mat-label>
+                                    <input [formControlName]="'naTitle'" matInput>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="sm:col-span-3">
+                                <mat-form-field class="fuse-mat-no-subscript w-full">
+                                    <mat-label>{{'Translation.Description' | translate}}</mat-label>
+                                    <input [formControlName]="'naDetail'" matInput>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="sm:col-span-3">
+                                <mat-form-field class="fuse-mat-no-subscript w-full">
+                                    <mat-label>{{'Translation.Entry Date' | translate}}</mat-label>
+                                    <input [formControlName]="'naEntryDate'" matInput readonly="True" [matDatepicker]="">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="sm:col-span-3">
+                                <mat-form-field class="fuse-mat-no-subscript w-full">
+                                    <mat-label>{{'Translation.Expiry Date' | translate}}</mat-label>
+                                    <input [formControlName]="'naExpiryDate'" matInput [matDatepicker]="picker2">
+                                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker2></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="sm:col-span-3">
+                                <mat-form-field class="fuse-mat-no-subscript w-full">
+                                    <mat-label>{{'Translation.Asset Class' | translate}}</mat-label>
+                                    <mat-select [formControlName]="'assetClassBO'">
+                                        <mat-option *ngFor="let assetClass of allAssetClass" [value]="assetClass">
+                                            {{ assetClass.assetName }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="sm:col-span-3">
+                                <mat-form-field class="fuse-mat-no-subscript w-full">
+                                    <mat-label>{{'Translation.Web Link' | translate}}</mat-label>
+                                    <input [formControlName]="'naWebLink'" matInput>
+                                </mat-form-field>
+                            </div>
+
+
+                            <div class="sm:col-span-3">
+                                <mat-label>{{'Translation.Active' | translate}}</mat-label>
+
+                                <ng-container class="flex-row">
+                                    <mat-checkbox [color]="'primary'" class="ml-1" [formControlName]="'active'"
+                                        [checked]="true"></mat-checkbox>
+                                </ng-container>
+                            </div>
+
+                            <div class="sm:col-span-3">
+                                <button class="px-3" type="button" mat-stroked-button (click)="onUpload.click()">
+                                    {{'Translation.Attachment' | translate}}
+                                </button>
+                                <input hidden #onUpload (change)="onFileSelected($event.target)" type="file"
+                                    accept="image/*" formControlName="naImage" id="naImage" />
+                            </div>
+                        </div>
+
+                        <div class="mt-4 mb-4 border-t"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-0 items-center justify-end h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 mb-2" style="margin-top: -7%;">
+        <button color="primary" (click)="onCloseDialog()" mat-stroked-button>
+            {{'Translation.Close' | translate}}
+        </button>
+        <button class="ml-2" color="primary" (click)="submit()" mat-stroked-button>
+            {{'Common.Save' | translate}}
+        </button>
+
+    </div>
+</div>

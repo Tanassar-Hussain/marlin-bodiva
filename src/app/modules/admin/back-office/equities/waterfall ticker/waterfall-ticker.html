@@ -1,0 +1,171 @@
+<section class="widget " widget="">
+    <header>
+        <h3>{{ 'Translation.WaterFall Ticker' | translate }}</h3>
+
+    </header>
+    <div>
+        <div class="table_container">
+            <wj-flex-grid [itemsSource]="waterFallTickerList" [isReadOnly]="true" [selectionMode]="'Row'"
+                [autoSizeMode]="'Headers'" [headersVisibility]="'Column'" #waterFallTickerGrid class="grid"
+                style="height: 350px;width:100%;">
+                <wj-flex-grid-filter
+                    [filterColumns]="['exchange', 'market','bidSize','bid','ask','askSize','flag','lastVolume','turnover','trades','average','open','high','low']">
+                </wj-flex-grid-filter>
+                <wj-flex-grid-column [header]="'Translation.Exchange' | translate" [binding]="'exchange'"
+                    [minWidth]="30" [width]="'0.3*'">
+                    <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                        <span class="pr-6 whitespace-nowrap text-lg xl:text-lg lg:text-md md:text-md sm:text-sm">
+                            {{item.exchange}}
+                        </span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <wj-flex-grid-column [header]="'Translation.Market' | translate" [binding]="'market'" [minWidth]="30"
+                    [width]="'0.3*'">
+                    <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                        <span class="pr-6 whitespace-nowrap text-lg xl:text-lg lg:text-md md:text-md sm:text-sm">
+                            {{item.market}}
+                        </span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <wj-flex-grid-column [header]="'Translation.Symbol' | translate" [binding]="'symbol'" [minWidth]="30"
+                    [width]="'0.3*'">
+                    <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                        <span class="pr-6 whitespace-nowrap text-lg xl:text-lg lg:text-md md:text-md sm:text-sm">
+                            {{item.symbol}}
+                        </span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <wj-flex-grid-column [header]="'Translation.Bid Size' | translate" [binding]="'bidSize'" [minWidth]="30"
+                    [width]="'0.3*'">
+                    <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                        <span
+                            class="text-green-500 pr-6 whitespace-nowrap text-lg xl:text-lg lg:text-md md:text-md sm:text-sm">
+                            {{item.bidSize | number : '1.0-0'}}
+                        </span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <wj-flex-grid-column [header]="'Translation.Bid' | translate" [binding]="'bid'" [minWidth]="30"
+                    [width]="'0.3*'">
+                    <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                        <span
+                            class="text-green-500 pr-6 whitespace-nowrap text-lg xl:text-lg lg:text-md md:text-md sm:text-sm">
+                            {{item.bid | number : '1.4-4'}}
+                        </span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <wj-flex-grid-column [header]="'Translation.Ask' | translate" [binding]="'ask'" [minWidth]="30"
+                    [width]="'0.3*'">
+                    <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                        <span
+                            class="text-red-500 pr-6 whitespace-nowrap text-lg xl:text-lg lg:text-md md:text-md sm:text-sm">
+                            {{item.ask | number : '1.4-4'}}
+                        </span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <wj-flex-grid-column [header]="'Translation.Ask Size' | translate" [binding]="'askSize'" [minWidth]="30"
+                    [width]="'0.3*'">
+                    <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                        <span
+                            class="text-red-500 pr-6 whitespace-nowrap text-lg xl:text-lg lg:text-md md:text-md sm:text-sm">
+                            {{item.askSize | number : '1.0-0'}}
+                        </span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <wj-flex-grid-column [header]="'Translation.Flag' | translate" [binding]="'flag'" [minWidth]="30"
+                    [width]="'0.3*'">
+                    <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                        <span class="pr-6 whitespace-nowrap text-lg xl:text-lg lg:text-md md:text-md sm:text-sm">
+                            {{item.flag}}
+                        </span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <wj-flex-grid-column [header]="'Translation.Last Volume' | translate" [binding]="'lastVolume'"
+                    [minWidth]="30" [width]="'0.3*'">
+                    <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                        <span class="pr-6 whitespace-nowrap text-lg xl:text-lg lg:text-md md:text-md sm:text-sm">
+                            {{item.lastVolume}}
+                        </span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <wj-flex-grid-column [header]="'Translation.Turnover' | translate" [binding]="'turnover'"
+                    [minWidth]="30" [width]="'0.3*'">
+                    <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                        <span class="pr-6 whitespace-nowrap text-lg xl:text-lg lg:text-md md:text-md sm:text-sm">
+                            {{item.turnover}}
+                        </span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <wj-flex-grid-column [header]="'Translation.Trades' | translate" [binding]="'trades'" [minWidth]="30"
+                    [width]="'0.3*'">
+                    <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                        <span class="pr-6 whitespace-nowrap text-lg xl:text-lg lg:text-md md:text-md sm:text-sm">
+                            {{item.trades}}
+                        </span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <wj-flex-grid-column [header]="'Translation.Average' | translate" [binding]="'average'" [minWidth]="30"
+                    [width]="'0.3*'">
+                    <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                        <span class="pr-6 whitespace-nowrap text-lg xl:text-lg lg:text-md md:text-md sm:text-sm">
+                            {{item.average}}
+                        </span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <wj-flex-grid-column [header]="'Translation.Open' | translate" [binding]="'open'" [minWidth]="30"
+                    [width]="'0.3*'">
+                    <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                        <span class="pr-6 whitespace-nowrap text-lg xl:text-lg lg:text-md md:text-md sm:text-sm">
+                            {{item.open}}
+                        </span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <wj-flex-grid-column [header]="'Translation.High' | translate" [binding]="'high'" [minWidth]="30"
+                    [width]="'0.3*'">
+                    <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                        <span class="pr-6 whitespace-nowrap text-lg xl:text-lg lg:text-md md:text-md sm:text-sm">
+                            {{item.high}}
+                        </span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <wj-flex-grid-column [header]="'Translation.Low' | translate" [binding]="'low'" [minWidth]="30"
+                    [width]="'0.3*'">
+                    <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                        <span class="pr-6 whitespace-nowrap text-lg xl:text-lg lg:text-md md:text-md sm:text-sm">
+                            {{item.low}}
+                        </span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+            </wj-flex-grid>
+        </div>
+        <div class="row"></div>
+        <div class="btn-group col-xs-12 align-right">
+            <!-- Paginator -->
+            <wj-collection-view-pager [cv]="waterFallTickerGrid?.collectionView"></wj-collection-view-pager>
+            <!-- page size -->
+            <wj-menu [(value)]="pageSize" [header]="'Common.Page Size' | translate">
+                <wj-menu-item [value]="0">{{ 'Common.No Paging' | translate }}</wj-menu-item>
+                <wj-menu-item [value]="5">5 {{ 'Common.items' | translate }}</wj-menu-item>
+                <wj-menu-item [value]="10">10 {{ 'Common.items' | translate }}</wj-menu-item>
+                <wj-menu-item [value]="20">20 {{ 'Common.items' | translate }}</wj-menu-item>
+                <wj-menu-item [value]="30">30 {{ 'Common.items' | translate }}</wj-menu-item>
+                <wj-menu-item [value]="50">50 {{ 'Common.items' | translate }}</wj-menu-item>
+                <wj-menu-item [value]="100">100 {{ 'Common.items' | translate }}</wj-menu-item>
+            </wj-menu>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,69 @@
+<section class="widgetDashboard" widget>
+    <div class="flex justify-end">
+        <span class="mr-2 -mt-6 mb-2 fa fa-refresh hover:text-primary-500" style="cursor: pointer;" type="button" title="{{'Translation.Refresh' | translate}}"
+            (click)="getTopLoosers()">
+        </span>
+    </div>
+
+    <wj-flex-grid id="theGridTallRows" class="gridDashboard" style="height:20px !important ;" [isReadOnly]="true"
+        [itemsSource]="data" [selectionMode]="'Row'" [autoSizeMode]="'Headers'" [headersVisibility]="'Column'" #flexGrid
+        style="grid-auto-flow : column;">
+        <wj-flex-grid-filter [filterColumns]="filterColumns"></wj-flex-grid-filter>
+
+        <wj-flex-grid-column [header]="'Translation.Symbol' | translate" [binding]="'symbol'" [width]="'*'"
+             [align]="'left'">
+            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                <span>
+                    {{item.securityCode}} </span>
+            </ng-template>
+        </wj-flex-grid-column>
+
+        <wj-flex-grid-column [header]="'LDCP'" [binding]="'ldcp'" [width]="'*'"  [align]="'left'">
+            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                <span>
+                    {{item.lastDayClosePrice | number : '1.2-2'}} </span>
+            </ng-template>
+        </wj-flex-grid-column>
+
+        <wj-flex-grid-column [header]="'LTP'" [binding]="'ltp'" [width]="'*'"  [align]="'left'">
+            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                <span>
+                    {{item.lastTradePrice | number : '1.2-2'}} </span>
+            </ng-template>
+        </wj-flex-grid-column>
+
+        <wj-flex-grid-column [header]="'Translation.Change' | translate" [binding]="'change'" [width]="'*'"
+             [align]="'left'">
+            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                <span [class.blue_text_grid]="item.changeSide === 'positive'"
+                [class.pink_text_grid]="item.changeSide === 'negative'">
+                {{item.change}} </span>
+            </ng-template>
+        </wj-flex-grid-column>
+
+        <wj-flex-grid-column [header]="'Translation.% Change' | translate" [binding]="'changePer'" [width]="'*'"
+             [align]="'left'">
+            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                <span [class.blue_text_grid]="item.changePercSide === 'positive'"
+                    [class.pink_text_grid]="item.changePercSide === 'negative'">
+                    {{item.changePerc}}% </span>
+            </ng-template>
+        </wj-flex-grid-column>
+
+        <wj-flex-grid-column [header]="'Translation.Volume' | translate" [binding]="'volume'" [width]="'*'"
+             [align]="'left'">
+            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                <span>
+                    {{item.totalTradedQuantity  | number : '1.2-2' }} </span>
+            </ng-template>
+        </wj-flex-grid-column>
+
+        <wj-flex-grid-column [header]="'Translation.Value' | translate" [binding]="'value'" [width]="'*'"
+             [align]="'left'">
+            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-item="item">
+                <span>
+                    {{item.totalTradedValue  | number : '1.2-2' }} </span>
+            </ng-template>
+        </wj-flex-grid-column>
+    </wj-flex-grid>
+</section>

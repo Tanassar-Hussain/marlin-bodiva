@@ -1,0 +1,125 @@
+<div style="background-image: url('assets/images/marlin-dashboard/dashboard-back.png'); width: 100%;">
+    <div class="bg-transparent m-8 w-auto box-borders">
+        <div class="row header-portfolio" style="display: flex !important; justify-content: space-between !important;">
+            <span class="font-bold text-xl ml-3 mt-1 text-color-light">{{'Translation.Subscription' | translate}}</span>
+           
+        </div>
+
+
+        
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h5 class="text-white" style="padding-top: 30px;">{{'Translation.Subscription Details' | translate}}</h5>
+    <div  class="table_container">
+        <wj-flex-grid class="grid" [isReadOnly]="true" [itemsSource]="itemsList" [isReadOnly]="true" [selectionMode]="'Row'" [autoSizeMode]="'Headers'"
+            [headersVisibility]="'Column'" style="height: 85px;" #flex>
+            <wj-flex-grid-column [header]="'Translation.Product' | translate" [align]="'left'" [binding]="'productName'" [width]="'0.25*'" [minWidth]="20"></wj-flex-grid-column>
+            <wj-flex-grid-column [header]="'Menu.Subscription' | translate" [align]="'left'" [binding]="'subscription'" [width]="'0.25*'" [minWidth]="20"></wj-flex-grid-column>
+            <wj-flex-grid-column [header]="'Translation.Billing Cycle' | translate" [align]="'left'" [binding]="'billing'" [width]="'0.25*'" [minWidth]="20"></wj-flex-grid-column>
+            <wj-flex-grid-column [header]="'Translation.Status' | translate" [align]="'left'" [binding]="'status'" [width]="'0.25*'" [minWidth]="20">
+                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'"  let-cell="cell" >
+                    <span [class.text-success]="isActiveSubDetail" [class.text-danger]="!isActiveSubDetail">
+                        {{cell.item.status}}
+                    </span> 
+                    
+                 </ng-template>
+            </wj-flex-grid-column>
+            <wj-flex-grid-column [header]="'Translation.Subscription Date' | translate" [align]="'left'" [binding]="'subscriptionDate'" [width]="'0.25*'" [minWidth]="20">
+                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'"  let-cell="cell" >
+                    <span>
+                        {{cell.item.subscriptionDate | date : 'yyyy-MM-dd'}}
+                    </span> 
+                 </ng-template>
+            </wj-flex-grid-column>
+            <wj-flex-grid-column [header]="'Translation.Next Bill Date' | translate" [align]="'left'" [binding]="'nextBillDate'" [width]="'0.25*'" [minWidth]="20"><
+                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'"  let-cell="cell" >
+                    <span>
+                        {{cell.item.nextBillDate | date : 'yyyy-MM-dd'}}
+                    </span> 
+                 </ng-template>
+            </wj-flex-grid-column>
+            
+        </wj-flex-grid>        
+    </div>
+</div>
+</div>
+
+
+   <h5 class="text-white pl-3" style="padding-top: 30px;">{{'Translation.Billing Contact' | translate}}</h5>
+   <div class="row">
+        <div class="col-md-6">
+            <div class="card" style="width: 100%;">
+                <div class="card-body card-bg box-borders ml-2">
+                    <div class="row mt-3 font-12" style="row-gap: 4px;">
+                        <div class="col-md-4 contact-label">{{'Translation.Company Name' | translate}}:</div>
+                        <div class="col-md-8 text-white"> {{billingCompanyName}} </div>
+                            
+                        <div class="col-md-4 contact-label">{{'Translation.Address' | translate}}:  </div>
+                        <div class="col-md-8 text-white"> {{billingAddress}} </div>
+                            
+                        <div class="col-md-4 contact-label"> {{'Translation.Phone' | translate}}:  </div>
+                        <div class="col-md-8 text-white"> {{billingPhone}} </div>
+
+                        <div class="col-md-4 contact-label">{{'Translation.Contact Email' | translate}}:  </div>
+                        <div class="col-md-8 text-white"> {{billingEmail}} </div> 
+                    
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+   </div>
+
+   <h5 class="text-white pl-3" style="padding-top: 30px;">{{'Translation.Payment Details' | translate}}</h5>
+   <div class="row pb-5">
+    <div class="col-md-12">
+    
+<div  class="table_container">
+    <wj-flex-grid class="grid" [isReadOnly]="true" [itemsSource]="itemsListPayment" [isReadOnly]="true" [selectionMode]="'Row'" [autoSizeMode]="'Headers'"
+        [headersVisibility]="'Column'" style="height: 250px;" #flex>
+        <wj-flex-grid-filter [filterColumns]=""></wj-flex-grid-filter>
+        <wj-flex-grid-column [header]="'Translation.Date' | translate" [align]="'left'" [binding]="'paymentDate'" [width]="'0.25*'" [minWidth]="20"></wj-flex-grid-column>
+        <wj-flex-grid-column [header]="'Translation.Invoice Number' | translate" [align]="'left'" [binding]="'subscriptionPaymentId'" [width]="'0.25*'" [minWidth]="20"></wj-flex-grid-column>
+        <wj-flex-grid-column [header]="'Translation.Billing Cycle' | translate" [align]="'left'" [binding]="'billingName'" [width]="'0.25*'" [minWidth]="20"></wj-flex-grid-column>
+        <wj-flex-grid-column [header]="'Translation.Amount' | translate" [align]="'left'" [binding]="'amount'" [width]="'0.25*'" [minWidth]="20"></wj-flex-grid-column>
+        <wj-flex-grid-column [header]="'Translation.Start Date' | translate" [align]="'left'" [binding]="'dueDate'" [width]="'0.25*'" [minWidth]="20"></wj-flex-grid-column>
+        <wj-flex-grid-column [header]="'Translation.End Date' | translate" [align]="'left'" [binding]="'validTill'" [width]="'0.25*'" [minWidth]="20"></wj-flex-grid-column>
+        <!-- <wj-flex-grid-column [isReadOnly]="true" [header]="'Translation.Invoice' | translate" [align]="'center'" [width]="'0.15*'"  >
+            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'"  let-cell="cell" >
+               <span style="font-size: 16px; cursor: pointer;">
+                   <img src="assets/img/Invoice.png" style="height: 15px; width: 15px;"/>
+               </span> 
+            </ng-template>
+        </wj-flex-grid-column> -->
+    </wj-flex-grid>        
+</div>
+</div>
+</div>
+
+</div>
+
+</div>
+
+
+</div>        
+
+
+
+ 
+<!-- <div class="modal fade" id="billingContact" tabindex="-1" role="dialog" aria-labelledby="billingContact" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document" style="width: 850px; min-width : 850px">
+      <div class="modal-content ">
+        <div class="modal-header">
+            <button type="button" class="close" (click)="hidePopup()" >&times;</button>
+            <h4 class="modal-title"><span class="fw-semi-bold">{{ 'Translation.Billing Contact' | translate }}</span></h4>
+          </div>
+        <div class="modal-body" style="padding-top: 5px;">
+           
+         
+        </div>
+        </div>
+      </div>
+</div> -->
+  

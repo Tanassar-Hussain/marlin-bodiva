@@ -1,0 +1,535 @@
+ 
+<section class="widget" widget="">
+  <header>
+    <h3><span class="fw-semi-bold">{{ 'Menu.Levies' | translate }}</span></h3>
+    <div class="other_btns">
+      <button *ngIf="userService.isAuhtorized(userService.EB_CONF_LEVIES_NEW)" class="add_new_btn" data-toggle="modal" data-target="#add_new"
+        role="button" data-backdrop="static" title="{{ 'Translation.Add Levies' | translate }}" (click)="onNewAction()"><i class="fa fa-plus" aria-hidden="true"></i> </button>
+    </div>
+   
+  </header>
+
+  <div>
+    <div class="table_container">
+
+      <wj-flex-grid id="flex" [itemsSource]="itemsList" [allowMerging]="'Cells'" [isReadOnly]="true" [selectionMode]="'Row'" [autoSizeMode]="'Headers'"
+        [headersVisibility]="'Column'" style="height: 320px;" #flex>
+        <wj-flex-grid-filter [filterColumns]="['exchange.exchangeCode','levyCode', 'levyDesc','levyTypeDispaly_','chartOfAccount.glCode']"></wj-flex-grid-filter>
+        <wj-flex-grid-column [header]="'Translation.Exchange' | translate" [align]="'left'" [binding]="'exchange.exchangeCode'" [allowMerging]="true" [minWidth]="30"
+          [width]="'0.5*'"></wj-flex-grid-column>
+        <wj-flex-grid-column [header]="'Translation.Levy Code' | translate" [align]="'left'" [binding]="'levyCode'" [width]="'0.25*'" [allowMerging]="false"
+          [minWidth]="30"></wj-flex-grid-column>
+        <wj-flex-grid-column [header]="'Translation.Description' | translate" [align]="'left'" [binding]="'levyDesc'" [width]="'0.5*'" [allowMerging]="false"
+          [minWidth]="30">
+        </wj-flex-grid-column>
+        <wj-flex-grid-column [header]="'Translation.Levy Category' | translate" [align]="'left'" [allowMerging]="false" [binding]="'levyCategories.description'" [width]="'0.3*'"
+          [minWidth]="30"></wj-flex-grid-column>
+        <wj-flex-grid-column [header]="'Translation.GL Account Code' | translate" [align]="'right'" [allowMerging]="false" [binding]="'chartOfAccount.glCode'"
+          [width]="'0.3*'" [minWidth]="30"> </wj-flex-grid-column>
+        <wj-flex-grid-column [header]="'Common.Action' | translate" [allowMerging]="false" [width]="'0.2*'" [align]="'center'" [minWidth]="30" *ngIf="userService.isAuhtorized(userService.EB_CONF_LEVIES_UPDATE)">
+          <ng-template wjFlexGridCellTemplate [cellType]="'Cell'">
+            <img src="assets/img/edit_orange.png" class="gridImg" title="{{ 'Translation.Edit' | translate }}" (click)="onEditAction()" data-target="#add_new" data-toggle="modal" data-backdrop="static"
+            />
+            
+
+          </ng-template>
+        </wj-flex-grid-column>
+      </wj-flex-grid>
+
+    </div>
+    <div class="row"></div>
+    <div class="btn-group col-xs-12 align-right">
+      <!-- Paginator -->
+      <wj-collection-view-pager [cv]="flex?.collectionView"></wj-collection-view-pager>
+      <!-- page size -->
+      <wj-menu [(value)]="pageSize" [header]="'Common.Page Size' | translate">
+        <wj-menu-item [value]="0">{{ 'Common.No Paging' | translate }}</wj-menu-item>
+        <wj-menu-item [value]="5">5 {{ 'Common.items' | translate }}</wj-menu-item>
+        <wj-menu-item [value]="10">10 {{ 'Common.items' | translate }}</wj-menu-item>
+        <wj-menu-item [value]="20">20 {{ 'Common.items' | translate }}</wj-menu-item>
+        <wj-menu-item [value]="30">30 {{ 'Common.items' | translate }}</wj-menu-item>
+        <wj-menu-item [value]="50">50 {{ 'Common.items' | translate }}</wj-menu-item>
+        <wj-menu-item [value]="100">100 {{ 'Common.items' | translate }}</wj-menu-item>
+        </wj-menu>
+    </div>
+
+
+  </div>
+
+
+</section>
+<!--</div>
+</div>-->
+
+
+<!-- Add New Bank Modal -->
+<div id="add_new" class="modal fade" role="dialog" data-keyboard="true">
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+     
+
+      <form class="form-horizontal form-label-left" method="post" data-parsley-priority-enabled="false" novalidate="novalidate"
+        role="form" [formGroup]="myForm" (ngSubmit)="onSaveAction(myForm.value, myForm.valid)">
+
+
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" (click)="onCancelAction()" >&times;</button>
+          <h4 class="modal-title"><span class="fw-semi-bold">{{ 'Translation.Levies' | translate }}</span>
+          </h4>
+        </div>
+        <div class="modal-body">
+
+
+          <div class="row setup_box_container">
+            <!-- <div class="col-md-2 col-sm-5 modal_left">
+              <div class="wizard_Logo">
+                <img src="assets/img/Levies.png" class="formImg" />
+                <h4>{{ 'Menu.Levies' | translate }}</h4>
+                <p>{{ 'Translation.Define client levies structure to calculate levies in a real time for client trading activities' | translate }}.</p>
+              </div>
+            </div> -->
+            <div class="col-md-12 col-sm-7 modal_center">
+              <div class="row" style="margin: 40px 40px 0px 40px">
+
+
+                <div class="col-sm-4 fields_box">
+                  <label for="exchangeName">{{ 'Translation.Exchange' | translate }} <span class="validation">*</span></label>
+                  <wj-combo-box #exchangeName id="exchangeName" class="wijmo_style" formControlName="exchangeName" [isDisabled]="isParentDisabled"
+                    [itemsSource]="exchangeNameList" [(ngModel)]="selectedItem.leviesMaster.exchange.exchangeId" displayMemberPath="exchangeCode"
+                    selectedValuePath="exchangeId" [isRequired]="true" [isEditable]="true" (ngModelChange)="onExchangeChangeEvent($event)">
+                  </wj-combo-box>
+                  <div *ngIf="myForm.controls['exchangeName'].hasError('required')" [hidden]="myForm.controls.exchangeName.valid || (myForm.controls.exchangeName.pristine && !isSubmitted)"
+                    class="text-danger">{{ 'Translation.Exchange' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                </div>
+
+                <div class="col-sm-4 fields_box">
+                  <label for="level">{{ 'Translation.Level' | translate }} <span class="validation">*</span></label>
+                  <wj-combo-box id="level" tabindex="2" class="wijmo_style" formControlName="level"  [isDisabled]="isParentDisabled"
+                    [itemsSource]="levelList" displayMemberPath="label" selectedValuePath="value" [isRequired]="true"
+                    [isEditable]="true" [(ngModel)]="selectedItem.leviesMaster.levyLevel">
+                  </wj-combo-box>
+                  <div *ngIf="myForm.controls['level'].hasError('required')" [hidden]="myForm.controls.level.valid || (myForm.controls.level.pristine && !isSubmitted)"
+                    class="text-danger">{{ 'Translation.Level' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                </div>
+
+                <div class="col-sm-4 fields_box">
+                  <label for="level">{{ 'Translation.Levy Category' | translate }} <span class="validation">*</span></label>
+                  <wj-combo-box id="level" tabindex="3" class="wijmo_style" formControlName="levyCategory"  [isDisabled]="isParentDisabled"
+                    [itemsSource]="levyCategories" displayMemberPath="description" selectedValuePath="id" [isRequired]="true"
+                    [isEditable]="true" [(ngModel)]="selectedItem.leviesMaster.levyCategories.id" (ngModelChange)="onChangeLevyCategory($event)">
+                  </wj-combo-box>
+                  <div *ngIf="myForm.controls['levyCategory'].hasError('required')" [hidden]="myForm.controls.levyCategory.valid || (myForm.controls.levyCategory.pristine && !isSubmitted)"
+                    class="text-danger">{{ 'Translation.Levy Category' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                </div>
+ 
+                <!-- <div class="col-sm-4 fields_box">
+                  <label for="search-input">{{ 'Translation.Levy Type' | translate }}  <span class="validation">*</span></label>
+                  <div *ngIf="!isParentDisabled">
+                    <wj-combo-box id="levyType" tabindex="4" class="wijmo_style" formControlName="levyType" [itemsSource]="levyTypeList" displayMemberPath="value"
+                      selectedValuePath="abbreviation" [isRequired]="true" [isEditable]="true" [(ngModel)]="selectedItem.leviesMaster.levyType"
+                      (ngModelChange)="onLevyTypeChangeEvent($event)">
+                    </wj-combo-box>
+                    <div *ngIf="myForm.controls['levyType'].hasError('required')" [hidden]="myForm.controls.levyType.valid || (myForm.controls.levyType.pristine && !isSubmitted)"
+                      class="text-danger">{{ 'Translation.Levy Type' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                  </div>
+                  <div *ngIf="isParentDisabled">
+                    <wj-combo-box id="levyType" tabindex="5" class="wijmo_style" formControlName="levyType" [itemsSource]="levyTypeList" displayMemberPath="value"
+                      selectedValuePath="abbreviation" [isRequired]="true" [isEditable]="true" [(ngModel)]="selectedItem.leviesMaster.levyType"
+                      (ngModelChange)="onLevyTypeChangeEvent($event)">
+                    </wj-combo-box>
+                    <div *ngIf="myForm.controls['levyType'].hasError('required')" [hidden]="myForm.controls.levyType.valid || (myForm.controls.levyType.pristine && !isSubmitted)"
+                      class="text-danger">{{ 'Translation.Levy Type' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                  </div>
+                </div> -->
+               
+                <div class="col-sm-4 fields_box">
+                  <label for="levyCode">{{ 'Translation.Levy Code' | translate }} <span class="validation">*</span></label>
+                  <wj-input-mask id="levyCode" class="wijmo_style" tabindex="4" formControlName="levyCode" [isDisabled]="isParentDisabled" maxlength="10"
+                    [(ngModel)]="selectedItem.leviesMaster.levyCode" myForm [isRequired]="true"> </wj-input-mask>
+                  <div *ngIf="myForm.controls['levyCode'].hasError('required')" [hidden]="myForm.controls.levyCode.valid || (myForm.controls.levyCode.pristine && !isSubmitted)"
+                    class="text-danger">{{ 'Translation.Levy Code' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                  <div *ngIf="myForm.controls['levyCode'].hasError('pattern')" class="text-danger">{{ 'Translation.Invalid' | translate }} {{ 'Translation.Levy Code' | translate }}.</div>
+                </div>
+
+                <div class="col-sm-4 fields_box">
+                  <label for="name">{{ 'Translation.Name' | translate }} <span class="validation">*</span></label>
+                  <wj-input-mask id="name" class="wijmo_style" tabindex="5"  formControlName="name" [isDisabled]="isParentDisabled"
+                    maxlength="50" [(ngModel)]="selectedItem.leviesMaster.levyName" myForm [isRequired]="true"> </wj-input-mask>
+                  <div *ngIf="myForm.controls['name'].hasError('required')" [hidden]="myForm.controls.name.valid || (myForm.controls.name.pristine && !isSubmitted)"
+                    class="text-danger">{{ 'Translation.Name' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                </div>
+                <div class="col-sm-4 fields_box">
+                  <label for="voucherTypeId">{{ 'Translation.Voucher Type' | translate }} <span class="validation">*</span></label>
+                  <wj-combo-box id="voucherTypeId" tabindex="6" class="wijmo_style" formControlName="voucherTypeId" [isDisabled]="isParentDisabled"
+                    [itemsSource]="voucherTypeList" displayMemberPath="voucherType" selectedValuePath="voucherTypeId" [isRequired]="true"
+                    [isEditable]="true" [(ngModel)]="selectedItem.leviesMaster.voucherType.voucherTypeId">
+                  </wj-combo-box>
+                  <div *ngIf="myForm.controls['voucherTypeId'].hasError('required')" [hidden]="myForm.controls.voucherTypeId.valid || (myForm.controls.voucherTypeId.pristine && !isSubmitted)"
+                    class="text-danger">{{ 'Translation.Voucher Type' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                </div>
+                <div class="col-sm-12 fields_box">
+                  <label for="vouNaration">{{ 'Translation.Voucher Description' | translate }} <span class="validation">*</span></label>
+                  <wj-input-mask tabindex="7" maxlength="100" id="vouNaration" [(ngModel)]="selectedItem.leviesMaster.vouNaration" class="wijmo_style"
+                    formControlName="vouNaration" [isDisabled]="isParentDisabled" [isRequired]="true"></wj-input-mask>
+                  <div *ngIf="myForm.controls['vouNaration'].hasError('required')" [hidden]="myForm.controls.vouNaration.valid || (myForm.controls.vouNaration.pristine && !isSubmitted)"
+                    class="text-danger">{{ 'Translation.Voucher Description' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                  <div *ngIf="myForm.controls['vouNaration'].hasError('pattern')" class="text-danger">{{ 'Translation.Invalid' | translate }} {{ 'Translation.Voucher Description' | translate }}.</div>
+                </div>
+               
+                <div class="col-sm-6 fields_box">
+                  <label for="levyDescription">Levy {{ 'Translation.Description' | translate }} <span class="validation">*</span></label>
+                  <wj-input-mask id="levyDescription" class="wijmo_style" formControlName="levyDescription" [isDisabled]="isParentDisabled"
+                    maxlength="50" tabindex="8" [(ngModel)]="selectedItem.leviesMaster.levyDesc" myForm [isRequired]="true"> </wj-input-mask>
+                  <div *ngIf="myForm.controls['levyDescription'].hasError('required')" [hidden]="myForm.controls.levyDescription.valid || (myForm.controls.levyDescription.pristine && !isSubmitted)"
+                    class="text-danger">{{ 'Translation.Description' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                </div>
+                <div class="col-sm-6 fields_box">
+                  <label for="chartOfAccountId">{{ 'Translation.GL Account Code' | translate }} <span class="validation">*</span></label>
+                  <wj-auto-complete id="chartOfAccountId" tabindex="9" [(ngModel)]="selectedItem.leviesMaster.chartOfAccount.chartOfAccountId"
+                    [isEditable]="false" class="wijmo_style" formControlName="chartOfAccountId" [itemsSource]="chartOfAccountList"
+                    displayMemberPath="displayName" selectedValuePath="id" [isRequired]="true" [isDisabled]="isParentDisabled" [maxItems]="50">
+                  </wj-auto-complete>
+                  <div *ngIf="myForm.controls['chartOfAccountId'].hasError('required')" [hidden]="myForm.controls.chartOfAccountId.valid || (myForm.controls.chartOfAccountId.pristine && !isSubmitted)"
+                    class="text-danger">{{ 'Translation.GL Account Code' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                </div>
+
+                <div class="col-sm-6 fields_box">
+                  <label for="recurrence">Recurrence <span class="validation">*</span></label>
+                  <wj-auto-complete id="recurrence" tabindex="10" [(ngModel)]="selectedItem.leviesMaster.recurrenceId"
+                    [isEditable]="false" class="wijmo_style" formControlName="recurrence" [itemsSource]="recurrenceList"
+                    displayMemberPath="label" selectedValuePath="value" [isRequired]="true" [isDisabled]="isParentDisabled" [maxItems]="50">
+                  </wj-auto-complete>
+                  <div *ngIf="myForm.controls['recurrence'].hasError('required')" [hidden]="myForm.controls.recurrence.valid || (myForm.controls.recurrence.pristine && !isSubmitted)"
+                    class="text-danger">{{ 'Translation.Recurrence' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                </div>
+               
+              </div>
+
+
+              <div class="row" style="margin: 10px 40px 0px 40px">
+                <h3><span class="fw-semi-bold">{{ 'Translation.Details' | translate }}</span></h3>
+                <div class="col-sm-12"></div>
+
+                <div class="col-lg-4 fields_box">
+                  <label for="code"> {{ 'Translation.Asset Class' | translate }}  </label>
+                  <wj-combo-box autofocus="autofocus" tabindex="11" id="assetId" formControlName="assetId"
+                      class="wijmo_style" [isEditable]="true" [itemsSource]="assetClassList" (ngModelChange)="onChangeAssetEvent($event)"
+                      displayMemberPath="assetName" selectedValuePath="assetId" [(ngModel)]="selectedDetailItem.asset.assetId"
+                       [isRequired]="false" #assetClass></wj-combo-box>
+                 
+                </div>
+        
+              
+
+
+                <div class="col-sm-6 col-lg-4">
+                  <label for="effectiveDate">{{ 'Translation.Effective From' | translate }} <span class="validation">*</span></label>
+                  <wj-input-date id="effectiveDate" tabindex="12" class="wijmo_style" formControlName="effectiveDate" min="{{todayNewDate}}" [(ngModel)]="selectedDetailItem.effectiveDate"
+                    [format]="'yyyy-MM-dd'" [showYearPicker]="false"></wj-input-date>
+                  <div *ngIf="myForm.controls['effectiveDate'].hasError('required')" [hidden]="myForm.controls.effectiveDate.valid || (myForm.controls.effectiveDate.pristine && !isSubmitted)"
+                    class="text-danger">{{ 'Translation.Effective From' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                </div>
+
+                <div class="col-sm-6 col-lg-4">
+                  <label for="effectiveToDate">{{ 'Translation.Effective To' | translate }} <span class="validation">*</span></label>
+                  <wj-input-date id="effectiveToDate" tabindex="13" class="wijmo_style" formControlName="effectiveToDate" min="{{today}}" [(ngModel)]="selectedDetailItem.effectiveToDate"
+                    [format]="'yyyy-MM-dd'" [showYearPicker]="false"></wj-input-date>
+                  <div *ngIf="myForm.controls['effectiveToDate'].hasError('required')" [hidden]="myForm.controls.effectiveToDate.valid || (myForm.controls.effectiveToDate.pristine && !isSubmitted)"
+                    class="text-danger">{{ 'Translation.Effective From' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                </div>
+
+                <!-- <div class="col-sm-6 col-lg-4">
+                  <label for="effectiveToDate">Effective To <span class="validation">*</span></label>
+                  <wj-input-date id="effectiveToDate" class="wijmo_style" formControlName="effectiveToDate" min="{{today}}" [(ngModel)]="selectedDetailItem.effectiveToDate"
+                    [format]="'yyyy-MM-dd'" [showYearPicker]="false"></wj-input-date>
+                  <div *ngIf="myForm.controls['effectiveToDate'].hasError('required')" [hidden]="myForm.controls.effectiveToDate.valid || (myForm.controls.effectiveToDate.pristine && !isSubmitted)"
+                    class="text-danger">{{ 'Translation.Effective To' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                </div> -->
+                
+                <div class="col-sm-6 col-lg-4">
+                  <label for="transactionType">{{ 'Translation.Transaction Type' | translate }} <span *ngIf="isTransactionType" class="validation">*</span></label>
+                  <span *ngIf="!isBondFieldsRequired">
+                    <input class="ml-1" id="allTraders" type="checkbox" *ngIf="disabledCheckbox" (change)="onAllSelected($event)">
+                    <label class="ml-1" for="chequeCleared" *ngIf="disabledCheckbox"> {{ 'Translation.All' | translate }} </label>
+                  </span>
+                 
+                  <wj-multi-select id="transasctionType" tabindex="14" #transactionType class="wijmo_style" [placeholder]="'Select'" formControlName="transactionType"
+                    [itemsSource]="transactionTypeList" [(ngModel)]="selectedDetailItem.traansactionTypesExchange.traansactionTypeExchangeId"
+                    (ngModelChange)="onTransactionTypeChangeEvent($event)" displayMemberPath="transactionType"    [isRequired]="true"
+                    [isEditable]="true">
+                  </wj-multi-select>
+                  <!-- <div *ngIf="myForm.controls['transactionType'].hasError('required')" [hidden]="myForm.controls.transactionType.pristine && !isSubmitted"
+                    class="text-danger">{{ 'Translation.Transaction Type' | translate }} {{ 'Translation.is required' | translate }}.</div> -->
+
+                    <div *ngIf="isTransactionType && myForm.controls['transactionType'].hasError('required')" [hidden]="myForm.controls.transactionType.valid || (myForm.controls.transactionType.pristine && !isSubmitted)"
+                    class="text-danger">{{ 'Translation.Transaction Type' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                </div>
+                  
+                <div class="col-lg-4 fields_box"  >
+									<label for="bondNatureId">{{"Translation.Bond Nature" | translate}} <span *ngIf="isBondFieldsRequired" class="validation">*</span> </label>
+									<wj-combo-box tabindex="15" id="bondNatureId" formControlName="bondNatureId"
+										class="wijmo_style" [isEditable]="true" [itemsSource]="bondNatureList" #bondNatureId
+										displayMemberPath="bondNatureDesc" selectedValuePath="bondNatureId"
+										[(ngModel)]="selectedDetailItem.bondNature.bondNatureId">
+									</wj-combo-box>
+                  <div *ngIf="isBondFieldsRequired && myForm.controls['bondNatureId'].hasError('required')" [hidden]="myForm.controls.bondNatureId.valid || (myForm.controls.bondNatureId.pristine && !isSubmitted)"
+                  class="text-danger">{{ 'Translation.Bond Nature' | translate }} {{ 'Translation.is required' | translate }}.</div>
+								</div>
+                
+                <div class="col-lg-4 fields_box" >
+									<label for="bondCategoryId">{{"Translation.Bond Category" | translate}} <span *ngIf="isBondFieldsRequired" class="validation">*</span></label>
+									<wj-combo-box tabindex="16" id="bondCategoryId" formControlName="bondCategoryId"
+										class="wijmo_style" [isEditable]="true" [itemsSource]="bondCategoryList" #bondCategoryId
+										displayMemberPath="category" selectedValuePath="categoryId"
+										[(ngModel)]="selectedDetailItem.bondCategory.categoryId">
+									</wj-combo-box>
+                  <!-- <div *ngIf="isBondFieldsRequired && myForm.controls['bondCategoryId'].hasError('required')" [hidden]="myForm.controls.bondCategoryId.valid || (myForm.controls.bondCategoryId.pristine && !isSubmitted)"
+                  class="text-danger">{{ 'Translation.Bond Category' | translate }} {{ 'Translation.is required' | translate }}.</div> -->
+								</div>
+
+                <div class="col-sm-4 fields_box"  >
+									<label for="bondTypeId">{{"Translation.Bond Type" | translate}}  </label>
+									<wj-combo-box tabindex="17" id="bondTypeId" formControlName="bondTypeId" #bondTypeId
+										class="wijmo_style" [isEditable]="true" [itemsSource]="bondTypeList"
+										displayMemberPath="bondType" selectedValuePath="bondTypeId"
+										[(ngModel)]="selectedDetailItem.bondType.bondTypeId"
+										 ></wj-combo-box>
+								 
+								</div>
+
+                <div class="col-sm-4 fields_box"  >
+									<label for="levyModeId">{{"Translation.Levy Mode" | translate}}  </label>
+									<wj-combo-box tabindex="18" id="levyMode" formControlName="levyModeId" #levyModeId
+										class="wijmo_style" [isEditable]="true" [itemsSource]="levyModeList"
+										displayMemberPath="label" selectedValuePath="value" (ngModelChange)="changeLevyMode($event)"
+										[(ngModel)]="selectedDetailItem.levyMode"
+										 ></wj-combo-box>
+								</div>
+
+                <div class="col-sm-6 col-lg-4">
+                  <label for="appliesTo">{{ 'Translation.Applies To' | translate }}  </label>
+                  <wj-combo-box id="appliesTo" class="wijmo_style"  tabindex="19"  formControlName="appliesTo" [itemsSource]="appliesToList" (ngModelChange)="onAppliesToChangeEvent($event)"
+                    [(ngModel)]="selectedDetailItem.appliedTo" displayMemberPath="label" selectedValuePath="value"
+                    [isRequired]="true" [isEditable]="true" #appliesTo></wj-combo-box>
+                  <!-- <div *ngIf="myForm.controls['appliesTo'].hasError('required')" [hidden]="myForm.controls.appliesTo.valid || (myForm.controls.appliesTo.pristine && !isSubmitted)"
+                    class="text-danger">{{ 'Translation.Applies To' | translate }} {{ 'Translation.is required' | translate }}.</div> -->
+                </div>
+
+                <div class="col-sm-4 fields_box"  >
+									<label for="valueTypeId">{{"Translation.Value Type" | translate}}  <span class="validation">*</span> </label>
+									<wj-combo-box tabindex="20" id="valueTypeId" formControlName="valueTypeId" #valueTypeId
+										class="wijmo_style" [isEditable]="true" [itemsSource]="valueTypeList"
+										displayMemberPath="label" selectedValuePath="value"
+										[(ngModel)]="selectedDetailItem.valueType" (ngModelChange)="onValueTypeChangeEvent($event)"
+										 ></wj-combo-box>
+                     <div *ngIf="myForm.controls['valueTypeId'].hasError('required')" [hidden]="myForm.controls.valueTypeId.valid || (myForm.controls.valueTypeId.pristine && !isSubmitted)"
+                     class="text-danger">{{ 'Translation.Value Type' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                 </div>
+
+                 <div class="col-sm-4 fields_box" *ngIf="isPercentageOnLevies">
+                  <label for="cmbLevy">{{ 'Translation.Levies' | translate }} <span class="validation">*</span></label>
+                  <wj-multi-select tabindex="21" id="levyId" class="wijmo_style" [placeholder]="'Select'" formControlName="levyId" [isEditable]="true" [itemsSource]="leviesList"
+                      displayMemberPath="levyCode" #cmbLevy  [isRequired]="true"></wj-multi-select>
+                  <div *ngIf="myForm.controls['levyId'].hasError('required') || myForm.controls['levyId'].hasError('pattern')" [hidden]="myForm.controls['levyId'].valid || (myForm.controls['levyId'].pristine && !isSubmitted)"
+                      class="text-danger">{{ 'Translation.Levies' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                </div>
+							 
+
+                <!-- <div class="col-sm-4 fields_box" >
+									<label for="levyValue">{{"Translation.Value" | translate}} <span class="validation">*</span></label>
+									<wj-input-number tabindex="24" id="levyValue" formControlName="levyValue"
+										  [min]="0" class="wijmo_style" [(ngModel)]="selectedDetailItem.levyValue" [format]="'n4'"></wj-input-number>
+                      <div *ngIf="myForm.controls['levyValue'].hasError('required')" [hidden]="myForm.controls.levyValue.valid || (myForm.controls.levyValue.pristine && !isSubmitted)"
+                      class="text-danger">{{ 'Translation.Value Type' | translate }} {{ 'Translation.is required' | translate }}.</div>
+								</div> -->
+
+
+                <div class="col-sm-6 col-lg-4">
+                  <label for="levyRate">{{levyRateLabelModalDisplay}}<span class="validation">*</span></label>
+                  <wj-input-number id="levyRate" class="wijmo_style"  tabindex="21"  formControlName="levyRate" [max]="9999999999.9999" [min]="0.0000" format="n4"
+                    (ngModelChange)="onLevyRateChange($event)" [(ngModel)]="selectedDetailItem.levyRate" myForm required [isRequired]="true"
+                    #levyRate> </wj-input-number>
+                  <div *ngIf="myForm.controls['levyRate'].hasError('required')" [hidden]="myForm.controls.levyRate.valid || (myForm.controls.levyRate.pristine && !isSubmitted)"
+                    class="text-danger">{{ 'Translation.Levy Value' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                  <div *ngIf="LevyRateError" class="text-danger">{{ 'Translation.Levy Value is out of Range' | translate }}.</div>
+                </div>
+
+
+                <div class="col-sm-4 fields_box"  *ngIf="isRepo">
+									<label for="valueTypeId">{{"Translation.Slab Range" | translate}} (Repo) <span class="validation">*</span> </label>
+									<wj-combo-box tabindex="22" id="slabRange" formControlName="slabRange" #slabRange
+										class="wijmo_style" [isEditable]="true" [itemsSource]="slabRangeList"
+										displayMemberPath="label" selectedValuePath="value"
+										[(ngModel)]="selectedDetailItem.slabRange"></wj-combo-box>
+                     <div *ngIf="myForm.controls['slabRange'].hasError('required')" [hidden]="myForm.controls.slabRange.valid || (myForm.controls.slabRange.pristine && !isSubmitted)"
+                     class="text-danger">{{ 'Translation.Slab Range' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                 </div>
+
+                 <div class="col-sm-4 fields_box" *ngIf="isRepo">
+                  	<label for="rangeFrom" >{{"Translation.Range From" | translate}} <span class="validation">*</span></label>
+									<wj-input-number tabindex="23" id="rangeFrom" formControlName="rangeFrom"
+										  [min]="0" class="wijmo_style" [(ngModel)]="selectedDetailItem.rangeFrom" [format]="'n0'"></wj-input-number>
+                      <div *ngIf="myForm.controls['rangeFrom'].hasError('required')" [hidden]="myForm.controls.rangeFrom.valid || (myForm.controls.rangeFrom.pristine && !isSubmitted)"
+                    class="text-danger">{{ 'Translation.Range From' | translate }} {{ 'Translation.is required' | translate }}.</div>
+								</div>
+
+                <div class="col-sm-4 fields_box"  *ngIf="isRepo" >
+							 
+                  <label for="levyFloor">{{"Translation.Range To" | translate}} <span class="validation">*</span></label>
+									<wj-input-number tabindex="24" id="rangeTo" formControlName="rangeTo"
+										  [min]="0" class="wijmo_style" [(ngModel)]="selectedDetailItem.rangeTo" [format]="'n0'"></wj-input-number>
+                      <div *ngIf="myForm.controls['rangeTo'].hasError('required')" [hidden]="myForm.controls.rangeTo.valid || (myForm.controls.rangeTo.pristine && !isSubmitted)"
+                    class="text-danger">{{ 'Translation.Range To' | translate }} {{ 'Translation.is required' | translate }}.</div>
+								</div>
+
+
+                <div class="col-sm-4 fields_box" >
+									<label for="levyFloor"  >{{"Translation.Floor" | translate}}</label>
+                  	 
+									<wj-input-number tabindex="25" id="levyFloor" formControlName="levyFloor"
+										  [min]="0" class="wijmo_style" [(ngModel)]="selectedDetailItem.levyFloor" [format]="'n4'"></wj-input-number>
+								</div>
+
+                <div class="col-sm-4 fields_box" >
+									<label for="levyCeiling"  >{{"Translation.Ceiling" | translate}}</label>
+                  
+									<wj-input-number tabindex="26" id="levyCeiling" formControlName="levyCeiling"
+										  [min]="0" class="wijmo_style" [(ngModel)]="selectedDetailItem.levyCeiling" [format]="'n4'"></wj-input-number>
+								</div>
+
+              </div>
+
+              <div class="row" style="margin: 0px 40px 0px 40px">
+
+                <div class="col-sm-12 fields_box mt-3">
+                  <div class="abc-checkbox abc-checkbox-primary pull-bottom">
+                    <input id="active" type="checkbox" [(ngModel)]='selectedDetailItem.active' formControlName="active">
+                    <label for="active"> {{ 'Common.Active' | translate }} </label>
+                  </div>
+                  <br>
+                  <button type="submit"   [class]="'add_btn pull-right'" (click)="onAddNewRow()">{{ 'Translation.Add' | translate }}</button>
+                </div>
+              </div>
+
+              <div class="table_container">
+
+                <wj-flex-grid style="height: 200px;" class="grid" id="abc" [itemsSource]="detailList" [isReadOnly]="true" [selectionMode]="'Row'"
+                  [autoSizeMode]="'Headers'" [headersVisibility]="'Column'" #flexDetail>
+
+                  <wj-flex-grid-column [header]="'Translation.Asset Class' | translate" [align]="'left'" [binding]="'assetClassDisplay_'"
+                  [width]="'0.25*'" [minWidth]="30"></wj-flex-grid-column>
+
+                  <wj-flex-grid-column [header]="'Translation.Transaction Type' | translate" [align]="'left'" [binding]="'traansactionTypesExchange.transactionType'"
+                    [width]="'0.25*'" [minWidth]="30"></wj-flex-grid-column>
+
+                  <wj-flex-grid-column [header]="'Translation.Effective From' | translate" [format]="'yyyy-MM-dd'" [allowMerging]="true" [align]="'left'" [binding]="'effectiveDate'"
+                    [width]="'0.3*'" [minWidth]="30"> </wj-flex-grid-column>
+
+                    <wj-flex-grid-column [header]="'Effective To'" [format]="'yyyy-MM-dd'" [allowMerging]="true" [align]="'left'" [binding]="'effectiveToDate'"
+                    [width]="'0.3*'" [minWidth]="30"> </wj-flex-grid-column>
+
+                    <wj-flex-grid-column [header]="'Translation.Bond Nature' | translate" [align]="'left'"  [allowSorting]="false" [isRequired]="false"
+                    [binding]="'bondNatureDisplay_'" [width]="'0.2*'" [minWidth]="30"></wj-flex-grid-column>
+
+                    <wj-flex-grid-column [header]="'Translation.Bond Category' | translate" [align]="'left'"  [allowSorting]="false" [isRequired]="false"
+                    [binding]="'bondCategoryDisplay_'" [width]="'0.2*'" [minWidth]="30"></wj-flex-grid-column>
+
+                    <wj-flex-grid-column [header]="'Translation.Bond Type' | translate" [align]="'left'"   [allowSorting]="false" [isRequired]="false"
+                    [binding]="'bondTypeDisplay_'" [width]="'0.2*'" [minWidth]="30"></wj-flex-grid-column>
+
+                    <wj-flex-grid-column [header]="'Translation.Levy Mode' | translate" [align]="'left'" [format]="'n4'" [allowSorting]="false" [isRequired]="false"
+                    [binding]="'levyModeDisplay_'" [width]="'0.2*'" [minWidth]="30"></wj-flex-grid-column>
+
+                     
+
+                    <wj-flex-grid-column [header]="'Translation.Value Type' | translate" [align]="'left'" [format]="'n4'" [allowSorting]="false" [isRequired]="false"
+                    [binding]="'valueTypeDisplay_'" [width]="'0.2*'" [minWidth]="30"></wj-flex-grid-column>
+
+
+                  <wj-flex-grid-column [header]="levyRateLabelModalDisplay" [align]="'right'" [format]="'n4'" [allowSorting]="false" [isRequired]="false"
+                    [binding]="'levyRate'" [width]="'0.38*'" [minWidth]="30"></wj-flex-grid-column>
+
+                  <wj-flex-grid-column [header]="'Translation.Applies To' | translate" [align]="'left'" [format]="'n4'" [allowSorting]="false" [isRequired]="false"
+                    [binding]="'tradingSideDisplay_'" [width]="'0.2*'" [minWidth]="30"></wj-flex-grid-column>
+
+                    <wj-flex-grid-column [header]="'Translation.Slab Range' | translate" [align]="'left'" [format]="'n4'" [allowSorting]="false" [isRequired]="false"
+                    [binding]="'slabRangeDisplay_'" [width]="'0.2*'" [minWidth]="30"></wj-flex-grid-column>
+
+                     <wj-flex-grid-column [header]="'IVA Levy'" [align]="'left'" [format]="'n0'" [allowSorting]="false" [isRequired]="false"
+                    [binding]="'ivaLevyDisplay_'" [width]="'0.2*'" [minWidth]="30"></wj-flex-grid-column>
+
+                  <wj-flex-grid-column [header]="'Common.Active' | translate" [allowMerging]="true" [align]="'center'" [binding]="'active'" [width]="'0.3*'" [minWidth]="30">
+                  </wj-flex-grid-column>
+
+
+                  <wj-flex-grid-column [header]="'Common.Action' | translate" [width]="'0.4*'" [allowSorting]="false" [isRequired]="false" [allowMerging]="true"
+                    [align]="'center'" [minWidth]="30">
+                    <ng-template wjFlexGridCellTemplate let-item="item" [cellType]="'Cell'">
+                      <div *ngIf="item.validFrom && item.newElement">
+
+                        <!--<input type="image" *ngIf="userService.isAuhtorized(userService.EB_CONF_LEVIES_UPDATE)" src="assets/img/edit_orange.png" class="btTxt submit" (click)="onEditDetailAction()" title="Edit Record"
+                    id="btnEdit" />
+
+                  <input type="image" *ngIf="userService.isAuhtorized(userService.EB_CONF_LEVIES_UPDATE)" src="assets/img/cross_orange.png" class="btTxt submit" (click)="onEditDetailDelete()" title="Delete Record"
+                    id="btnDetailRemove" />-->
+
+                        <button *ngIf="userService.isAuhtorized(userService.EB_CONF_LEVIES_UPDATE) || userService.isAuhtorized(userService.EB_CONF_LEVIES_NEW)"
+                          id="btnEdit" class="on_edit_button" role="button" (click)="onEditDetailAction()" title="{{ 'Translation.Edit' | translate }}"> <img src="assets/img/edit_orange.png"/> </button>
+
+                        <button *ngIf="userService.isAuhtorized(userService.EB_CONF_LEVIES_UPDATE) || userService.isAuhtorized(userService.EB_CONF_LEVIES_NEW)"
+                          id="btnDetailRemove" class="on_edit_button" role="button" (click)="onEditDetailDelete()" title="{{ 'Translation.Delete' | translate }}"> <img src="assets/img/cross_orange.png"/> </button>
+
+
+                      </div>
+                      <div *ngIf="!item.newElement">
+                        <button *ngIf="userService.isAuhtorized(userService.EB_CONF_LEVIES_UPDATE) || userService.isAuhtorized(userService.EB_CONF_LEVIES_NEW)"
+                          id="btnEdit" class="on_edit_button" role="button" (click)="onEditDetailAction()" title="{{ 'Translation.Edit' | translate }}"> <img src="assets/img/edit_orange.png"/> </button>
+                        <!-- <input type="image" *ngIf="userService.isAuhtorized(userService.EB_CONF_LEVIES_UPDATE)" src="assets/img/edit_orange.png" class="btTxt submit" (click)="onEditDetailAction()" title="Edit Record"
+                    id="btnEdit" />-->
+                    <button *ngIf="isIVL"
+                    id="btnDetailRemove" class="on_edit_button" role="button" (click)="onDeleteIVL(item)" title="{{ 'Translation.Delete' | translate }}"> <img src="assets/img/cross_orange.png"/> </button>
+                      </div>
+                    </ng-template>
+                  </wj-flex-grid-column>
+                </wj-flex-grid>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="orange_footer">
+          <button id="btnSave" #saveBtn type="submit" class="save_btn" (click)="FinalSave()" *ngIf="addingNew && userService.isAuhtorized(userService.EB_CONF_LEVIES_NEW)">{{ 'Common.Save' | translate }}</button>
+          <button id="btnEdit" #updateBtn type="submit" class="save_btn" (click)="FinalUpdate()" *ngIf="!addingNew && userService.isAuhtorized(userService.EB_CONF_LEVIES_UPDATE)">{{ 'Common.Update' | translate }}</button>
+          <button type="button" class="cancel_btn" data-dismiss="modal" (click)="onCancelAction()">{{ 'Common.Cancel' | translate }}</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+<dialog-cmp #dialogCmp (btnClick)="getNotification($event)"> </dialog-cmp>
+
+
+
+
+
+
+
+<wj-popup class="modal-dialog grey_Dialog" #LevyDeleteDlg  >
+  <div class="modal-content">
+    <div class="modal-body">
+      <h2 class="page-title"> {{ 'Translation.Confirmation Dialog' | translate }}</h2>
+      <p>{{statusMsg}} </p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-success wj-hide mx-1" style="outline:black;" (click)="deleteLeviesDetailById()" >{{ 'Common.Yes' | translate }}</button>
+      <button type="button" class="btn btn-default wj-hide mx-1" style="outline:black;" >{{ 'Common.No' | translate }}</button>
+    </div>
+  </div>
+  <!--<legend class="h4"> Alert </legend>
+    <b> {{orderConfirmMsg}} </b>
+    <div align="center"> <button id="alertSBtn" class="btn wj-hide" (click)="onAlertOk()">Ok</button> </div>         -->
+</wj-popup>

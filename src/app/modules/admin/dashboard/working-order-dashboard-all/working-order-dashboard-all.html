@@ -1,0 +1,81 @@
+<div class="row" style="width: 100%;">
+    <div class="col-lg-12 widget-container">
+
+        <ul class="mb-0  " style="display: flex;">
+
+            <li *ngIf="isParticipant" class="tabsBtnsDashboard mr-1" (click)="type='workingOrder'"
+                [class.tabsBtnsActiveDashboard]="type === 'workingOrder'">
+                <a><span [class.tabsBtnsTextActiveDashbaord]="type === 'workingOrder'" class="tabsBtnsTextDashbaord">
+                        {{'Translation.WORKING ORDERS' | translate}}
+                    </span>
+                </a>
+            </li>
+            <li class="tabsBtnsDashboard mr-1" (click)="type='trade'"
+                [class.tabsBtnsActiveDashboard]="type === 'trade'">
+                <a><span [class.tabsBtnsTextActiveDashbaord]="type === 'trade'" class="tabsBtnsTextDashbaord">
+                        {{'Translation.TRADES' | translate}}
+                    </span>
+                </a>
+            </li>
+            <li *ngIf="isParticipant" class="tabsBtnsDashboard mr-1" (click)="type='auditTrail'"
+                [class.tabsBtnsActiveDashboard]="type === 'auditTrail'">
+                <a><span [class.tabsBtnsTextActiveDashbaord]="type === 'auditTrail'" class="tabsBtnsTextDashbaord">
+                        {{'Translation.EVENT LOGS' | translate}}
+                    </span>
+                </a>
+            </li>
+            <li class="tabsBtnsDashboard mr-1" (click)="type='topGainers'"
+                [class.tabsBtnsActiveDashboard]="type === 'topGainers'">
+                <a><span [class.tabsBtnsTextActiveDashbaord]="type === 'topGainers'" class="tabsBtnsTextDashbaord">
+                        {{'Translation.TOP GAINERS' | translate}}
+                    </span>
+                </a>
+            </li>
+
+            <li class="tabsBtnsDashboard mr-1" (click)="type='topLosers'"
+                [class.tabsBtnsActiveDashboard]="type === 'topLosers'">
+                <a><span [class.tabsBtnsTextActiveDashbaord]="type === 'topLosers'" class="tabsBtnsTextDashbaord">
+                        {{'Translation.TOP LOSERS' | translate}}
+                    </span>
+                </a>
+            </li>
+
+            <li class="tabsBtnsDashboard mr-1" (click)="type='volumeLeaders'"
+                [class.tabsBtnsActiveDashboard]="type === 'volumeLeaders'">
+                <a><span [class.tabsBtnsTextActiveDashbaord]="type === 'volumeLeaders'" class="tabsBtnsTextDashbaord">
+                        {{'Translation.VOLUME LEADERS' | translate}}
+                    </span>
+                </a>
+            </li>
+
+
+        </ul>
+
+        <div *ngIf="type === 'workingOrder'" class="dashboardGrid">
+            <working-order-dashboard></working-order-dashboard>
+        </div>
+
+        <div *ngIf="type === 'trade'" class="dashboardGrid">
+            <trades-dashboard></trades-dashboard>
+        </div>
+
+        <div *ngIf="type === 'auditTrail'" class="dashboardGrid">
+            <audit-trails-dashboard></audit-trails-dashboard>
+        </div>
+
+        <div *ngIf="type === 'topGainers'" class="dashboardGrid">
+            <top-gainers></top-gainers>
+        </div>
+
+        <div *ngIf="type === 'topLosers'" class="dashboardGrid">
+            <top-losers></top-losers>
+        </div>
+
+        <div *ngIf="type === 'volumeLeaders'" class="dashboardGrid">
+            <volume-leaders></volume-leaders>
+        </div>
+
+
+    </div>
+
+</div>

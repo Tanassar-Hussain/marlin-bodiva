@@ -1,0 +1,234 @@
+<div class="pl-4 pr-4 w-full">
+
+    <div>
+        <div *ngIf="!isGraphComp">
+            <div class="dashboardHeadings text-primary leading-tight">{{'Translation.ORDER BOOK' |
+                translate}}</div>
+        </div>
+
+        <div>
+
+            <div [hidden]="isGraphComp" class="w-full ">
+                <mat-form-field class="fuse-mat-no-subscript w-full" [floatLabel]="'always'">
+                    <mat-select #singleSelect placeholder="{{'Translation.Search Symbol' | translate}}..."
+                        [formControl]="myControl1" [(ngModel)]="topSymbol" floatlLabel="never"
+                        (ngModelChange)="onSymbolSelect($event)">
+                        <mat-option>
+                            <ngx-mat-select-search [formControl]="myControl"
+                                placeholderLabel="{{'Translation.Search Symbol' | translate}}"
+                                (ngModelChange)="searchSymbol($event)"
+                                noEntriesFoundLabel="{{'Translation.No Matching Symbol Found' | translate}}">
+                            </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let val of options" [value]="val">
+                            {{val}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div class="flex justify-between font-light  text-gray-300 mt-1 mb-1">
+                <div>
+                    <button *ngIf="isGraphComp" class=" border-2 p-1 pl-2 pr-2 orderBookMenuFontSize " style="border-radius: 5px;"
+                        [ngStyle]="{ color: selectedEquityClass == 'market_trades' ? '#f59e0b' : '#bfd5d6' }"
+                        (click)="onChangeMB('market_trades')">
+                        {{'Translation.Market Trades' | translate}}
+                    </button>
+
+                    <button class=" border-2 p-1 pl-2 pr-2 orderBookMenuFontSize" style="border-radius: 5px;"
+                        [ngStyle]="{ color: selectedEquityClass == 'best_order' ? '#f59e0b' : '#bfd5d6' }"
+                        (click)="onChangeMB('best_order')">
+                        {{'Translation.Best Orders' | translate}}
+                    </button>
+
+                    <button *ngIf="!isGraphComp" class="ml-1 border-2 p-1 pl-2 pr-2 orderBookMenuFontSize" style="border-radius: 5px;"
+                        [ngStyle]="{ color: selectedEquityClass == 'best_price' ? '#f59e0b' : '#bfd5d6' }"
+                        (click)="onChangeMB('best_price')">
+                        {{'Translation.Best Prices' | translate}}
+                    </button>
+                </div>
+                <div *ngIf="isGraphComp" class="ml-1 mt-1 p-1 pl-2 pr-2 orderBookMenuFontSize">
+                    <span class="text-primary">{{marketCode}} :</span> <span class="ml-1"
+                        [ngStyle]="{'color': activeColor}">{{marketStatus}}</span>
+                </div>
+
+            </div>
+
+            <div class="w-full  orderBookDashboard">
+                <!-- <div *ngIf="hasData"> -->
+                <div>
+                    <table *ngIf="selectedEquityClass == 'best_order'" class="bg-transparent w-full" mat-table
+                        [dataSource]="mboDataSource" #recentTransactionsTable>
+
+                        <ng-container matColumnDef="buy_volume">
+                            <th style="background-color: #193c5d; width: 25%;font-size: 11px !important;"
+                                class="text-primary-500" mat-header-cell *matHeaderCellDef>
+                                {{'Translation.BUY' | translate}}
+                            </th>
+                            <td class="shadow-2xl" mat-cell *matCellDef="let transaction">
+                                <span class="pr-4 text-md font-normal whitespace-nowrap">
+                                    {{transaction.buy_volume}}
+                                </span>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="buy_price">
+                            <th style="background-color: #193c5d; width: 25%;font-size: 11px !important;"
+                                class="text-primary-500" mat-header-cell *matHeaderCellDef>
+                                {{'Translation.PRICE' | translate}}
+                            </th>
+                            <td class="shadow-2xl" mat-cell *matCellDef="let transaction">
+                                <span class="pr-4 text-md font-normal whitespace-nowrap text-green-600">
+                                    {{transaction.buy_price}}
+                                </span>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="sell_price">
+                            <th style="background-color: #193c5d; width: 25%;font-size: 11px !important;"
+                                class="text-primary-500" mat-header-cell *matHeaderCellDef>
+                                {{'Translation.PRICE' | translate}}
+                            </th>
+                            <td class="shadow-2xl" mat-cell *matCellDef="let transaction">
+                                <span class="pr-4 text-md font-normal whitespace-nowrap text-red-600">
+                                    {{transaction.sell_price}}
+                                </span>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="sell_volume">
+                            <th style="background-color: #193c5d; width: 25%;font-size: 11px !important;"
+                                class="text-primary-500" mat-header-cell *matHeaderCellDef>
+                                {{'Translation.SELL' | translate}}
+                            </th>
+                            <td class="shadow-2xl" mat-cell *matCellDef="let transaction">
+                                <span class="pr-4 text-md font-normal whitespace-nowrap">
+                                    {{transaction.sell_volume}}
+                                </span>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="mboDataColumns">
+                        </tr>
+                        <tr class="h-12" mat-row *matRowDef="let row; columns: mboDataColumns;">
+                        </tr>
+                    </table>
+
+                    <table *ngIf="selectedEquityClass == 'best_price'" class="w-full bg-transparent" mat-table
+                        [dataSource]="mbpDataSource" #recentTransactionsTable>
+
+                        <ng-container matColumnDef="buy_volume">
+                            <th style="background-color: #193c5d; width: 25%;font-size: 11px !important;"
+                                class="text-primary-500" mat-header-cell *matHeaderCellDef>
+                                {{'Translation.BUY' | translate}}
+                            </th>
+                            <td class="shadow-2xl" mat-cell *matCellDef="let transaction">
+                                <span class="pr-4 text-md font-normal whitespace-nowrap">
+                                    <span *ngIf="transaction.buy_count>0">({{transaction.buy_count}})</span>
+                                    {{transaction.buy_volume}}
+                                </span>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="buy_price">
+                            <th style="background-color: #193c5d; width: 25%;font-size: 11px !important;"
+                                class="text-primary-500" mat-header-cell *matHeaderCellDef>
+                                {{'Translation.PRICE' | translate}}
+                            </th>
+                            <td class="shadow-2xl" mat-cell *matCellDef="let transaction">
+                                <span class="pr-4 text-md font-normal whitespace-nowrap text-green-600">
+                                    {{transaction.buy_price}}
+                                </span>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="sell_price">
+                            <th style="background-color: #193c5d; width: 25%;font-size: 11px !important;"
+                                class="text-primary-500" mat-header-cell *matHeaderCellDef>
+                                {{'Translation.PRICE' | translate}}
+                            </th>
+                            <td class="shadow-2xl" mat-cell *matCellDef="let transaction">
+                                <span class="pr-4 text-md font-normal whitespace-nowrap text-red-600">
+                                    {{transaction.sell_price}}
+                                </span>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="sell_volume">
+                            <th style="background-color: #193c5d; width: 25%;font-size: 11px !important;"
+                                class="text-primary-500" mat-header-cell *matHeaderCellDef>
+                                {{'Translation.SELL' | translate}}
+                            </th>
+                            <td class="shadow-2xl" mat-cell *matCellDef="let transaction">
+                                <span class="pr-4 text-md font-normal whitespace-nowrap">
+                                    <span *ngIf="transaction.sell_count>0">({{transaction.sell_count}})</span>
+                                    {{transaction.sell_volume}}
+                                </span>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="mbpDataColumns">
+                        </tr>
+                        <tr class="h-12" mat-row *matRowDef="let row; columns: mbpDataColumns;">
+                        </tr>
+                    </table>
+
+                    <div *ngIf="isGraphComp">
+                        <table *ngIf="selectedEquityClass == 'market_trades'" class="w-full bg-transparent" mat-table
+                            [dataSource]="mtDataSource">
+                            <ng-container matColumnDef="time">
+                                <th style="background-color: #193c5d; width: 25%;font-size: 11px !important;"
+                                    class="text-primary-500" mat-header-cell *matHeaderCellDef>
+                                    {{'Translation.TIME' | translate}}
+                                </th>
+                                <td class="shadow-2xl" mat-cell *matCellDef="let transaction">
+                                    <span class="pr-4 text-md font-normal whitespace-nowrap">
+                                        {{transaction.entryDateTime | date : dateTimeFormat : utcLocaleHours}}
+                                    </span>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="price">
+                                <th style="background-color: #193c5d; width: 25%;font-size: 11px !important;"
+                                    class="text-primary-500" mat-header-cell *matHeaderCellDef>
+                                    {{'Translation.PRICE' | translate}}
+                                </th>
+                                <td class="shadow-2xl" mat-cell *matCellDef="let transaction">
+                                    <span class="pr-4 text-md font-normal whitespace-nowrap">
+                                        {{transaction.lastTradePrice}}
+                                    </span>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="qualtity">
+                                <th style="background-color: #193c5d; width: 25%;font-size: 11px !important;"
+                                    class="text-primary-500" mat-header-cell *matHeaderCellDef>
+                                    {{'Translation.QUANTITY' | translate}}
+                                </th>
+                                <td class="shadow-2xl" mat-cell *matCellDef="let transaction">
+                                    <span class="pr-4 text-md font-normal whitespace-nowrap">
+                                        {{transaction.lastTradeQuantity}}
+                                    </span>
+                                </td>
+                            </ng-container>
+
+
+                            <tr mat-header-row *matHeaderRowDef="mtDataColumns">
+                            </tr>
+                            <tr class="h-12" mat-row *matRowDef="let row; columns: mtDataColumns;">
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+        </div>
+
+    </div>
+
+
+</div>

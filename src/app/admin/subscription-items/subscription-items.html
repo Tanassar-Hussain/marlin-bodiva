@@ -1,0 +1,117 @@
+<div class="signInRouterImg">
+    <form class="form-horizontal form-label-left" method="post" data-parsley-priority-enabled="false" novalidate="novalidate"
+    role="form" [formGroup]="myForm" (ngSubmit)="onSaveAction(myForm.value, myForm.valid)">
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <header class="widget-header">
+                <h3>{{ 'Translation.Subscription Items' | translate }} <span class="fw-semi-bold"></span></h3>
+              
+            </header>
+         
+            <div id="filter_box" class="collapse in">
+
+                <div class="row">
+                   <div class="col-md-3 fields_box py-3">
+                         
+                            <label for="search-input">{{ 'Translation.Subscription' | translate }} <span class="validation">*</span></label>
+                              <wj-combo-box id="name"  formControlName="name" #name [itemsSource]="subscriptionTypesList" [(ngModel)]="selectedItems.subscriptionId" (ngModelChange)="getSubscriptionItemsById($event)"
+                                displayMemberPath="name" selectedValuePath="subscriptionId" [isEditable]="true" style="width: 100%;">
+                              </wj-combo-box>
+                              <div *ngIf="myForm.controls['name'].hasError('required')" [hidden]="myForm.controls.name.valid || (myForm.controls.name.pristine && !isSubmitted)"
+                              class="text-danger">{{ 'Translation.Subscription' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                   </div>
+                   <div class="col-md-6 fields_box">
+                    <div style="height:27px;"></div>
+                    <button type="submit" class="btn btn-outline-success mx-1" *ngIf="!isEditing">{{'Translation.Save' | translate}} <i class="fa fa-floppy-o" aria-hidden="true"></i></button>
+                    <button type="submit" class="btn btn-outline-primary mx-1"  *ngIf="isEditing">{{'Translation.Update' | translate}} <i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                    <button type="button" class="btn btn-outline-danger mx-1" (click)="clearFields()">{{'Translation.Clear' | translate}} <i class="fa fa-times" aria-hidden="true"></i></button>
+                   </div>
+                </div>
+    
+              </div>
+
+        </div>
+    </div>
+
+
+
+ 
+    <!-- <div class=" w-full h-40" style="padding-top: 30px;">
+        <span class="flex justify-center text-primary text-5xl font-medium font-serif">{{'Translation.Subscription Items' | translate | uppercase}}</span>
+        <span class="flex justify-center"> <img class="w-auto h-auto" src="assets/images/auth/Underline.png"> </span>
+    </div> -->
+
+        <div class="container-fluid">
+          
+               <!-------------------------------------------------------------------------------------------------
+                ***************************************Accordian************************************************
+                ------------------------------------------------------------------------------------------------->
+                <div class="panel-group mb-lg" id="accordion" style="color: #3f3f3f; margin-top: 10px;" >
+                    <div class="subsription_accordian">
+                            <ol style="list-style-type: none;margin:0;padding:0px;">
+                                 <li *ngFor="let item of itemsList; let ind = index">
+                                    <div class="panel subscription-default">
+                                        <div class="subscription-heading collapsed">
+                                            <h4 class="panel-title"  >
+                                                <a class="collapsed" data-toggle="collapse" [attr.data-target]="'#'+ind" aria-expanded="false" #toggleCollapsed>
+                                                {{item.optionName}}
+                                                <i  class="fa fa-angle-down pull-right"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div [attr.id]="ind" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                                            <div class="subscription-panel-body">
+                                                <ul class="ul_list">
+                                                    <li *ngFor="let childOne of item.childs">
+                                                        <div class="ul_borders first_box pl-5" style="font-size: 15px; font-style: italic; font-weight: 500;">{{childOne.optionName}}
+                                                        </div>
+    
+                                                        <ul>
+                                                            <li *ngFor="let childTwo of childOne.childs">
+                                                                <div class="ul_borders first_box" style="font-weight:500; font-size: 13px; padding-left: 30px;">{{childTwo.optionName}}
+                                                                    <div class="check_box_subscription">
+                                                                        <input type="checkbox" 
+                                                                            [checked]="childTwo.allowed" 
+                                                                            (change)="allowCheckBoxEvent(childTwo.privilegeId,$event)" />
+                                                                    </div>
+                                                                </div>
+                                                               
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>  
+                         
+                
+                         
+                            </ol>
+                        </div>
+                    </div>
+              <!--------------------------------------------------------------------------------------------------
+               *****************************************Accordian*************************************************
+               -------------------------------------------------------------------------------------------------->
+    
+               
+    
+    
+           
+        </div>
+  
+ 
+  
+
+ 
+
+
+</form>
+
+</div>
+
+
+
+
+
+<dialog-cmp #dialogCmp (btnClick)="getNotification($event)"> </dialog-cmp>

@@ -1,0 +1,34 @@
+<div class="row">
+    <div class="col-lg-12 col-md-offset-0 col-xs-12 widget-container">
+
+
+
+                        <ul class="mb-0 ml-5 mt-3" style="display: flex;">
+                            <li  class="tabsBtns" (click)="selectedAssetClass='equities'" *ngIf="authService.isAuhtorized(authService.OM_REPORTS_EVENT_LOG_VIEW)" [class.tabsBtnsActive]="selectedAssetClass === 'equities'"><a ><span [class.tabsBtnsTextActive]="selectedAssetClass === 'equities'" class="tabsBtnsText">{{'Equities' | translate | uppercase}}</span></a></li>
+                            <li  class="tabsBtns" (click)="selectedAssetClass='bonds'" *ngIf="authService.isAuhtorized(authService.OM_REPORTS_EVENT_LOG_VIEW)" [class.tabsBtnsActive]="selectedAssetClass === 'bonds'"><a ><span [class.tabsBtnsTextActive]="selectedAssetClass === 'bonds'" class="tabsBtnsText">{{'Bonds' | translate | uppercase }}</span></a></li>
+                            <li class="tabsBtns"  (click)="selectedAssetClass='etf'" [class.tabsBtnsActive]="selectedAssetClass === 'etf'"><a ><span [class.tabsBtnsTextActive]="selectedAssetClass === 'etf'" class="tabsBtnsText">{{'ETFs' | translate }}</span></a></li>
+                           </ul>
+
+
+
+                    <ng-container *ngIf="selectedAssetClass === 'equities'">
+                        <event-log></event-log>
+                    </ng-container>
+
+                    <ng-container *ngIf="selectedAssetClass === 'bonds'">
+                         <bond-event-log></bond-event-log>
+                    </ng-container>
+                    <ng-container *ngIf="selectedAssetClass === 'etf'">
+                          <etf-event-logs></etf-event-logs>
+                    </ng-container>
+
+                  
+
+
+
+
+
+
+        </div>
+
+    </div>

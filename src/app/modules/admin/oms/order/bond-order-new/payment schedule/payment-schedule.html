@@ -1,0 +1,43 @@
+<!-- /////////// Loading animations ///////////// -->
+<div class="loading-animations" *ngIf="showLoader">
+    <div class="request-loader">
+        <progress></progress>
+    </div>
+</div>
+
+<div style="padding: 0px;">
+    <div class="table_container">
+        <wj-flex-grid [itemsSource]="bondPaymentScheduleArr" [isReadOnly]="true" [selectionMode]="'Row'"
+            [autoSizeMode]="'Headers'" [headersVisibility]="'Column'" #settlementGrid class="grid"
+            style="height: 350px;width:100%;">
+            <wj-flex-grid-filter [filterColumns]="['markup','paymentDate','noOfCoupons','noOfDays','principalPayment']">
+            </wj-flex-grid-filter>
+            <wj-flex-grid-column [header]="'Translation.Number' | translate" [binding]="'noOfCoupons'" [minWidth]="30"
+                [width]="'0.3*'"></wj-flex-grid-column>
+            <wj-flex-grid-column [header]="'Translation.Date' | translate" [binding]="'paymentDate'" [minWidth]="30"
+                [width]="'0.3*'"></wj-flex-grid-column>
+            <wj-flex-grid-column [header]="'Translation.Coupon Payment' | translate" [binding]="'markup'"
+                [minWidth]="30" [width]="'0.3*'">
+            </wj-flex-grid-column>
+            <wj-flex-grid-column [header]="'Translation.Days' | translate" [binding]="'noOfDays'" [minWidth]="30"
+                [width]="'0.3*'">
+            </wj-flex-grid-column>
+            <wj-flex-grid-column [header]="'Translation.Principal Payment' | translate" [binding]="'principalPayment'"
+                [minWidth]="30" [width]="'0.3*'"></wj-flex-grid-column>
+            <wj-flex-grid-column [header]="'Total'" [binding]="'total'" [minWidth]="30" [width]="'0.3*'">
+            </wj-flex-grid-column>
+        </wj-flex-grid>
+    </div>
+    <div class="btn-group col-xs-12 align-right">
+        <wj-collection-view-pager [cv]="settlementGrid?.collectionView"></wj-collection-view-pager>
+        <wj-menu [(value)]="pageSize" [header]="'Common.Page Size' | translate">
+            <wj-menu-item [value]="0">{{ 'Common.No Paging' | translate }}</wj-menu-item>
+            <wj-menu-item [value]="5">5 {{ 'Common.items' | translate }}</wj-menu-item>
+            <wj-menu-item [value]="10">10 {{ 'Common.items' | translate }}</wj-menu-item>
+            <wj-menu-item [value]="20">20 {{ 'Common.items' | translate }}</wj-menu-item>
+            <wj-menu-item [value]="30">30 {{ 'Common.items' | translate }}</wj-menu-item>
+            <wj-menu-item [value]="50">50 {{ 'Common.items' | translate }}</wj-menu-item>
+            <wj-menu-item [value]="100">100 {{ 'Common.items' | translate }}</wj-menu-item>
+        </wj-menu>
+    </div>
+</div>

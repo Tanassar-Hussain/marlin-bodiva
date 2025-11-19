@@ -1,0 +1,173 @@
+<div class="signInRouterImg">
+  
+
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <header class="widget-header">
+                <h3>{{ 'Menu.Subscription Payment' | translate }} <span class="fw-semi-bold"></span></h3>
+                <div class="other_btns" style="right:15px !important; top:3px !important">
+                    <!-- <a class="add_new_btn mx-0"  title="{{ 'Translation.Add Subscription' | translate }}"  *ngIf="isShow === false" (click)="isShow = true"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                    <a class="add_new_btn mx-0"  title="{{ 'Translation.Hide Subscription' | translate }}" *ngIf="isShow === true" (click)="isShow = false"><i class="fa fa-minus" aria-hidden="true"></i></a> -->
+                    <button  class="add_new_btn" id="btnNew" data-toggle="modal" (click)="onNewAction()"
+                    data-target="#add_new" type="button" data-backdrop="static" title="{{'Translation.Add' | translate}}" ><i class="fa fa-plus" aria-hidden="true"></i> </button>
+                </div>
+            </header>
+            <div  class="table_container">
+                <wj-flex-grid class="grid" [isReadOnly]="true" [itemsSource]="itemsList" [isReadOnly]="true" [selectionMode]="'Row'" [autoSizeMode]="'Headers'"
+                    [headersVisibility]="'Column'" style="height: 250px;" #flex>
+                    <wj-flex-grid-filter [filterColumns]=""></wj-flex-grid-filter>
+                    <wj-flex-grid-column [header]="'Translation.Participant' | translate" [align]="'left'" [binding]="'participantCode'" [width]="'0.25*'" [minWidth]="20"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Menu.Subscription' | translate" [align]="'left'" [binding]="'productSubscriptionName'" [width]="'0.25*'" [minWidth]="20"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Translation.Billing' | translate" [align]="'left'" [binding]="'billingName'" [width]="'0.25*'" [minWidth]="20"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Translation.Currency' | translate" [align]="'left'" [binding]="'currencyCode'" [width]="'0.25*'" [minWidth]="20"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Translation.Net Amount' | translate" [align]="'left'" [binding]="'amount'" [width]="'0.25*'" [minWidth]="20"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Translation.Payment Date' | translate" [align]="'left'" [binding]="'paymentDate'" [width]="'0.25*'" [minWidth]="20"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Translation.Due For' | translate" [align]="'left'" [binding]="'dueDate'" [width]="'0.25*'" [minWidth]="20"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Translation.Valid Till' | translate" [align]="'left'" [binding]="'validTill'" [width]="'0.25*'" [minWidth]="20"></wj-flex-grid-column>
+                    <!-- <wj-flex-grid-column [header]="'Translation.Action' | translate" [align]="'left'" [binding]="''" [width]="'0.25*'" [minWidth]="20">
+                        
+                        <ng-template wjFlexGridCellTemplate [cellType]="'Cell'">
+                            <img class="gridImg"  (click)="onEditAction()"
+                            src="assets/img/edit_orange.png" title="{{ 'Translation.Edit' | translate }}"  />
+                        </ng-template>
+                    </wj-flex-grid-column> -->
+                </wj-flex-grid>        
+            </div>
+            <div   class="btn-group col-xs-12 align-right">
+                <!-- Paginator -->
+                <wj-collection-view-pager [cv]="flex?.collectionView"></wj-collection-view-pager>
+                <!-- page size -->
+                <wj-menu [(value)]="pageSize" [header]="'Common.Page Size' | translate">
+                    <wj-menu-item [value]="0">{{ 'Common.No Paging' | translate }}</wj-menu-item>
+                    <wj-menu-item [value]="5">5 {{ 'Common.items' | translate }}</wj-menu-item>
+                    <wj-menu-item [value]="10">10 {{ 'Common.items' | translate }}</wj-menu-item>
+                    <wj-menu-item [value]="20">20 {{ 'Common.items' | translate }}</wj-menu-item>
+                    <wj-menu-item [value]="30">30 {{ 'Common.items' | translate }}</wj-menu-item>
+                    <wj-menu-item [value]="50">50 {{ 'Common.items' | translate }}</wj-menu-item>
+                    <wj-menu-item [value]="100">100 {{ 'Common.items' | translate }}</wj-menu-item>
+                  </wj-menu>
+            </div>
+
+
+
+        </div>
+    </div>
+
+
+ 
+ 
+  
+
+ 
+
+
+
+    <div id="add_new" class="modal fade" role="dialog" data-keyboard="true">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <form class="form-horizontal form-label-left parsleyjs" data-parsley-priority-enabled="false" role="form" [formGroup]="myForm"
+                 novalidate  (ngSubmit)="onSaveAction(myForm.value , myForm.valid)" >
+                    <div class="modal-body modal-no-border">
+                        <div class="row setup_box_container">
+                            <div class="col-md-3 col-sm-5 modal_left">
+                                <div class="wizard_Logo">
+                                    <img src="assets/img/Dollar-Sign.png" class="formImg"/>
+                                    <h4>{{'Menu.Subscription Payment' | translate}}</h4>
+                                    <p>{{'Translation.Management and configurations of subscription payment' | translate}}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-9 col-sm-7 modal_center">
+                                <div class="row" style="margin: 40px">
+                                    <div class="col-md-6 fields_box px-2">
+                                            <label > {{'Translation.Participant' | translate}}   <span class="validation ml-1">*</span></label>
+                                            <wj-auto-complete id="participant" class="wijmo_style" name="participant" formControlName="participant" [itemsSource]="participantsList" displayMemberPath="displayName_"
+                                            selectedValuePath="participantId" #participant [isEditable]="true" tabindex="1"  [(ngModel)]="selectedItem.participantId" (ngModelChange)="onChangeParticipant($event)">
+                                            </wj-auto-complete>
+                                            <div *ngIf="myForm.controls['participant'].hasError('required')" [hidden]="myForm.controls.participant.valid || (myForm.controls.participant.pristine && !isSubmitted)"
+                                            class="text-danger">{{ 'Translation.Participant' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                                    </div>
+                                    <div class="col-md-6 fields_box px-2">
+                                            <label> {{'Menu.Subscription' | translate}}   <span class="validation ml-1">*</span></label>
+                                            <wj-combo-box id="subscription" class="wijmo_style" name="subscription" formControlName="subscription" [itemsSource]="subscriptionTypesList" displayMemberPath="name"
+                                            selectedValuePath="subscriptionId" #subscription [isEditable]="true" tabindex="2" [isDisabled]="true" [(ngModel)]="selectedItem.productSubscriptionId">
+                                            </wj-combo-box>
+                                            <div *ngIf="myForm.controls['subscription'].hasError('required')" [hidden]="myForm.controls.subscription.valid || (myForm.controls.subscription.pristine && !isSubmitted)"
+                                            class="text-danger">{{ 'Menu.Subscription' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                                    </div>
+                                    <div class="col-md-6 fields_box px-2">
+                                        <label> {{'Menu.Billing' | translate}}   <span class="validation ml-1">*</span></label>
+                                        <wj-combo-box id="billing" class="wijmo_style" name="billing" formControlName="billing" [itemsSource]="subscriptionBillingList" displayMemberPath="descriptions"
+                                        selectedValuePath="billingId" #billingId [isEditable]="true" tabindex="2" [isDisabled]="true" [(ngModel)]="selectedItem.billingId">
+                                        </wj-combo-box>
+                                        <div *ngIf="myForm.controls['billing'].hasError('required')" [hidden]="myForm.controls.billing.valid || (myForm.controls.billing.pristine && !isSubmitted)"
+                                        class="text-danger">{{ 'Menu.Billing' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                                </div>
+                                <div class="col-md-6 fields_box">
+                                    <label> {{'Translation.Price' | translate}} <span class="validation ml-1">*</span></label>
+                                    <wj-input-number class="wijmo_style" formControlName="price" id="price" [isDisabled]="true" tabindex="4" [format]="'n2'" [(ngModel)]="selectedItem.price" #price></wj-input-number>
+                                    <div *ngIf="myForm.controls['price'].hasError('required')"  [hidden]="myForm.controls.price.valid || (myForm.controls.price.pristine && !isSubmitted)"
+                                    class="text-danger">{{ 'Translation.Price' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                                    <div *ngIf="isSubmitted && selectedItem.price==0.00" class="text-danger"> {{ 'Translation.Price' | translate }} {{ 'Translation.is required' | translate }}. </div>
+                                  
+                            </div>
+                                    <div class="col-md-6 fields_box px-2" >
+                                            <label> {{'Translation.Discount' | translate}}  </label>
+                                            <wj-input-number class="wijmo_style" formControlName="discount" id="discount"  [isDisabled]="true" tabindex="4" [format]="'n2'" [(ngModel)]="selectedItem.discount" #discount></wj-input-number>
+                                    </div>
+                                    <div class="col-md-6 fields_box px-2">
+                                            <label> {{'Translation.Net Amount' | translate}} <small *ngIf="currencyName != ''">({{currencyName}})</small> <span class="validation ml-1">*</span></label>
+                                            <wj-input-number class="wijmo_style" formControlName="amount" [isDisabled]="true" id="amount" tabindex="4" [format]="'n2'" [(ngModel)]="selectedItem.amount" #amount></wj-input-number>
+                                            <div *ngIf="myForm.controls['amount'].hasError('required')" [hidden]="myForm.controls.amount.valid || (myForm.controls.amount.pristine && !isSubmitted)"
+                                            class="text-danger">{{ 'Translation.Amount' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                                            <div *ngIf="isSubmitted && selectedItem.amount==0.00" class="text-danger"> {{ 'Translation.Amount' | translate }} {{ 'Translation.is required' | translate }}. </div>
+                                          
+                                    </div>
+                                    <div class="col-sm-6 fields_box">
+                                        <label for="search-input">{{ 'Translation.Due For' | translate }} <span class="validation ml-1">*</span></label>
+                                        <wj-input-date  [showYearPicker]="false"  id="dueFor" formControlName="dueFor"    [(ngModel)]="selectedItem.dueDate"
+                                        [format]="'yyyy-MM-dd'"    style="width: 100%;" (ngModelChange)="onChangeDueFor($event)">
+                                         </wj-input-date>
+                                         <div *ngIf="myForm.controls['dueFor'].hasError('required')" [hidden]="myForm.controls.dueFor.valid || (myForm.controls.dueFor.pristine && !isSubmitted)"
+                                         class="text-danger">{{ 'Translation.Due For' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                                    </div>
+                                    <div class="col-sm-6 fields_box">
+                                        <label for="search-input">{{ 'Translation.Valid Till' | translate }} <span class="validation ml-1">*</span></label>
+                                        <wj-input-date  [showYearPicker]="false" id="validTill"    formControlName="validTill"  [(ngModel)]="selectedItem.validTill"
+                                        [format]="'yyyy-MM-dd'"    style="width: 100%;">
+                                         </wj-input-date>
+                                         <div *ngIf="myForm.controls['validTill'].hasError('required')" [hidden]="myForm.controls.validTill.valid || (myForm.controls.validTill.pristine && !isSubmitted)"
+                                         class="text-danger">{{ 'Translation.Valid Till' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                                    </div>
+                                    <div class="col-sm-6 fields_box">
+                                        <label for="search-input">{{ 'Translation.Payment Date' | translate }} <span class="validation ml-1">*</span></label>
+                                        <wj-input-date  [showYearPicker]="false" id="paymentDate" formControlName="paymentDate"  [(ngModel)]="selectedItem.paymentDate"
+                                        [format]="'yyyy-MM-dd'"    style="width: 100%;">
+                                         </wj-input-date>
+                                         <div *ngIf="myForm.controls['paymentDate'].hasError('required')" [hidden]="myForm.controls.paymentDate.valid || (myForm.controls.paymentDate.pristine && !isSubmitted)"
+                                         class="text-danger">{{ 'Translation.Payment Date' | translate }} {{ 'Translation.is required' | translate }}.</div>
+                                    </div>
+         
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="orange_footer_small">
+                        <button id="btnSave"  type="submit" class="save_btn" *ngIf="!isEditing" >{{'Common.Save' | translate}}</button>
+                        <button id="btnSave"  type="submit" class="save_btn"  *ngIf="isEditing">{{'Common.Update' | translate}}</button>
+                        <button id="btnCancel"  type="button" data-dismiss="modal" class="cancel_btn" (click)="onCloseAction()" >{{'Common.Cancel' | translate}}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>
+
+<dialog-cmp #dialogCmp (btnClick)="getNotification($event)"> </dialog-cmp>

@@ -1,0 +1,272 @@
+<div class="modal fade " data-keyboard="true" id="{{modalId}}" role="dialog">
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+            <form [formGroup]="myForm" class="form-horizontal form-label-left"
+                  data-parsley-priority-enabled="false"
+                  method="post" novalidate="novalidate" role="form">
+                <div class="modal-body modal-no-border">
+                    <div class="row setup_box_container">
+                        <div class="col-md-3 col-sm-5 modal_left">
+                            <div class="wizard_Logo">
+                                <img class="formImg" src="../../../../../../assets/img/settings_icon.png"/>
+                                <h4>{{'Translation.Client Order Limits' | translate}}</h4>
+                            </div>
+                        </div>
+
+                        <div class="col-md-9 col-sm-7 modal_center">
+                            <div class="row" style="margin: 40px 40px 0 40px">
+                                <div class="col-sm-6 fields_box">
+                                    <label>{{'Translation.Order Limit Type' | translate}}<span
+                                        class="validation"> *</span></label>
+                                    <wj-combo-box
+                                        (ngModelChange)="onLimitTypeChangeEvent($event)"
+                                        [(ngModel)]="limitType"
+                                        [isDisabled]="isEditable"
+                                        [isEditable]="true"
+                                        [isRequired]="true"
+                                        [itemsSource]="limitTypes"
+                                        class="wijmo_style"
+                                        displayMemberPath="label"
+                                        formControlName="type"
+                                        selectedValuePath="value">
+                                    </wj-combo-box>
+                                    <div *ngIf="myForm.controls['type'].hasError('required')"
+                                         [hidden]="myForm.controls.type.valid || (myForm.controls.type.pristine && !isSubmitted)"
+                                         class="text-danger">{{ 'Translation.Order Type Limit' | translate }} {{ 'Translation.is required' | translate }}.
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 fields_box">
+                                    <label>{{ 'Translation.Participant' | translate }}<span
+                                        class="validation"> *</span></label>
+                                    <wj-auto-complete
+                                        (ngModelChange)="onParticipantChangeEvent($event)"
+                                        [(ngModel)]="selectedItem.participantId"
+                                        [isDisabled]="!isUserAdmin"
+                                        [isEditable]="true"
+                                        [isRequired]="true"
+                                        [itemsSource]="participants"
+                                        class="wijmo_style"
+                                        displayMemberPath="participantCode"
+                                        formControlName="participant"
+                                        selectedValuePath="participantId">
+                                    </wj-auto-complete>
+                                    <div *ngIf="myForm.controls['participant'].hasError('required')"
+                                         [hidden]="myForm.controls.participant.valid || (myForm.controls.participant.pristine && !isSubmitted)"
+                                         class="text-danger">{{ 'Translation.Participant' | translate }} {{ 'Translation.is required' | translate }}.
+                                    </div>
+                                </div>
+
+
+                                <ng-container *ngIf="limitType === 'C'">
+                                    <div class="col-sm-6 fields_box">
+                                        <label>{{ 'Translation.Client' | translate }}(s)<span
+                                            class="validation"> *</span></label>
+                                        <wj-auto-complete
+                                            (ngModelChange)="onClientChangeEvent($event)"
+                                            [(ngModel)]="selectedItem.clientId"
+                                            [isEditable]="true"
+                                            [isRequired]="true"
+                                            [itemsSource]="clientList"
+                                            class="wijmo_style"
+                                            displayMemberPath="displayValue_"
+                                            formControlName="client"
+                                            selectedValuePath="clientId">
+                                        </wj-auto-complete>
+                                        <div *ngIf="myForm.controls['client'].hasError('required')"
+                                             [hidden]="myForm.controls.client.valid || (myForm.controls.client.pristine && !isSubmitted)"
+                                             class="text-danger">{{ 'Translation.Client' | translate }}(s) {{ 'Translation.is required' | translate }}.
+                                        </div>
+                                    </div>
+                                </ng-container>
+
+                                <div class="col-sm-12 fields_box">
+                                    <h5 class="text-white">{{ 'Translation.Normal Order' | translate }}</h5>
+                                </div>
+
+                                <div class="col-sm-6 fields_box">
+                                    <label>{{ 'Translation.Buy Limit' | translate }}<span class="validation"> *</span></label>
+                                    <wj-input-number [(ngModel)]="selectedItem.normBuyLimit"
+                                                     [isRequired]="true"
+                                                     [max]="9999999999999999"
+                                                     [min]="1"
+                                                     class="wijmo_style"
+                                                     formControlName="buyLimit"
+                                                     required>
+                                    </wj-input-number>
+                                    <div *ngIf="myForm.controls['buyLimit'].hasError('required') && isSubmitted"
+                                         class="text-danger">
+                                         {{ 'Translation.Buy Limit' | translate }} {{ 'Translation.is required' | translate }}.
+                                    </div>
+                                    <div *ngIf="myForm.controls['buyLimit'].hasError('min') && isSubmitted"
+                                         class="text-danger">
+                                         {{ 'Translation.Buy Limit' | translate }} {{ 'Translation.is required' | translate }}.
+                                    </div>
+                                    <div *ngIf="myForm.controls['buyLimit'].hasError('max') && isSubmitted"
+                                         class="text-danger">
+                                         {{ 'Translation.Buy Limit' | translate }} {{ 'Translation.cannot exceed' | translate }} 9999999999999999.
+                                    </div>
+                                    <div *ngIf="myForm.controls['buyLimit'].hasError('maxlength') && isSubmitted"
+                                         class="text-danger">
+                                         {{ 'Translation.Buy Limit' | translate }} {{ 'Translation.cannot exceed' | translate }} 16 characters.
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 fields_box">
+                                    <label>{{ 'Translation.Sell Limit' | translate }}<span class="validation"> *</span></label>
+                                    <wj-input-number [(ngModel)]="selectedItem.normSellLimit"
+                                                     [isRequired]="true"
+                                                     [max]="9999999999999999"
+                                                     [min]="1"
+                                                     class="wijmo_style"
+                                                     formControlName="sellLimit"
+                                                     required>
+                                    </wj-input-number>
+                                    <div *ngIf="myForm.controls['sellLimit'].hasError('required') && isSubmitted"
+                                         class="text-danger">
+                                         {{ 'Translation.Sell Limit' | translate }} {{ 'Translation.is required' | translate }}.
+                                    </div>
+                                    <div *ngIf="myForm.controls['sellLimit'].hasError('min') && isSubmitted"
+                                         class="text-danger">
+                                         {{ 'Translation.Sell Limit' | translate }} {{ 'Translation.is required' | translate }}.
+                                    </div>
+                                    <div *ngIf="myForm.controls['sellLimit'].hasError('max') && isSubmitted"
+                                         class="text-danger">
+                                         {{ 'Translation.Sell Limit' | translate }} {{ 'Translation.cannot exceed' | translate }} 9999999999999999.
+                                    </div>
+                                    <div *ngIf="myForm.controls['sellLimit'].hasError('maxlength') && isSubmitted"
+                                         class="text-danger">
+                                         {{ 'Translation.Sell Limit' | translate }} {{ 'Translation.cannot exceed' | translate }} 16 characters.
+                                    </div>
+                                </div>
+
+                                <!-- <div class="col-sm-12 fields_box">
+                                    <h5 class="text-white">{{'Translation.Negotiated Deal' | translate}}</h5>
+                                </div> -->
+
+
+                                <!-- <div class="col-sm-6 fields_box">
+                                    <label>{{ 'Translation.Buy Limit' | translate }}<span class="validation"> *</span></label>
+                                    <wj-input-number [(ngModel)]="selectedItem.negoBuyLimit"
+                                                     [isRequired]="true"
+                                                     [max]="9999999999999999"
+                                                     [min]="1"
+                                                     class="wijmo_style"
+                                                     formControlName="negBuyLimit"
+                                                     required>
+                                    </wj-input-number>
+                                    <div *ngIf="myForm.controls['negBuyLimit'].hasError('required') && isSubmitted"
+                                         class="text-danger">
+                                         {{ 'Translation.Buy Limit' | translate }} {{ 'Translation.is required' | translate }}.
+                                    </div>
+                                    <div *ngIf="myForm.controls['negBuyLimit'].hasError('min') && isSubmitted"
+                                         class="text-danger">
+                                         {{ 'Translation.Buy Limit' | translate }} {{ 'Translation.is required' | translate }}.
+                                    </div>
+                                    <div *ngIf="myForm.controls['negBuyLimit'].hasError('max') && isSubmitted"
+                                         class="text-danger">
+                                         {{ 'Translation.Buy Limit' | translate }} {{ 'Translation.cannot exceed' | translate }} 9999999999999999.
+                                    </div>
+                                    <div *ngIf="myForm.controls['negBuyLimit'].hasError('maxlength') && isSubmitted"
+                                         class="text-danger">
+                                         {{ 'Translation.Buy Limit' | translate }} {{ 'Translation.cannot exceed' | translate }} 16 characters.
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 fields_box">
+                                    <label>{{ 'Translation.Sell Limit' | translate }}<span class="validation"> *</span></label>
+                                    <wj-input-number [(ngModel)]="selectedItem.negoSellLimit"
+                                                     [isRequired]="true"
+                                                     [max]="9999999999999999"
+                                                     [min]="1"
+                                                     class="wijmo_style"
+                                                     formControlName="negSellLimit"
+                                                     required>
+                                    </wj-input-number>
+                                    <div *ngIf="myForm.controls['negSellLimit'].hasError('required') && isSubmitted"
+                                         class="text-danger">
+                                         {{ 'Translation.Sell Limit' | translate }} {{ 'Translation.is required' | translate }}.
+                                    </div>
+                                    <div *ngIf="myForm.controls['negSellLimit'].hasError('min') && isSubmitted"
+                                         class="text-danger">
+                                         {{ 'Translation.Sell Limit' | translate }} {{ 'Translation.is required' | translate }}.
+                                    </div>
+                                    <div *ngIf="myForm.controls['negSellLimit'].hasError('max') && isSubmitted"
+                                         class="text-danger">
+                                         {{ 'Translation.Sell Limit' | translate }} {{ 'Translation.cannot exceed' | translate }} 9999999999999999.
+                                    </div>
+                                    <div *ngIf="myForm.controls['negSellLimit'].hasError('maxlength') && isSubmitted"
+                                         class="text-danger">
+                                         {{ 'Translation.Sell Limit' | translate }} {{ 'Translation.cannot exceed' | translate }} 16 characters.
+                                    </div>
+                                </div> -->
+
+                                <!-- <div class="col-sm-6 fields_box">
+                                    <label>{{'Translation.KYC Status' | translate}}<span
+                                        class="validation">*</span></label>
+                                    <wj-combo-box
+                                        [(ngModel)]="selectedItem.kycStatus"
+                                        [isEditable]="true"
+                                        [isRequired]="true"
+                                        [itemsSource]="kycStatuses"
+                                        class="wijmo_style"
+                                        displayMemberPath="label"
+                                        formControlName="kycStatus"
+                                        selectedValuePath="value">
+                                    </wj-combo-box>
+                                    <div *ngIf="myForm.controls['kycStatus'].hasError('required')"
+                                         [hidden]="myForm.controls.kycStatus.valid || (myForm.controls.kycStatus.pristine && !isSubmitted)"
+                                         class="text-danger">{{ 'Translation.KYC Status' | translate }} {{ 'Translation.is required' | translate }}.
+                                    </div>
+                                </div> -->
+
+                                <div class="col-sm-12 fields_box">
+                                    <div class="radio-wrapper">
+                                        <label>{{'Translation.Applicable' | translate}}</label>
+                                        <div class="radio-group">
+                                            <label class="custom-radio">
+                                                <input [(ngModel)]="selectedItem.applicable" formControlName="applicable"
+                                                       type="radio" value="D"/>
+                                                <span class="radio-btn"></span>
+                                                {{'Translation.Daily' | translate}}
+                                            </label>
+
+                                            <label class="custom-radio">
+                                                <input [(ngModel)]="selectedItem.applicable" formControlName="applicable"
+                                                       type="radio" value="O"/>
+                                                <span class="radio-btn"></span>
+                                               {{'Translation.On Every Order' | translate}}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 fields_box">
+                                    <label class="custom-checkbox">
+                                        <input [(ngModel)]="selectedItem.bypassLimit" formControlName="byPass"
+                                               type="checkbox"/>
+                                        <span class="checkbox-btn"></span>
+                                       {{'Translation.By Pass Order Limits' | translate}}
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="orange_footer_small">
+                    <button (click)="onSubmit()" class="save_btn" type="submit">
+                        {{ (isEditable ? 'Translation.Update' : 'Translation.Save') | translate }}
+                      </button>
+                    <button (click)="onClose()" class="ml-2 cancel_btn"
+                            type="button">{{'Translation.Cancel' | translate}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<dialog-cmp #dialogCmp (btnClick)="getNotification($event)"></dialog-cmp>

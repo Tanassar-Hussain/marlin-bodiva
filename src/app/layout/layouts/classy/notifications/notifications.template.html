@@ -1,0 +1,81 @@
+<section class="card notifications" style="overflow-y: hidden;">
+    <header class="card-header" style="border-bottom: 1px solid rgb(0, 0, 0);">
+      <div class="text-xs-center mb-sm" *ngIf="type === 0">
+        <strong>{{ 'Translation.You have' | translate }} {{messages.length}} {{ 'Translation.messages' | translate }}</strong>
+      </div>
+      <div class="text-xs-center mb-sm" *ngIf="type === 1">
+        <strong>{{ 'Translation.You have' | translate }} {{alerts.length}} {{ 'Translation.alerts' | translate }}</strong>
+      </div>
+      <div class="text-xs-center mb-sm" *ngIf="type === 2">
+        <strong>{{ 'Translation.You have' | translate }} {{announcements.length}} {{ 'Translation.announcements' | translate }}</strong>
+      </div>
+    </header>
+
+    <!-- notification list with .thin-scroll which styles scrollbar for webkit -->
+    <div class="list-group thin-scroll" *ngIf="type === 0" style="background: #121B2C;">
+      <div class="list-group-item" *ngFor="let message of messages">
+        <span class="thumb-sm pull-xs-left mr clearfix">
+          <ng-container *ngIf="message.type === 'changed_Sell' || message.type === 'changed_Buy' || message.type === 'Loaded' ">
+            <img class="img-circle" style="width: 70%;" src="assets/img/change-order-icon.png" alt="...">
+          </ng-container>
+          <ng-container *ngIf="message.type === 'rejected_Buy' || message.type === 'rejected_Sell'  || message.type === 'Suspended' || message.type === 'PostClose'">
+            <img class="img-circle" style="width: 65%;" src="assets/img/rejected-icon.png" alt="...">
+          </ng-container>
+          <ng-container *ngIf="message.type === 'cancelled_Sell'  || message.type === 'cancelled_Buy'  || message.type === 'Close'">
+            <img class="img-circle" style="width: 75%;" src="assets/img/Cancel-icon.png" alt="...">
+          </ng-container>
+          <ng-container *ngIf="message.type === 'trade'   || message.type === 'trade_Sell' || message.type === 'trade_Buy' || message.type === 'Open' || message.type === 'PreOpen'">
+            <img class="img-circle" style="width: 75%;" src="assets/img/Trade-icon.png" alt="...">
+          </ng-container>
+          <ng-container *ngIf="message.type === 'submitted_Sell'   || message.type === 'submitted_Buy'">
+            <img class="img-circle" style="width: 75%;" src="assets/img/New order-icon.png" alt="...">
+          </ng-container>
+         
+        </span>
+        <p class="no-margin overflow-hidden" 
+        [class.messages-red-confirm]="message.type === 'submitted_Sell' || message.type === 'trade_Sell' || message.type === 'changed_Sell' || message.type === 'cancelled_Sell'  || message.type === 'cancelled_Buy' || message.type === 'Close'" 
+        [class.messages-yellow-rejected]="message.type === 'rejected_Buy' || message.type === 'rejected_Sell' || message.type === 'Loaded' || message.type === 'Suspended' || message.type === 'PostClose'"  
+        [class.messages-green-confirm]="message.type === 'trade_Buy' || message.type === 'submitted_Buy' || message.type === 'changed_Buy' || message.type === 'Open' || message.type === 'PreOpen' "  style="font-size: 12px; text-align: left;">
+          {{message.content}}
+          <time class="help-block no-margin" [class.messages-red-confirm]="message.type === 'submitted_Sell' || message.type === 'trade_Sell' || message.type === 'changed_Sell' || message.type === 'cancelled_Sell'  || message.type === 'cancelled_Buy' || message.type === 'Close'" [class.messages-yellow-rejected]="message.type === 'rejected_Buy' || message.type === 'rejected_Sell' || message.type === 'Loaded' || message.type === 'Suspended' || message.type === 'PostClose'"  
+          [class.messages-green-confirm]="message.type === 'trade_Buy' || message.type === 'submitted_Buy' || message.type === 'changed_Buy' || message.type === 'Open' || message.type === 'PreOpen' ">{{message.timestamp | date:'hh:mm:ss a'}}</time>
+        </p>
+      </div>
+    </div>
+    <div class="list-group thin-scroll" *ngIf="type === 1" style="background: #121B2C;">
+      <div class="list-group-item" *ngFor="let alert of alerts">
+        <span class="thumb-sm pull-xs-left mr clearfix">
+          <img class="img-circle" style="width : 75%" src="assets/img/alert2.gif" alt="...">
+        </span>
+        <p class="no-margin overflow-hidden" style="font-size: 12px; text-align: left;">
+          {{alert.content}}
+          <time class="help-block no-margin">{{alert.timestamp | date:'hh:mm:ss a'}}</time>
+        </p>
+      </div>
+    </div>
+    <div class="list-group thin-scroll" *ngIf="type === 2" style="background: #121B2C;">
+      <div class="list-group-item" *ngFor="let announcement of announcements">
+        <span class="thumb-sm pull-xs-left mr clearfix">
+          <img class="img-circle" style="width : 75%" src="assets/img/alert2.gif" alt="...">
+        </span>
+        <p class="no-margin overflow-hidden" style="font-size: 12px; text-align: left;">
+          {{announcement.content}}
+          <time class="help-block no-margin">{{announcement.timestamp | date:'hh:mm:ss a'}}</time>
+        </p>
+      </div>
+    </div>
+
+    <!--<footer class="card-footer text-sm">-->
+      <!-- ajax-load button. loads assets/demo/notifications/notifications.php to #notifications-list
+           when clicked -->
+      <!--<button class="btn btn-xs btn-link pull-xs-right btn-notifications-reload"
+              id="load-notifications-btn"
+              notification-load
+              data-ajax-load="assets/demo/notifications/notifications.php"
+              data-ajax-target="#notifications-list"
+              data-loading-text="<i class='fa fa-refresh fa-spin mr-xs'></i> Loading...">
+        <i class="fa fa-refresh"></i>
+      </button>-->
+      <!--<span class="fs-mini">Synced at: 21 Apr 2014 18:36</span>
+    </footer>-->
+  </section>

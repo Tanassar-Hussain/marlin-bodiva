@@ -1,0 +1,62 @@
+img{
+    height: 15px;
+    width: 15px;
+    display: inline;
+}
+
+// .top_nav nav li ul{
+
+//     min-width: 235px;
+
+// }
+
+
+
+// @media(max-width : 1400px)
+// {
+//     .top_nav nav li ul{
+
+//         min-width: 235px;
+
+//     }
+// }
+
+
+
+.tree-drop-ul
+{
+    left: 100%;
+    top: 0;
+}
+
+
+
+.menu-width-en{
+    min-width: 200px;
+}
+
+
+@media(max-width : 1400px)
+{
+    .menu-width-en{
+
+        min-width: 170px;
+
+    }
+}
+
+
+
+.menu-width-pt{
+    min-width: 220px;
+}
+
+
+@media(max-width : 1400px)
+{
+    .menu-width-pt{
+
+        min-width: 220px;
+
+    }
+}

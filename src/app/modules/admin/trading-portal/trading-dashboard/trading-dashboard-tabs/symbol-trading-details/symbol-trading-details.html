@@ -1,0 +1,170 @@
+<section class="widgetDashboard" widget>
+
+    <div class="border">
+        <div class="row mt-2">
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="search-input">{{ 'Translation.Security' | translate }}</label>
+                    <div class="input-group">
+
+                        <wj-input-mask id="securityCode" name="securityCode" [(ngModel)]="symbolDetail.code"
+                            [isDisabled]="true">
+                        </wj-input-mask>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="search-input">{{ 'Translation.Sector' | translate }}</label>
+                    <div class="input-group">
+
+                        <wj-input-mask id="sectorCode" name="sectorCode" [(ngModel)]="symbolDetail.sectorCode"
+                            [isDisabled]="true">
+                        </wj-input-mask>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="search-input">{{ 'Translation.State' | translate }}</label>
+                    <div class="input-group">
+
+                        <wj-input-mask id="state" name="state" [(ngModel)]="symbolDetail.state" [isDisabled]="true">
+                        </wj-input-mask>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="search-input">{{ 'Translation.Last Trade' | translate }} <span
+                            *ngIf="isBondPricingMechanismPercentage">%</span></label>
+                    <div class="input-group">
+                        <wj-input-mask id="lastTrade" name="lastTrade" [(ngModel)]="symbolStats.last_trade_price"
+                            [isDisabled]="true">
+                        </wj-input-mask>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="search-input">{{ 'Translation.High' | translate }} <span
+                            *ngIf="isBondPricingMechanismPercentage">%</span></label>
+                    <div class="input-group">
+
+                        <wj-input-mask id="high" name="high" [(ngModel)]="symbolStats.high" [isDisabled]="true"
+                            placeholder="">
+                        </wj-input-mask>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="search-input">{{ 'Translation.Low' | translate }} <span
+                            *ngIf="isBondPricingMechanismPercentage">%</span></label>
+                    <div class="input-group">
+
+                        <wj-input-mask id="low" name="low" [(ngModel)]="symbolStats.low" [isDisabled]="true"
+                            placeholder=""> </wj-input-mask>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="search-input">{{ 'Translation.Open' | translate }} <span
+                            *ngIf="isBondPricingMechanismPercentage">%</span></label>
+                    <div class="input-group">
+
+                        <wj-input-mask id="open" name="open" [(ngModel)]="symbolStats.open" [isDisabled]="true"
+                            placeholder="">
+                        </wj-input-mask>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="search-input">{{ 'Translation.Change' | translate }}</label>
+                    <div class="input-group">
+
+                        <wj-input-mask id="change" name="change" [(ngModel)]="symbolStats.net_change"
+                            [isDisabled]="true" placeholder="">
+                        </wj-input-mask>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="search-input">{{ 'Translation.Trades' | translate }}</label>
+                    <div class="input-group">
+                        <wj-input-number id="trades" name="trades" [(ngModel)]="symbolStats.total_no_of_trades"
+                            [isDisabled]="true" placeholder=""> </wj-input-number>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="search-input">{{ 'Translation.Last Day' | translate }} <span
+                            *ngIf="isBondPricingMechanismPercentage">%</span></label>
+                    <div class="input-group">
+                        <wj-input-mask id="ldcp" name="lcp" [(ngModel)]="symbolStats.last_day_close_price"
+                            [isDisabled]="true" placeholder=""> </wj-input-mask>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="search-input">{{ 'Translation.Quantity' | translate }}</label>
+                    <div class="input-group">
+                        <wj-input-number id="volume" name="symbol" [(ngModel)]="symbolStats.last_trade_size"
+                            [isDisabled]="true" placeholder=""> </wj-input-number>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="search-input">{{ 'Translation.Currency' | translate }}</label>
+                    <div class="input-group">
+                        <wj-input-mask id="currency" name="currency" [(ngModel)]="symbolDetail.currencyCode"
+                            [isDisabled]="true">
+                        </wj-input-mask>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-sm-12 center-block">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="stock_box_buy">
+                            <div class="form-group">
+                                <label for="search-input">{{ 'Translation.Bid' | translate }}</label>
+                                <div class="input-group">
+                                    <wj-input-number id="buy_price" name="buy_price" [(ngModel)]="bestMarket.buy_price"
+                                        [format]="'n4'" [isDisabled]="true" class="wijmo_style half_width"
+                                        placeholder=""> </wj-input-number>
+                                    <wj-input-number id="buy_volume" name="buy_volume"
+                                        [(ngModel)]="bestMarket.buy_volume" [format]="'n0'" [isDisabled]="true"
+                                        class="wijmo_style half_width" placeholder=""> </wj-input-number>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="stock_box_sell">
+                            <div class="form-group">
+                                <label for="search-input">{{ 'Translation.Offer' | translate }}</label>
+                                <div class="input-group">
+                                    <wj-input-number id="sell_price" name="sell_price"
+                                        [(ngModel)]="bestMarket.sell_price" [format]="'n4'" [isDisabled]="true"
+                                        class="wijmo_style half_width" placeholder=""> </wj-input-number>
+                                    <wj-input-number id="sell_volume" name="sell_volume"
+                                        [(ngModel)]="bestMarket.sell_volume" [format]="'n0'" [isDisabled]="true"
+                                        class="wijmo_style half_width" placeholder=""> </wj-input-number>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

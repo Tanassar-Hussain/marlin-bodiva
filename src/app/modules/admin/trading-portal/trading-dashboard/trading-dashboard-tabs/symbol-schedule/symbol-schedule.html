@@ -1,0 +1,44 @@
+<section class="widgetDashboard " widget="">
+    <wj-flex-grid id="theGridTallRows" class="gridDashboard" style="height:20px !important;" [isReadOnly]="true"
+        [itemsSource]="bondPaymentScheduleArr" [selectionMode]="'Row'" [autoSizeMode]="'Headers'"
+        [headersVisibility]="'Column'" #flexGrid style="grid-auto-flow : column;">
+
+        <wj-flex-grid-filter [filterColumns]="['markup','paymentDate','noOfCoupons','noOfDays','principalPayment']">
+        </wj-flex-grid-filter>
+        <wj-flex-grid-column [header]="'Translation.No. of Coupon' | translate" [binding]="'noOfCoupons'"
+            [minWidth]="30" [width]="'*'"></wj-flex-grid-column>
+        <wj-flex-grid-column [header]="'Translation.Payment Date' | translate" [binding]="'paymentDate'" [minWidth]="30"
+            [width]="'*'"></wj-flex-grid-column>
+        <wj-flex-grid-column [header]="'Translation.Coupon Payment' | translate" [binding]="'markup'" [minWidth]="30"
+            [width]="'*'">
+        </wj-flex-grid-column>
+        <wj-flex-grid-column [header]="'Translation.No. of Days' | translate" [binding]="'noOfDays'" [minWidth]="30"
+            [width]="'*'">
+        </wj-flex-grid-column>
+        <wj-flex-grid-column [header]="'Translation.Principal Payment' | translate" [binding]="'principalPayment'"
+            [minWidth]="30" [width]="'*'"></wj-flex-grid-column>
+        <wj-flex-grid-column [header]="'Translation.Total' | translate" [binding]="'total'" [minWidth]="30"
+            [width]="'*'">
+        </wj-flex-grid-column>
+    </wj-flex-grid>
+
+    <div class="row">
+        <div class="btn-group col-xs-12 align-right">
+          
+            <wj-collection-view-pager [cv]="flexGrid?.collectionView"></wj-collection-view-pager>
+           
+            <wj-menu [(value)]="pageSize" [header]="'Common.Page Size' | translate">
+                <wj-menu-item [value]="0">{{ 'Common.No Paging' | translate }}</wj-menu-item>
+                <wj-menu-item [value]="5">5 {{ 'Common.items' | translate }}</wj-menu-item>
+                <wj-menu-item [value]="10">10 {{ 'Common.items' | translate }}</wj-menu-item>
+                <wj-menu-item [value]="20">20 {{ 'Common.items' | translate }}</wj-menu-item>
+                <wj-menu-item [value]="30">30 {{ 'Common.items' | translate }}</wj-menu-item>
+                <wj-menu-item [value]="50">50 {{ 'Common.items' | translate }}</wj-menu-item>
+                <wj-menu-item [value]="100">100 {{ 'Common.items' | translate }}</wj-menu-item>
+            </wj-menu>
+        </div>
+    </div>
+
+</section>
+
+<!-- <dialog-cmp #dialogCmp (btnClick)="getNotification($event)"> </dialog-cmp> -->

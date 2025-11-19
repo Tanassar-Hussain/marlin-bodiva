@@ -1,0 +1,260 @@
+<div class="row">
+    <div class="col-lg-12 col-md-offset-0 col-xs-12 widget-container">
+        <section class="widget">
+            <header>
+                <h3><span class="fw-semi-bold">{{'Menu.Rejected Negotiated Deals' | translate}}</span></h3>
+                <div class="other_btns">
+                    <button class="filter_btn mx-1" data-target="#filter_box" data-toggle="collapse">
+                        <i aria-hidden="true" class="fa fa-filter"></i></button>
+                    <a (click)="onFilter(false)" class="mx-1">
+                        <i aria-hidden="true" class="fa fa-refresh"></i>
+                    </a>
+                </div>
+            </header>
+
+
+            <div class="collapse in" id="filter_box">
+                <div class="row mt-2">
+
+                    <div class="col-sm-2 fields_box">
+                        <label>{{ 'Translation.Market' | translate }}<span class="validation">*</span></label>
+                        <wj-combo-box (ngModelChange)="onMarketChangeEvent($event)"
+                                      [(ngModel)]="marketId"
+                                      [isEditable]="true"
+                                      [itemsSource]="marketList"
+                                      class="wijmo_style"
+                                      displayMemberPath="marketCode"
+                                      selectedValuePath="marketId">
+                        </wj-combo-box>
+                    </div>
+
+                    <div class="col-sm-2 fields_box">
+                        <label>{{ 'Translation.Security' | translate }} <span
+                            class="validation">*</span></label>
+                        <wj-combo-box [(ngModel)]="symbolId"
+                                      [isEditable]="true"
+                                      [itemsSource]="symbolList"
+                                      class="wijmo_style"
+                                      displayMemberPath="symbol"
+                                      selectedValuePath="securityId">
+                        </wj-combo-box>
+                    </div>
+
+                    <div class="col-sm-2 fields_box">
+                        <label>{{ 'Translation.Participant' | translate }}</label>
+                        <wj-auto-complete #searchAutoComplete
+                                          (selectedIndexChanged)="onParticipantChangeEvent(searchAutoComplete)"
+                                          [(ngModel)]="participantId"
+                                          [isDisabled]="true"
+                                          [isEditable]="false"
+                                          [isRequired]="false"
+                                          [itemsSource]="participants"
+                                          class="wijmo_style"
+                                          id="participant"
+                                          displayMemberPath="participantCode"
+                                          selectedValuePath="participantId"></wj-auto-complete>
+                    </div>
+
+                    <div class="col-sm-2 fields_box">
+                        <label>{{ 'Translation.Client' | translate }}</label>
+                        <wj-auto-complete
+                            [(ngModel)]="clientId"
+                            [isDisabled]="false"
+                            [isEditable]="false"
+                            [isRequired]="false"
+                            [itemsSource]="clientList"
+                            class="wijmo_style"
+                            id="client"
+                            displayMemberPath="clientCode"
+                            selectedValuePath="clientId"></wj-auto-complete>
+                    </div>
+
+                    <div class="col-sm-1 fields_box">
+                        <div class="filter-buttons">
+                            <button (click)="onFilter(true)" class="btn btn-success btn-sm"
+                                    data-target="#filter_box" title="{{ 'Translation.Search' | translate }}"
+                                    type="submit">
+                                <span class="fa fa-search"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <wj-flex-grid #flexGrid [autoSizeMode]="'Headers'" [headersVisibility]="'Column'" [isReadOnly]="true"
+                          [itemsSource]="rejectedOrders"
+                          [selectionMode]="'Row'" class="grid" style="grid-auto-flow: column;">
+
+                <wj-flex-grid-column
+                    [align]="'left'"
+                    [minWidth]="30"
+                    [header]="'Translation.Exchange' | translate">
+                    <ng-template [cellType]="'Cell'" let-item="item" wjFlexGridCellTemplate>
+                        <span [class.blue_text_grid]="item.side === 'B'"
+                              [class.pink_text_grid]="item.side === 'S'">{{ item.exchangeCode }}</span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <wj-flex-grid-column
+                    [align]="'left'"
+                    [header]="'Translation.Market' | translate">
+                    <ng-template [cellType]="'Cell'" let-item="item" wjFlexGridCellTemplate>
+                        <span [class.blue_text_grid]="item.side === 'B'"
+                              [class.pink_text_grid]="item.side === 'S'">{{ item.marketCode }}</span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <wj-flex-grid-column
+                    [align]="'left'"
+                    [header]="'Translation.Symbol' | translate">
+                    <ng-template [cellType]="'Cell'" let-item="item" wjFlexGridCellTemplate>
+                        <span [class.blue_text_grid]="item.side === 'B'"
+                              [class.pink_text_grid]="item.side === 'S'">{{ item.securitySymbol }}</span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <wj-flex-grid-column
+                    [align]="'left'"
+                    [header]="'Translation.Side' | translate">
+                    <ng-template [cellType]="'Cell'" let-item="item" wjFlexGridCellTemplate>
+                        <span [class.blue_text_grid]="item.side === 'B'"
+                              [class.pink_text_grid]="item.side === 'S'">
+                            <ng-container *ngIf="item.side === 'B'">Buy</ng-container>
+                            <ng-container *ngIf="item.side === 'S'">Sell</ng-container>
+                        </span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <wj-flex-grid-column
+                    [align]="'left'"
+                    [header]="'Translation.Quantity' | translate">
+                    <ng-template [cellType]="'Cell'" let-item="item" wjFlexGridCellTemplate>
+                        <span [class.blue_text_grid]="item.side === 'B'"
+                              [class.pink_text_grid]="item.side === 'S'">{{ item.volume }}</span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <ng-container *ngIf="selectedType === AppConstants.ASSET_CLASS_BONDS">
+                    <wj-flex-grid-column
+                        [align]="'left'"
+                        [header]="'Translation.Yield' | translate">
+                        <ng-template [cellType]="'Cell'" let-item="item" wjFlexGridCellTemplate>
+                        <span [class.blue_text_grid]="item.side === 'B'"
+                              [class.pink_text_grid]="item.side === 'S'">{{ item.yield }}</span>
+                        </ng-template>
+                    </wj-flex-grid-column>
+                </ng-container>
+
+                <wj-flex-grid-column
+                    [align]="'left'"
+                    [header]="'Translation.Price' | translate">
+                    <ng-template [cellType]="'Cell'" let-item="item" wjFlexGridCellTemplate>
+                        <span [class.blue_text_grid]="item.side === 'B'"
+                              [class.pink_text_grid]="item.side === 'S'">{{ item.price }}</span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <ng-container *ngIf="selectedType !== AppConstants.ASSET_CLASS_BONDS; else bondsTemplate">
+                    <wj-flex-grid-column
+                        [align]="'left'"
+                        [header]="'Translation.Value' | translate">
+                        <ng-template [cellType]="'Cell'" let-item="item" wjFlexGridCellTemplate>
+                        <span [class.blue_text_grid]="item.side === 'B'"
+                              [class.pink_text_grid]="item.side === 'S'">{{ item.value }}</span>
+                        </ng-template>
+                    </wj-flex-grid-column>
+                </ng-container>
+
+                <ng-template #bondsTemplate>
+                    <wj-flex-grid-column
+                        [align]="'left'"
+                        [header]="'Translation.Settlement Amount' | translate">
+                        <ng-template [cellType]="'Cell'" let-item="item" wjFlexGridCellTemplate>
+                        <span [class.blue_text_grid]="item.side === 'B'"
+                              [class.pink_text_grid]="item.side === 'S'">{{ item.value }}</span>
+                        </ng-template>
+                    </wj-flex-grid-column>
+                </ng-template>
+
+                <wj-flex-grid-column
+                    [align]="'left'"
+                    [header]="'Translation.Client' | translate" [minWidth]="30">
+                    <ng-template [cellType]="'Cell'" let-item="item" wjFlexGridCellTemplate>
+                        <span [class.blue_text_grid]="item.side === 'B'"
+                              [class.pink_text_grid]="item.side === 'S'">{{ item.clientCode }}</span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <wj-flex-grid-column
+                    [align]="'left'"
+                    [header]="'Translation.Counter Broker' | translate" [minWidth]="30">
+                    <ng-template [cellType]="'Cell'" let-item="item" wjFlexGridCellTemplate>
+                        <span [class.blue_text_grid]="item.side === 'B'"
+                              [class.pink_text_grid]="item.side === 'S'">{{ item.counterBrokerCode }}</span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <wj-flex-grid-column
+                    [align]="'left'"
+                    [header]="'Counter Client' | translate" [minWidth]="30">
+                    <ng-template [cellType]="'Cell'" let-item="item" wjFlexGridCellTemplate>
+                        <span [class.blue_text_grid]="item.side === 'B'"
+                              [class.pink_text_grid]="item.side === 'S'">{{ item.counterClientCode }}</span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <wj-flex-grid-column
+                    [align]="'left'"
+                    [header]="'Translation.Date Time' | translate">
+                    <ng-template [cellType]="'Cell'" let-item="item" wjFlexGridCellTemplate>
+                        <span [class.blue_text_grid]="item.side === 'B'"
+                              [class.pink_text_grid]="item.side === 'S'">{{ item.entryDatetime | date: 'medium' }}</span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <wj-flex-grid-column
+                    [align]="'left'"
+                    [header]="'Translation.Rejected By' | translate" >
+                    <ng-template [cellType]="'Cell'" let-item="item" wjFlexGridCellTemplate>
+                        <span [class.blue_text_grid]="item.side === 'B'"
+                              [class.pink_text_grid]="item.side === 'S'">{{ item.cancelledBy }}</span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+                <wj-flex-grid-column
+                    [minWidth]="600"
+                    [align]="'left'"
+                    [header]="'Translation.Reason' | translate" >
+                    <ng-template [cellType]="'Cell'" let-item="item" wjFlexGridCellTemplate>
+                        <span [class.blue_text_grid]="item.side === 'B'"
+                              [class.pink_text_grid]="item.side === 'S'">{{ item.rejectionReason }}</span>
+                    </ng-template>
+                </wj-flex-grid-column>
+
+            </wj-flex-grid>
+
+            <div class="row">
+                <div class="btn-group col-xs-12 align-right">
+                    <!-- Paginator -->
+                    <wj-collection-view-pager [cv]="flexGrid?.collectionView"></wj-collection-view-pager>
+                    <!-- page size -->
+                    <wj-menu [(value)]="pageSize" [header]="'Common.Page Size' | translate">
+                        <wj-menu-item [value]="0">{{ 'Common.No Paging' | translate }}</wj-menu-item>
+                        <wj-menu-item [value]="5">5 {{ 'Common.items' | translate }}</wj-menu-item>
+                        <wj-menu-item [value]="10">10 {{ 'Common.items' | translate }}</wj-menu-item>
+                        <wj-menu-item [value]="20">20 {{ 'Common.items' | translate }}</wj-menu-item>
+                        <wj-menu-item [value]="30">30 {{ 'Common.items' | translate }}</wj-menu-item>
+                        <wj-menu-item [value]="50">50 {{ 'Common.items' | translate }}</wj-menu-item>
+                        <wj-menu-item [value]="100">100 {{ 'Common.items' | translate }}</wj-menu-item>
+                    </wj-menu>
+                </div>
+            </div>
+
+        </section>
+    </div>
+</div>
+
+<dialog-cmp #dialogCmp></dialog-cmp>
+
