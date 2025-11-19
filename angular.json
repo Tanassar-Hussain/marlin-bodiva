@@ -28,7 +28,17 @@
                             "highlight.js",
                             "crypto-js/enc-utf8",
                             "crypto-js/hmac-sha256",
-                            "crypto-js/enc-base64"
+                            "crypto-js/enc-base64",
+                            "jszip",
+                            "xml2js",
+                            "parsleyjs",
+                            "exceljs",
+                            "pdfmake/build/pdfmake",
+                            "rxjs/Observable",
+                            "rxjs/add/operator/toPromise",
+                            "app/services-oms/auth-oms.service",
+                            "app/services/auth2.service",
+                            "jwt-decode"
                         ],
                         "assets": [
                             "src/favicon-16x16.png",
@@ -64,14 +74,9 @@
                         ],
                         "scripts": [
                             "node_modules/jquery/dist/jquery.min.js",
-                            "node_modules/jquery/dist/jquery.js",
                             "node_modules/popper.js/dist/umd/popper.min.js",
                             "node_modules/tether/dist/js/tether.min.js",
-
-                            "node_modules/select2/dist/js/select2.js",
-                            "node_modules/select2/dist/js/select2.min.js",
                             "node_modules/select2/dist/js/select2.full.js",
-
                             "node_modules/bootstrap/dist/js/bootstrap.min.js",
                             "node_modules/jasny-bootstrap/docs/assets/js/vendor/holder.js",
                             "node_modules/jasny-bootstrap/js/fileinput.js",
@@ -85,6 +90,12 @@
                     },
                     "configurations": {
                         "production": {
+                            "optimization": true,
+                            "buildOptimizer": true,
+                            "sourceMap": false,
+                            "extractLicenses": true,
+                            "vendorChunk": true,
+                            "namedChunks": false,
                             "budgets": [
                                 {
                                     "type": "initial",
