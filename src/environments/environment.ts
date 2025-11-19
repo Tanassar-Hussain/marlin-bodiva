@@ -7,7 +7,7 @@ export const environment = {
   // BASE_API_URL: 'http://192.168.36.84:8088/', //Athar
   //  BASE_API_URL: 'http://192.168.36.84:8090/MarlinPortal-bodiva/', //Athar
 
-      BASE_API_URL: 'http://192.168.36.236:8088/', //Moeez
+      BASE_API_URL: 'http://192.168.36.212:8095/', //Moeez
     //   BASE_API_URL: 'http://192.168.76.85:8088/', //nayabfazal
        //  BASE_API_URL: 'http://192.168.36.222:8080/MarlinPortal-0.1_oms/', //QA
    //       BASE_API_URL: 'http://192.168.36.144:8099/', //Basit
