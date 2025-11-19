@@ -11,6 +11,7 @@ import { AuthService } from 'app/services-oms/auth-oms.service';
 import { DataServiceOMS } from 'app/services-oms/data-oms.service';
 import { AppConstants, AppUtility } from 'app/app.utility';
 import { FuseLoaderScreenService } from '@fuse/services/splash-screen';
+import { StorageService } from 'app/services/storage.service';
 
 
 
@@ -34,8 +35,8 @@ export class MarketState implements OnInit, AfterViewInit {
 
     // -------------------------------------------------------------------------
 
-    constructor(private appState: AppState, private authService: AuthService, private dataService: DataServiceOMS, 
-        private translate: TranslateService, public splash : FuseLoaderScreenService) {
+    constructor(private appState: AppState, private authService: AuthService, private dataService: DataServiceOMS,
+        private translate: TranslateService, public splash : FuseLoaderScreenService, private storageService: StorageService) {
         //_______________________________for ngx_translate_________________________________________
 
         this.lang = localStorage.getItem("lang");
@@ -49,7 +50,7 @@ export class MarketState implements OnInit, AfterViewInit {
     ngOnInit() {
      //   this.marketStates.length = 0;
         this.authService.socket.on('market_state', (state) => {
-            
+
             for (let i = 0; i < this.marketStates.length; ++i)
             // for ( let marketState of this.marketStates)
             {
@@ -57,6 +58,17 @@ export class MarketState implements OnInit, AfterViewInit {
                     this.marketStates[i].state = state.state;
                     break;
                 }
+            }
+
+            const cachedData = this.storageService.getMarketStates();
+            if (cachedData && cachedData.states) {
+                const updatedStates = cachedData.states.map(ms => {
+                    if (ms.exchangeCode === state.exchange && ms.marketCode === state.market) {
+                        return { ...ms, stateCode: state.state };
+                    }
+                    return ms;
+                });
+                this.storageService.saveMarketStates(updatedStates);
             }
 
             this.flexGrid.invalidate();
@@ -69,6 +81,8 @@ export class MarketState implements OnInit, AfterViewInit {
                     if (exchangeMarkets == null)
                         return;
 
+                    const marketStatesToCache = [];
+
                     for (let em of exchangeMarkets) {
                         if (em.marketState != undefined && em.marketState != null) {
 
@@ -77,6 +91,12 @@ export class MarketState implements OnInit, AfterViewInit {
                                 'state': em.marketState.code
                             };
                             this.marketStates.push(state);
+                            marketStatesToCache.push({
+                                marketId: em.market.marketId,
+                                marketCode: em.market.marketCode,
+                                exchangeCode: em.exchange.exchangeCode,
+                                stateCode: em.marketState.code
+                            });
 
                             // subscribe for market state change notification.
                             let data: any = {
@@ -86,6 +106,9 @@ export class MarketState implements OnInit, AfterViewInit {
                             this.authService.socket.emit('market_sub', data);
                         }
                     }
+
+
+                    this.storageService.saveMarketStates(marketStatesToCache);
                 },
                 error => {
                     this.errorMessage = <any>error;
@@ -118,14 +141,16 @@ export class MarketState implements OnInit, AfterViewInit {
 
 
   public refreshState = () => {
-   
+
     this.marketStates.length = 0;
     if (AppUtility.isValidVariable(AppConstants.participantId))
     this.dataService.getParticipantExchangeMarkets(AppConstants.participantId).subscribe(
         exchangeMarkets => {
-            
+
             if (exchangeMarkets == null)
                 return;
+
+            const marketStatesToCache = [];
 
             for (let em of exchangeMarkets) {
                 if (em.marketState != undefined && em.marketState != null) {
@@ -136,6 +161,14 @@ export class MarketState implements OnInit, AfterViewInit {
                     };
                     this.marketStates.push(state);
 
+                    // Save data for localStorage
+                    marketStatesToCache.push({
+                        marketId: em.market.marketId,
+                        marketCode: em.market.marketCode,
+                        exchangeCode: em.exchange.exchangeCode,
+                        stateCode: em.marketState.code
+                    });
+
                     // subscribe for market state change notification.
                     let data: any = {
                         'exchange': em.exchange.exchangeCode,
@@ -144,6 +177,9 @@ export class MarketState implements OnInit, AfterViewInit {
                     this.authService.socket.emit('market_sub', data);
                 }
             }
+
+
+            this.storageService.saveMarketStates(marketStatesToCache);
         },
         error => {
             this.errorMessage = <any>error;

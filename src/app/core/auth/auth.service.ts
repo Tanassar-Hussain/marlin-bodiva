@@ -21,6 +21,7 @@ import { FuseLoaderScreenService } from '@fuse/services/splash-screen';
 import { debounce } from 'lodash';
 import { Exchange } from 'app/models/exchange';
 import { WebSocketService } from 'app/services/socket/web-socket.service';
+import { StorageService } from 'app/services/storage.service';
 
 @Injectable({
     providedIn: "root"
@@ -47,7 +48,8 @@ export class AuthService {
         private _restService: RestService,
         private toast: ToastrService,
         private loader: FuseLoaderScreenService,
-        private webSocket: WebSocketService
+        private webSocket: WebSocketService,
+        private storageService: StorageService
     ) {
         this._secret = 'YOUR_VERY_CONFIDENTIAL_SECRET_FOR_SIGNING_JWT_TOKENS!!!';
         let token = sessionStorage.getItem('token');
@@ -221,6 +223,7 @@ export class AuthService {
     }
 
     signOut(): Observable<any> {
+        this.storageService.clearMarketStates();
         localStorage.clear();
         this._authenticated = false;
         return of(true);

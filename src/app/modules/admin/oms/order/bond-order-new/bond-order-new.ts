@@ -1092,7 +1092,7 @@ getLoggedInUserClientsList() {
   // ---------------------------------------------------------------------------
 
   orderTypeChanged(): void {
-    debugger
+
     if (this.cmbOrderType.selectedValue != null) {
       this.order.type_ = this.cmbOrderType.selectedValue;
       if (this.order.type_.toLowerCase() === 'market' || this.order.type_.toLowerCase() === 'sm') {

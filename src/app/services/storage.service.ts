@@ -59,6 +59,25 @@ export class StorageService {
         return this.read(this.MARKETWATCH_BOND_SYMBOLS)
     }
 
+    saveMarketStates(states: any) {
+        const key = 'liveMaketState';
+        const data = {
+            timestamp: Date.now(),
+            states: states
+        };
+        this.write(key, data);
+    }
+
+    getMarketStates(): any {
+        const key = 'liveMaketState';
+        return this.read(key);
+    }
+
+    clearMarketStates() {
+        const key = 'liveMaketState';
+        localStorage.removeItem(key);
+    }
+
 
     public getMarketWatchDataEquities(): Observable<any> {
         return this.marketWatchDataEquity.asObservable();

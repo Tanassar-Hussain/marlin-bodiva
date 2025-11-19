@@ -16,6 +16,7 @@ import { OrderService } from 'app/services-oms/order-oms.service';
 import { RestService } from 'app/services/api/rest.service';
 import { UserIdleService } from 'angular-user-idle';
 import { ListingService } from 'app/services-oms/listing-oms.service';
+import { StorageService } from 'app/services/storage.service';
 
 
 
@@ -84,6 +85,7 @@ export class AuthSignInComponent implements OnInit, OnChanges {
         private listingSvc: ListingService,
         private userIdle: UserIdleService,
         private cdr: ChangeDetectorRef,
+        private storageService: StorageService
 
     ) {
 
@@ -236,6 +238,7 @@ export class AuthSignInComponent implements OnInit, OnChanges {
 
 
         this._router.navigate(['/sign-in']);
+        this.storageService.clearMarketStates();
         localStorage.removeItem('MarlinToken');
         localStorage.removeItem('user');
 

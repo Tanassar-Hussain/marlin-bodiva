@@ -27,6 +27,7 @@ import * as input from '@grapecity/wijmo.input';
 import { MarketWatchEB } from 'app/modules/admin/oms/reports/market-watch-EB/market-watch-EB';
 import localforage from 'localforage';
 import { MatExpansionPanel } from '@angular/material/expansion';
+import { StorageService } from 'app/services/storage.service';
 
 
 
@@ -82,6 +83,7 @@ export class UserComponent implements OnInit, OnDestroy {
         private _authService: AuthService,
         private transloco: TranslocoService,
         private toast: ToastrService,
+        private storageService: StorageService
 
     ) {
 
@@ -168,6 +170,7 @@ export class UserComponent implements OnInit, OnDestroy {
     signOut(): void {
         this.splash.show();
         this._router.navigate(['/sign-in']);
+        this.storageService.clearMarketStates();
         localStorage.removeItem('MarlinToken');
         localStorage.removeItem('user');
 
