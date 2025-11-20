@@ -65,17 +65,21 @@ export class StorageService {
             timestamp: Date.now(),
             states: states
         };
-        this.write(key, data);
+        sessionStorage.setItem(key, JSON.stringify(data));
     }
 
     getMarketStates(): any {
         const key = 'liveMaketState';
-        return this.read(key);
+        const value: string = sessionStorage.getItem(key);
+        if (value && value != "undefined" && value != "null") {
+            return JSON.parse(value);
+        }
+        return null;
     }
 
     clearMarketStates() {
         const key = 'liveMaketState';
-        localStorage.removeItem(key);
+        sessionStorage.removeItem(key);
     }
 
 

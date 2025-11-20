@@ -31,6 +31,8 @@ import { virtualOrder } from 'app/models/virtual-order';
 import { PendingOrdersService } from 'app/services/pending-orders.service';
 import { RefinedOrder } from 'app/models/refined-order.model';
 import { UserClient } from 'app/models/user-client.model';
+import { StorageService } from 'app/services/storage.service';
+import { OfflineOrdersService } from 'app/services/offline-orders.service';
 
 @Component({
   selector: '[order-new-nav]',
@@ -140,7 +142,8 @@ export class OrderNewNav implements OnInit, AfterViewInit, OnDestroy {
   constructor(private appState: AppState, public authService: AuthService2, public authServiceOMS: AuthService, private dataService: DataServiceOMS,
     private listingService: ListingService, private orderService: OrderService, private _pendingOrderService : PendingOrdersService,
     private _fb: FormBuilder, private translate: TranslateService, private _userService: UserService, public shareOrderService: ShareOrderService,
-    public cdr: ChangeDetectorRef, public router: Router, private socket: WebSocketService) {
+    public cdr: ChangeDetectorRef, public router: Router, private socket: WebSocketService, private storageService: StorageService,
+    private offlineOrdersService: OfflineOrdersService) {
 
     this.vTradePayload = new virtualOrder();
     this.claims = this.authService.claims;
@@ -753,7 +756,15 @@ export class OrderNewNav implements OnInit, AfterViewInit, OnDestroy {
         actual_settlement_amount: String(this.order.actual_settlement_amount) as unknown as number,
     }
 
-    this._pendingOrderService.submitClientOrder(order).subscribe({
+
+    const marketStates = this.storageService.getMarketStates();
+    const currentMarket = marketStates?.states?.find(s => s.marketId === this.marketId);
+    const isMarketOpen = currentMarket?.stateCode === 'Open' || currentMarket?.stateCode === 'PreOpen';
+
+  
+    const orderService = !isMarketOpen ? this.offlineOrdersService : this._pendingOrderService;
+
+    orderService.submitClientOrder(order).subscribe({
         next: (res) => {
             this.appState.showLoader = false;
             this.disabledSubmit = false;
@@ -788,33 +799,44 @@ export class OrderNewNav implements OnInit, AfterViewInit, OnDestroy {
     this.appState.showLoader = true;
     this.disabledSubmit = true;
     if (AppConstants.tradeType === AppConstants.ACTUAL_TRADE_TYPE) {
-     
+
       if(AppConstants.userType !== AppConstants.USER_TYPE_CLIENT_CODE){
-        this.orderService.submitOrder(this.order).subscribe(
-            data => {
-                this.appState.showLoader = false;
-                this.disabledSubmit = false;
-                this.onAlertOk();
-            },
-            error => {
-                this.appState.showLoader = false;
-                this.disabledSubmit = false;
-                let alertMessage: AlertMessage = new AlertMessage();
-                alertMessage.message = AppUtility.ucFirstLetter(AppUtility.removeQuotesFromStartAndEndOfString(JSON.parse(JSON.stringify(error)).error));
+ 
+        const marketStates = this.storageService.getMarketStates();
+        const currentMarket = marketStates?.states?.find(s => s.marketId === this.marketId);
+        const isMarketOpen = currentMarket?.stateCode === 'Open' || currentMarket?.stateCode === 'PreOpen';
 
-                if (alertMessage.message.length > 0) {
-                    alertMessage.type = 'danger';
-                }
-                else {
-                    alertMessage.type = 'success';
-                }
+        if (!isMarketOpen) {
 
-                this.alertMessage = alertMessage;
-                this.showOrderConfirmationMsg();
+          this._submitClientOrder();
+        } else {
+ 
+          this.orderService.submitOrder(this.order).subscribe(
+              data => {
+                  this.appState.showLoader = false;
+                  this.disabledSubmit = false;
+                  this.onAlertOk();
+              },
+              error => {
+                  this.appState.showLoader = false;
+                  this.disabledSubmit = false;
+                  let alertMessage: AlertMessage = new AlertMessage();
+                  alertMessage.message = AppUtility.ucFirstLetter(AppUtility.removeQuotesFromStartAndEndOfString(JSON.parse(JSON.stringify(error)).error));
 
-            });
+                  if (alertMessage.message.length > 0) {
+                      alertMessage.type = 'danger';
+                  }
+                  else {
+                      alertMessage.type = 'success';
+                  }
+
+                  this.alertMessage = alertMessage;
+                  this.showOrderConfirmationMsg();
+
+              });
+        }
     }
-    else 
+    else
    {
         this._submitClientOrder();
    }

@@ -29,6 +29,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { UserClient } from 'app/models/user-client.model';
 import { RefinedOrder } from 'app/models/refined-order.model';
 import { PendingOrdersService } from 'app/services/pending-orders.service';
+import { StorageService } from 'app/services/storage.service';
+import { OfflineOrdersService } from 'app/services/offline-orders.service';
 
 declare var jQuery: any;
 // import * as jQuery from 'jquery';
@@ -135,7 +137,8 @@ export class BondOrderNew implements OnInit, AfterViewInit, OnChanges {
   constructor(private appState: AppState, public authService: AuthService2, public authServiceOMS: AuthService, private dataService: DataServiceOMS,
     private listingService: ListingService, private orderService: OrderService, private _userService: UserService, private readonly _pendingOrderService: PendingOrdersService,
     private _fb: FormBuilder, private translate: TranslateService, public appUtility2: AppUtility, public socket: WebSocketService,
-    public shareOrderService: ShareOrderService, public cdr: ChangeDetectorRef, private _matDialog: MatDialog,) {
+    public shareOrderService: ShareOrderService, public cdr: ChangeDetectorRef, private _matDialog: MatDialog, private storageService: StorageService,
+    private offlineOrdersService: OfflineOrdersService) {
 
     this.actualTrade = AppConstants.ACTUAL_TRADE_TYPE;
     this.virtualTrde = AppConstants.VIRTUAL_TRADE_TYPE;
@@ -688,7 +691,14 @@ export class BondOrderNew implements OnInit, AfterViewInit, OnChanges {
         actual_settlement_amount: String(this.order.actual_settlement_amount) as unknown as number,
     }
 
-    this._pendingOrderService.submitClientOrder(order).subscribe({
+    const marketStates = this.storageService.getMarketStates();
+    const currentMarket = marketStates?.states?.find(s => s.marketId === this.marketId);
+    const isMarketOpen = currentMarket?.stateCode === 'Open' || currentMarket?.stateCode === 'PreOpen';
+
+    
+    const orderService = !isMarketOpen ? this.offlineOrdersService : this._pendingOrderService;
+
+    orderService.submitClientOrder(order).subscribe({
         next: (res) => {
             this.appState.showLoader = false;
             this.disabledSubmit = false;
@@ -751,7 +761,7 @@ getLoggedInUserClientsList() {
 
 
   submitOrder() {
-    
+
     if (this.tradeType === AppConstants.ACTUAL_TRADE_TYPE) {
       let alertMessage: AlertMessage = new AlertMessage();
       this.appState.showLoader = true;
@@ -762,28 +772,39 @@ getLoggedInUserClientsList() {
       this.disabledSubmit = true;
       this.order.accrudeProfit = this.accruedInterest;
       if(AppConstants.userType !== AppConstants.USER_TYPE_CLIENT_CODE) {
-        this.orderService.submitOrder(this.order).subscribe(
-            data => {
-                this.appState.showLoader = false;
-                AppUtility.printConsole('Data: ' + data);
-                this.disabledSubmit = false;
-                this.onAlertOk();
-            },
-            error => {
-                this.disabledSubmit = false;
-                this.appState.showLoader = false;
-                alertMessage.message = AppUtility.ucFirstLetter(AppUtility.removeQuotesFromStartAndEndOfString(JSON.parse(JSON.stringify(error)).error));
-                if (alertMessage.message.length > 0) {
-                    alertMessage.type = 'danger';
-                } else {
-                    alertMessage.type = 'success';
-                }
-                this.alertMessage = alertMessage;
-                this.showOrderConfirmationMsg();
 
-            });
+        const marketStates = this.storageService.getMarketStates();
+        const currentMarket = marketStates?.states?.find(s => s.marketId === this.marketId);
+        const isMarketOpen = currentMarket?.stateCode === 'Open' || currentMarket?.stateCode === 'PreOpen';
+
+        if (!isMarketOpen) {
+      
+          this._submitClientOrder();
+        } else {
+
+          this.orderService.submitOrder(this.order).subscribe(
+              data => {
+                  this.appState.showLoader = false;
+                  AppUtility.printConsole('Data: ' + data);
+                  this.disabledSubmit = false;
+                  this.onAlertOk();
+              },
+              error => {
+                  this.disabledSubmit = false;
+                  this.appState.showLoader = false;
+                  alertMessage.message = AppUtility.ucFirstLetter(AppUtility.removeQuotesFromStartAndEndOfString(JSON.parse(JSON.stringify(error)).error));
+                  if (alertMessage.message.length > 0) {
+                      alertMessage.type = 'danger';
+                  } else {
+                      alertMessage.type = 'success';
+                  }
+                  this.alertMessage = alertMessage;
+                  this.showOrderConfirmationMsg();
+
+              });
+        }
     }
-   else 
+   else
    {
         this._submitClientOrder();
    }

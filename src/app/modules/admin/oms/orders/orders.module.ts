@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { PendingOrdersComponent } from './pending-orders/pending-orders.component';
 import { RouterModule, Routes } from '@angular/router';
- 
+
 import { WjCoreModule } from '@grapecity/wijmo.angular2.core';
 import { WjInputModule } from '@grapecity/wijmo.angular2.input';
 import { WjGridModule } from '@grapecity/wijmo.angular2.grid';
@@ -20,10 +20,16 @@ import { DialogCmp } from '../../back-office/user-site/dialog/dialog.component';
 import { DialogCmpWatch } from '../dialog-component';
 import { TradingReportsModule } from '../reports/reports.module';
 import { DialogCmpOrders } from './dialog/dialog.component';
+import { OfflineOrdersComponent } from './offline-orders/offline-orders.component';
+import { OfflineOrdersListComponent } from './offline-orders/offline-orders-list/offline-orders-list.component';
+import { OfflineOrderActionDialogComponent } from './offline-orders/offline-orders-list/offline-order-action-dialog/offline-order-action-dialog.component';
+import { EquityEtfOfflineOrderActionComponent } from './offline-orders/offline-orders-list/offline-order-action-dialog/equity-etf-offline-order-action/equity-etf-offline-order-action.component';
+import { BondOfflineOrderActionComponent } from './offline-orders/offline-orders-list/offline-order-action-dialog/bond-offline-order-action/bond-offline-order-action.component';
 
 
 const routes: Routes = [
     {path: 'pending-orders', component: PendingOrdersComponent},
+    {path: 'offline-orders', component: OfflineOrdersComponent},
 ];
 
 @NgModule({
@@ -33,7 +39,12 @@ const routes: Routes = [
     PendingOrderActionDialogComponent,
     EquityEtfPendingOrderActionComponent,
     BondPendingOrderActionComponent,
-    DialogCmpOrders
+    DialogCmpOrders,
+    OfflineOrdersComponent,
+    OfflineOrdersListComponent,
+    OfflineOrderActionDialogComponent,
+    EquityEtfOfflineOrderActionComponent,
+    BondOfflineOrderActionComponent
   ],
   
     imports: [

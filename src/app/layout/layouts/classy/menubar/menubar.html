@@ -102,6 +102,13 @@
                 }}</a>
             </li>
 
+            <li [class.menu-width-en]="lang === 'en'" [class.menu-width-pt]="lang === 'pt'">
+              <a [routerLink]="['/orders/offline-orders']"><img src="assets/img/offline-orders.png" /> {{
+                "Menu.Offline Order" |
+                translate
+                }}</a>
+            </li>
+
             <li
               *ngIf="userService.isAuhtorized(userService.OM_EQUITY_ORDER_CHANGE) || userService.isAuhtorized(userService.OM_BOND_ORDER_CHANGE)"
               [class.menu-width-en]="lang === 'en'" [class.menu-width-pt]="lang === 'pt'">
