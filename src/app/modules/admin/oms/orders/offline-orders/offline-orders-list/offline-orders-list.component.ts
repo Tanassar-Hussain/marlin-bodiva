@@ -506,10 +506,11 @@ export class OfflineOrdersListComponent implements OnInit, OnDestroy {
             securityId: formFilters.symbol,
             participantIdList: [formFilters.participant],
             clientId: formFilters.client,
+            orderStateId: 0 
         };
         this._subscriptions.push(this._pendingOrdersService.getPendingOrders(filters).subscribe({
             next: (pendingOrders) => {
-                 
+
                 this._splashService.hide();
                 if (!AppUtility.isEmptyArray(pendingOrders)){
                     this.pendingOrders = pendingOrders;
@@ -525,7 +526,7 @@ export class OfflineOrdersListComponent implements OnInit, OnDestroy {
                 }else{
                     this._toastService.error(error);
                 }
-            
+
                 this.pendingOrders = new wjcCore.CollectionView();
                 this._splashService.hide();
             }

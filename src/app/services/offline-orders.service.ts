@@ -28,12 +28,20 @@ export class OfflineOrdersService {
     };
 
     getPendingOrders(filters: any): Observable<any> {
-        const claims = jwtDecode(this._authService.token);
-        const participantId = claims?.participant?.id || -1;
-        const clientId = filters.clientId || -1;
-        const url = `${this._url}offline-order/list/participant/${participantId}/client/${clientId}`;
+        const url = `${this._url}offline-order/list`;
         const headers = this.createAuthorizationHeader();
-        return this._http.get<any>(url, { headers });
+
+        // Prepare request body with all filters
+        const requestBody = {
+            exchangeId: filters.exchangeId || 0,
+            marketId: filters.marketId || 0,
+            securityId: filters.securityId || 0,
+            participantIdList: filters.participantIdList || [0],
+            clientId: filters.clientId || 0,
+            orderStateId: filters.orderStateId || 0
+        };
+
+        return this._http.post<any>(url, requestBody, { headers });
     }
 
     acceptPendingOrders(order: object): Observable<any> {
