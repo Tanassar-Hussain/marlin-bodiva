@@ -242,10 +242,10 @@ export class OnlineAccountRegistration implements OnInit {
   @ViewChild('countryCombo') countryCombo: wjcInput.ComboBox;
   @ViewChild('statesCombo') statesCombo: wjcInput.ComboBox;
   @ViewChild('input', { static: false }) input: ElementRef;
- 
+
   @ViewChild(OnlineAccountActivation) onlineAccountActivation: OnlineAccountActivation;
 
- 
+
 
 
   //@ViewChild('progressBar') progressBar:ElementRef;
@@ -307,6 +307,7 @@ export class OnlineAccountRegistration implements OnInit {
   pdf = false
   fileNameForDownload = "Terms & Conditions.pdf";
   tempParticipantId: Number | null = null;
+  invSharedUserId: any = null;
 
 
 
@@ -372,11 +373,13 @@ export class OnlineAccountRegistration implements OnInit {
       if (x === "participant") {
         this.showParticipantBasedGrid = true;
         this.invSharedClientId = null;
+        this.invSharedUserId = null;
       }
       if (x === "user") {
         this.showParticipantBasedGrid = false;
         this.isShowInvestorForm = true;
         this.invSharedClientId = null;
+        this.invSharedUserId = AppConstants.userId;
       }
 
 
@@ -437,8 +440,15 @@ export class OnlineAccountRegistration implements OnInit {
       this.populateItemGrid();
     }
 
-    this.onGetDraft();
-    this.populateLoginDetails();
+
+    if (AppConstants.userType === AppConstants.USER_TYPE_CLIENT_CODE) {
+      this.onGetDraft();
+      this.populateLoginDetails();
+    }
+
+
+
+
 
   }
 
@@ -457,11 +467,12 @@ export class OnlineAccountRegistration implements OnInit {
         this.showParticipantBasedGrid = false;
         this.isShowInvestorForm = true;
         this.invSharedClientId = null;
+        this.invSharedUserId = AppConstants.userId
       }
     });
 
 
- 
+
 
   }
 
@@ -485,6 +496,7 @@ export class OnlineAccountRegistration implements OnInit {
   public getNotificationFromChild = (event) => {
     if (event === "Refresh Grid") {
       this.invSharedClientId = null;
+      this.invSharedUserId = null;
       this.onSearchAction();
     }
   }
@@ -526,7 +538,7 @@ export class OnlineAccountRegistration implements OnInit {
   populateLoginDetails = () => {
 
     this.selectedItem.contactDetail.firstName = AppConstants.INV_FIRST_NAME;
-    
+
     this.selectedItem.contactDetail.lastName = AppConstants.INV_LAST_NAME;
     this.selectedItem.contactDetail.email = AppConstants.INV_EMAIL;
     this.selectedItem.contactDetail.cellNo = AppConstants.INV_MOBILE_NUMBER;
@@ -554,12 +566,12 @@ export class OnlineAccountRegistration implements OnInit {
               this.identificationTypeExactLength = Number(element.fieldLength);
               this.identificationTypeMinLength = 1;
             }
-  
+
           }
         })
       }
     }, 300);
-   
+
 
   }
 
@@ -735,18 +747,18 @@ export class OnlineAccountRegistration implements OnInit {
 
 
   onItemSelected(combo: any) {
-     
+
     const selected = combo.selectedItem;
     if (selected) {
       console.log('User selected:', selected);
       // Call your desired logic here
     }
   }
-  
- 
+
+
 
   public onChangeParticipants = (event) => {
-  
+
     if (AppUtility.isValidVariable(event)) {
       this.participantsList.find(element => {
         if (element.participantId === event) {
@@ -767,45 +779,45 @@ export class OnlineAccountRegistration implements OnInit {
           // else{
           //   this.selectedItem.agreeTermsAndConditions = false;
           // }
-       
+
         }
-         
+
       });
-    
+
     }
   }
 
 
 
   public showTermsAndConditions = () => {
-       if(AppUtility.isValidVariable(this.selectedItem.participant?.participantId)){
+    if (AppUtility.isValidVariable(this.selectedItem.participant?.participantId)) {
 
-         
 
-            if(!AppUtility.isEmptyArray(this.participantsList)){
-               this.participantsList.find(element => {
-                  if(element.participantId === this.selectedItem.participant?.participantId){
-                    if(element.displayTermsAndConditions === true){
 
-                      if(this.tempParticipantId !== this.selectedItem.participant?.participantId){
-                        this.selectedItem.agreeTermsAndConditions = false;
-                      }
+      if (!AppUtility.isEmptyArray(this.participantsList)) {
+        this.participantsList.find(element => {
+          if (element.participantId === this.selectedItem.participant?.participantId) {
+            if (element.displayTermsAndConditions === true) {
 
-                      if (AppUtility.isNullOrEmpty(this.selectedItem.statusCode) && this.showParticipantBasedGrid == false 
-                        && this.selectedItem.agreeTermsAndConditions === false) {
-                        this.showModalTermConditions(element.participantId);
-                      }
-                      else if(!AppUtility.isNullOrEmpty(this.selectedItem.statusCode) && this.selectedItem.statusCode === 'D' &&  this.showParticipantBasedGrid == false && this.selectedParticipantId !== element.participantId ){
-                        this.showModalTermConditions(element.participantId);
-                      }
-                    }
-                    else{
-                      this.selectedItem.agreeTermsAndConditions = false;
-                    }
-                  }
-               })
+              if (this.tempParticipantId !== this.selectedItem.participant?.participantId) {
+                this.selectedItem.agreeTermsAndConditions = false;
+              }
+
+              if (AppUtility.isNullOrEmpty(this.selectedItem.statusCode) && this.showParticipantBasedGrid == false
+                && this.selectedItem.agreeTermsAndConditions === false) {
+                this.showModalTermConditions(element.participantId);
+              }
+              else if (!AppUtility.isNullOrEmpty(this.selectedItem.statusCode) && this.selectedItem.statusCode === 'D' && this.showParticipantBasedGrid == false && this.selectedParticipantId !== element.participantId) {
+                this.showModalTermConditions(element.participantId);
+              }
             }
-       }
+            else {
+              this.selectedItem.agreeTermsAndConditions = false;
+            }
+          }
+        })
+      }
+    }
   }
 
 
@@ -1125,6 +1137,7 @@ export class OnlineAccountRegistration implements OnInit {
     this.showForm = true;
     this.isShowInvestorForm = true;
     this.invSharedClientId = null;
+    this.invSharedUserId = AppConstants.userId;
     this.listingService.getInvestorByUserId(AppConstants.userId)
       .subscribe(
         restData => {
@@ -1305,15 +1318,18 @@ export class OnlineAccountRegistration implements OnInit {
     var item = JSON.parse(JSON.stringify(this.flex.rows[this.selectedIndex].dataItem));
     this.itemClientId = item.clientId;
     if (!AppUtility.isEmpty(item)) {
-      this.listingService.getInvestorByClientId(item.clientId).subscribe(
+      this.listingService.getInvestorByClientId(item.clientId, item.userId).subscribe(
         restData => {
 
           this.splash.hide();
+          this.invSharedUserId = null;
           this.invSharedClientId = null;
           this.isShowInvestorForm = true;
           if (AppUtility.isValidVariable(restData[0].clientId)) {
             this.InvestorClientId = restData[0].clientId;
+
             this.selectedItem.clientId = restData[0].clientId;
+            this.invSharedUserId = item.userId;
             //   this.getSettlementMembersCDS(AppConstants.participantCode);
             this.populateAccountType();
             this.populateClientBankAccountGrid();
@@ -1360,9 +1376,13 @@ export class OnlineAccountRegistration implements OnInit {
     this.selectedIndex = this.flex.selection.row;
     var item = JSON.parse(JSON.stringify(this.flex.rows[this.selectedIndex].dataItem));
     this.invSharedClientId = item.clientId;
+    this.invSharedUserId = item.userId;
     this.isShowInvestorForm = false;
-    if (this.invSharedClientId !== null) {
-      this.onlineAccountActivation.onGetInvestorByClient(this.invSharedClientId);
+    if (this.invSharedClientId !== null && this.invSharedUserId !== null) {
+      this.onlineAccountActivation.onGetInvestorByClient(
+        this.invSharedClientId,
+        this.invSharedUserId
+      );
     }
 
   }
@@ -1445,7 +1465,7 @@ export class OnlineAccountRegistration implements OnInit {
     this.isEditingClientExchange = true;
   }
 
-  
+
   public onDeleteClientExchangeAction() {
     this.deleteClientExchangeAction = true;
     if (AppUtility.isValidVariable(this.itemsClientExchangeList)) {
@@ -2166,7 +2186,7 @@ export class OnlineAccountRegistration implements OnInit {
       this.selectedItem.contactDetail.registrationNo = this.selectedItem.contactDetail.identificationType;
     }
 
-    
+
 
     if (isValid) {
       this.dialogCmp.statusMsg = "";
@@ -2180,7 +2200,7 @@ export class OnlineAccountRegistration implements OnInit {
             this.InvestorClientId = data.clientId;
             this.selectedItem.clientId = data.clientId;
           }
-          if(AppUtility.isValidVariable(data.participant)){
+          if (AppUtility.isValidVariable(data.participant)) {
             this.selectedParticipantId = data.participant.participantId;
           }
           this.populateAccountType();
@@ -2384,7 +2404,7 @@ export class OnlineAccountRegistration implements OnInit {
     }
 
 
-   
+
 
 
     if (this.isEditing) {
@@ -2795,7 +2815,7 @@ export class OnlineAccountRegistration implements OnInit {
 
   public onRefreshCDCStatus = () => {
 
-     
+
     let cdcRecordForFilter = this.itemsList.items;
     this.isShowInvestorForm = false;
     this.invSharedClientId = null;
@@ -3241,14 +3261,14 @@ export class OnlineAccountRegistration implements OnInit {
       this.listingService.getTermsAndConditionsPDF(participantId, langId).subscribe((res: any) => {
         if (AppUtility.isValidVariable(res)) {
           this.splash.hide();
-            jQuery('#term_conditions').modal({ backdrop: 'static', keyboard: true });
-            (jQuery("#term_conditions") as any).modal("show");   //show the modal for terms and conditions
-            this.pdfSrc = res.documentBase64_.replace('data:application/pdf;base64,', '');
-            if (this.pdfSrc != "") {
-              this.pdf = true
-            }
+          jQuery('#term_conditions').modal({ backdrop: 'static', keyboard: true });
+          (jQuery("#term_conditions") as any).modal("show");   //show the modal for terms and conditions
+          this.pdfSrc = res.documentBase64_.replace('data:application/pdf;base64,', '');
+          if (this.pdfSrc != "") {
+            this.pdf = true
+          }
         }
-        else{
+        else {
           this.splash.hide();
           this.pdf = false;
           this.pdfSrc = "";
@@ -3256,7 +3276,7 @@ export class OnlineAccountRegistration implements OnInit {
         }
       },
         (error: any) => {
-         
+
           this.splash.hide();
           this.errorMessage = <any>error.message;
           this.selectedItem.agreeTermsAndConditions = false;
@@ -3265,7 +3285,7 @@ export class OnlineAccountRegistration implements OnInit {
   }
 
 
- 
+
 
 
   public onBankChangeEvent(slectedBankId): void {
@@ -3392,8 +3412,8 @@ export class OnlineAccountRegistration implements OnInit {
     c.accountTypeNew.accTypeId = data.accountTypeNew.accTypeId;
     c.clientId = data.clientId;
 
-   
-  
+
+
 
     setTimeout(() => {
       c.settlementMemberCode = data.settlementMemberCode;
@@ -3542,7 +3562,7 @@ export class OnlineAccountRegistration implements OnInit {
 
 
   public getSettlementMembersCDS = (data: any) => {
-     
+
     this.listingService.getSettlementMembersFromCDS(data).subscribe({
       next: (data: any) => {
         if (AppUtility.isValidVariable(data) && !AppUtility.isEmptyArray(data)) {
@@ -4049,7 +4069,7 @@ export class OnlineAccountRegistration implements OnInit {
 
 
   private populateParticipants() {
-     
+
     let tempArr: any = [];
     this.listingService.getParticipantListByExchagne(AppConstants.exchangeId).subscribe(restData => {
 
@@ -4057,7 +4077,7 @@ export class OnlineAccountRegistration implements OnInit {
         this.participantsList = [];
       } else {
         this.participantsList = restData;
-        
+
       }
 
       // filter participant list 
@@ -4101,7 +4121,7 @@ export class OnlineAccountRegistration implements OnInit {
             this.showTermsAndConditions();
           }, 150);
 
-         
+
         }
         else {
           var p: Participant = new Participant();
@@ -4559,10 +4579,10 @@ export class OnlineAccountRegistration implements OnInit {
 
   private populateClientDocuemntsGrid() {
 
-    if (AppUtility.isEmpty(this.selectedItem.clientId)) {
+    if (AppUtility.isEmpty(this.selectedItem.clientId) || AppUtility.isEmpty(this.invSharedUserId)) {
       this.itemsDocumentList = new wjcCore.CollectionView();
     } else {
-      this.listingService.getInvClientDocumentsList(this.selectedItem.clientId)
+      this.listingService.getInvClientDocumentsList(this.selectedItem.clientId, this.invSharedUserId)
         .subscribe(
           restData => {
             this.itemsDocumentList = new wjcCore.CollectionView(restData);
@@ -4587,10 +4607,10 @@ export class OnlineAccountRegistration implements OnInit {
 
   private populateClientBankAccountGrid() {
 
-    if (AppUtility.isEmpty(this.selectedItem.clientId)) {
+    if (AppUtility.isEmpty(this.selectedItem.clientId) || AppUtility.isEmpty(this.invSharedUserId)) {
       this.itemsBanAccountList = new wjcCore.CollectionView();
     } else {
-      this.listingService.getInvClientBankAccountList(this.selectedItem.clientId)
+      this.listingService.getInvClientBankAccountList(this.selectedItem.clientId, this.invSharedUserId)
         .subscribe(
           restData => {
             this.itemsBanAccountList = new wjcCore.CollectionView(restData);
@@ -4611,10 +4631,10 @@ export class OnlineAccountRegistration implements OnInit {
 
   private populateClientBeneficiaryGrid() {
 
-    if (AppUtility.isEmpty(this.selectedItem.clientId)) {
+    if (AppUtility.isEmpty(this.selectedItem.clientId) || AppUtility.isEmpty(this.invSharedUserId)) {
       this.itemsBeneficiaryList = new wjcCore.CollectionView();
     } else {
-      this.listingService.getInvClientBeneficiaryList(this.selectedItem.clientId)
+      this.listingService.getInvClientBeneficiaryList(this.selectedItem.clientId, this.invSharedUserId)
         .subscribe(
           restData => {
 
@@ -4765,7 +4785,7 @@ export class OnlineAccountRegistration implements OnInit {
     if (AppUtility.isEmpty(this.selectedItem.clientId)) {
       this.itemsJointAccountList = new wjcCore.CollectionView();
     } else {
-      this.listingService.getInvClientJointAccountList(this.selectedItem.clientId)
+      this.listingService.getInvClientJointAccountList(this.selectedItem.clientId, this.invSharedUserId)
         .subscribe(
           restData => {
             this.itemsJointAccountList = new wjcCore.CollectionView(restData);
@@ -5096,7 +5116,7 @@ export class OnlineAccountRegistration implements OnInit {
       AppUtility.isEmpty(this.selectedItem.contactDetail.provinceId) ||
       AppUtility.isEmpty(this.selectedItem.contactDetail.address1) ||
       AppUtility.isEmpty(this.selectedItem.contactDetail.address2) ||
-      !this.myForm.get('phone1').valid || 
+      !this.myForm.get('phone1').valid ||
       !this.myForm.get('cellNo').valid
     ) {
       return false;
@@ -5105,7 +5125,7 @@ export class OnlineAccountRegistration implements OnInit {
       return false;
     }
 
- 
+
 
     return true;
   }
@@ -5390,11 +5410,11 @@ export class OnlineAccountRegistration implements OnInit {
       provinceId: ['', Validators.compose([Validators.required])],
       address: ['', Validators.compose([Validators.required, this.removeSpaces])],
       address2: ['', Validators.compose([Validators.required, this.removeSpaces])],
-     phone1: ['', Validators.compose([Validators.required, Validators.pattern(/^\+?\d{1,}$/) , this.removeSpaces])],
+      phone1: ['', Validators.compose([Validators.required, Validators.pattern(/^\+?\d{1,}$/), this.removeSpaces])],
       email: ['', Validators.compose([Validators.pattern(AppConstants.validatePatternEmail), this.removeSpaces])],
       industryId: ['', Validators.compose([Validators.required])],
       companyName: ['', Validators.compose([Validators.required, Validators.pattern(/^[^~`!@#$%^*()-+=|\{}':;.<>/?\/]*$/), this.removeSpaces])],
-       cellNo: ['' , Validators.compose([Validators.pattern(/^\+?\d{1,}$/) , this.removeSpaces])],
+      cellNo: ['', Validators.compose([Validators.pattern(/^\+?\d{1,}$/), this.removeSpaces])],
       agentId: [''],
 
       userName: ['', Validators.compose([Validators.required, Validators.pattern(AppConstants.validatePatternString), this.removeSpaces])],
@@ -5537,11 +5557,11 @@ export class OnlineAccountRegistration implements OnInit {
 
 
 
- 
-onKeyPressForParticipant(event: KeyboardEvent) {
-      event.preventDefault(); // Block the input
- 
-}
+
+  onKeyPressForParticipant(event: KeyboardEvent) {
+    event.preventDefault(); // Block the input
+
+  }
 
 
 

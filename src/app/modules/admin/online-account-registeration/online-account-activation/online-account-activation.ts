@@ -302,6 +302,7 @@ export class OnlineAccountActivation implements OnInit {
   public selectedIdentificationTypeId : number = null;
   selectPlaceHolder: any;
   settlementMembersList : any[] = [];
+  invUserId: any = null;
 
   public tabFocusChanged1() {
     this.active1.nativeElement.focus();
@@ -1025,19 +1026,21 @@ showDialog(dlg: wjcInput.Popup) {
 
 
 
-  public onGetInvestorByClient = (invClientId: Number) => {
+  public onGetInvestorByClient = (invClientId: Number , invUserId:Number) => {
     
     this.splash.show();
+      this.invUserId = null;
     this.disabledTradConfigFields = false;
     this.isDisabledButtons = false;
    
 
     this.clearFields();
-    if (!AppUtility.isEmpty(invClientId)) {
+     if (!AppUtility.isEmpty(invClientId) && !AppUtility.isEmpty(invUserId)) {
+        this.invUserId = invUserId;
       this.populateParticipants();
       this.populateAccountTypeInvestor();
       this.populateCountryList();
-      this.listingService.getInvestorByClientId(invClientId).subscribe(
+      this.listingService.getInvestorByClientId(invClientId, invUserId).subscribe(
         restData => {
           
           this.isShowInvestorForm = true;
@@ -1082,9 +1085,11 @@ showDialog(dlg: wjcInput.Popup) {
             }
 
              
-            if (restData[0].user != null && restData[0].user.exchange != null && restData[0].user.exchange.exchangeId !== null) {
-              this.populateAllowedMarkets(restData[0].user.exchange.exchangeId, restData[0].user.exchange.exchangeName);
-            }
+           // if (restData[0].user != null && restData[0].user.exchange != null && restData[0].user.exchange.exchangeId !== null) {
+            //  this.populateAllowedMarkets(restData[0].user.exchange.exchangeId, restData[0].user.exchange.exchangeName);
+          //  }
+
+            this.populateAllowedMarkets(AppConstants.exchangeId, AppConstants.exchangeCode);
             
             this.showSelectForParticpantsBranch = false;
             this.fillClientFromJson(this.selectedItem, restData[0]);
@@ -1782,7 +1787,7 @@ public updateClientStatus = (clientIdForStatus : Number)=> {
               
                 this.splash.hide();
                 this.onlineAccountRegistration.onSearchAction();
-                this.onGetInvestorByClient(this.clientIdForAR);
+                this.onGetInvestorByClient(this.clientIdForAR , this.invUserId);
    }, error => {
         this.splash.hide();
        
@@ -3604,7 +3609,7 @@ public updateClientStatus = (clientIdForStatus : Number)=> {
 
   private populateAllowedMarkets(exchangeId: Number, exchangeName: String) {
      
-    
+    debugger
     if (!AppUtility.isEmpty(exchangeId)) {
       if (!AppUtility.isEmpty(this.itemsAllowedMarketList) && this.itemsAllowedMarketList.itemCount > 0) {
         for (let i = 0; i < this.itemsAllowedMarketList.itemCount; i++) {
@@ -3681,10 +3686,10 @@ public updateClientStatus = (clientIdForStatus : Number)=> {
 
   private populateClientDocuemntsGrid() {
 
-    if (AppUtility.isEmpty(this.selectedItem.clientId)) {
+    if (AppUtility.isEmpty(this.selectedItem.clientId) || AppUtility.isEmpty(this.invUserId)) {
       this.itemsDocumentList = new wjcCore.CollectionView();
     } else {
-      this.listingService.getInvClientDocumentsList(this.selectedItem.clientId)
+      this.listingService.getInvClientDocumentsList(this.selectedItem.clientId , this.invUserId)
         .subscribe(
           restData => {
             this.itemsDocumentList = new wjcCore.CollectionView(restData);
@@ -3708,10 +3713,10 @@ public updateClientStatus = (clientIdForStatus : Number)=> {
 
   private populateClientBankAccountGrid() {
 
-    if (AppUtility.isEmpty(this.selectedItem.clientId)) {
+    if (AppUtility.isEmpty(this.selectedItem.clientId) || AppUtility.isEmpty(this.invUserId)) {
       this.itemsBanAccountList = new wjcCore.CollectionView();
     } else {
-      this.listingService.getInvClientBankAccountList(this.selectedItem.clientId)
+      this.listingService.getInvClientBankAccountList(this.selectedItem.clientId ,this.invUserId)
         .subscribe(
           restData => {
             this.itemsBanAccountList = new wjcCore.CollectionView(restData);
@@ -3733,10 +3738,10 @@ public updateClientStatus = (clientIdForStatus : Number)=> {
 
   private populateClientBeneficiaryGrid() {
 
-    if (AppUtility.isEmpty(this.selectedItem.clientId)) {
+      if (AppUtility.isEmpty(this.selectedItem.clientId) || AppUtility.isEmpty(this.invUserId)) {
       this.itemsBeneficiaryList = new wjcCore.CollectionView();
     } else {
-      this.listingService.getInvClientBeneficiaryList(this.selectedItem.clientId)
+      this.listingService.getInvClientBeneficiaryList(this.selectedItem.clientId , this.invUserId)
         .subscribe(
           restData => {
 
@@ -3843,10 +3848,10 @@ public updateClientStatus = (clientIdForStatus : Number)=> {
   private loadClientMarkets() {
     
     this.clientMarket = [];
-    if (AppUtility.isEmpty(this.selectedItem.clientId)) {
+     if (AppUtility.isEmpty(this.selectedItem.clientId) || AppUtility.isEmpty(this.invUserId)) {
       this.itemsAllowedMarketList = new wjcCore.CollectionView();
     } else {
-      this.listingService.getInvClientMarketList(this.selectedItem.clientId)
+      this.listingService.getInvClientMarketList(this.selectedItem.clientId , this.invUserId)
         .subscribe(
           restData => {
             if (!AppUtility.isEmpty(restData)) {
@@ -3886,10 +3891,10 @@ public updateClientStatus = (clientIdForStatus : Number)=> {
 
   private populateClientJointAccountGrid() {
 
-    if (AppUtility.isEmpty(this.selectedItem.clientId)) {
+      if (AppUtility.isEmpty(this.selectedItem.clientId) || AppUtility.isEmpty(this.invUserId)) {
       this.itemsJointAccountList = new wjcCore.CollectionView();
     } else {
-      this.listingService.getInvClientJointAccountList(this.selectedItem.clientId)
+      this.listingService.getInvClientJointAccountList(this.selectedItem.clientId , this.invUserId)
         .subscribe(
           restData => {
             this.itemsJointAccountList = new wjcCore.CollectionView(restData);

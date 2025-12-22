@@ -1530,8 +1530,8 @@ export class ListingService {
   }
 
 
-  public getInvestorByClientId(ClientId: Number): any {
-    this.urlString = 'inv-clients/invclientid/' + ClientId;
+  public getInvestorByClientId(ClientId: Number , userId: Number): any {
+    this.urlString = 'inv-clients/invclientid/' + ClientId + '/userId/' + userId + '/';
     return this.restService.get(true, this.urlString);
   }
 
@@ -1572,8 +1572,8 @@ export class ListingService {
   }
 
 
-  public getInvClientBankAccountList(clientID: Number): Observable<Object[]> {
-    this.urlString = 'inv-clients/clientID/' + clientID + '/bank-accounts/';
+  public getInvClientBankAccountList(clientID: Number , userId: Number): Observable<Object[]> {
+    this.urlString = 'inv-clients/clientID/' + clientID + '/userId/' + userId  + '/bank-accounts/';
     return this.restService.get(true, this.urlString);
   }
 
@@ -1585,8 +1585,8 @@ export class ListingService {
   }
 
 
-  public getInvClientBeneficiaryList(clientID: Number): Observable<Object[]> {
-    this.urlString = 'inv-clients/clientID/' + clientID + '/beneficiary';
+  public getInvClientBeneficiaryList(clientID: Number , userId: Number): Observable<Object[]> {
+    this.urlString = 'inv-clients/clientID/' + clientID + '/userId/' + userId + '/beneficiary';
     return this.restService.get(true, this.urlString);
   }
 
@@ -1603,8 +1603,8 @@ export class ListingService {
   }
 
 
-  public getInvClientJointAccountList(clientID: Number): Observable<any[]> {
-    this.urlString = 'inv-clients/clientID/' + clientID + '/joint-accounts/';
+  public getInvClientJointAccountList(clientID: Number , userId: Number): Observable<any[]> {
+    this.urlString = 'inv-clients/clientID/' + clientID  + '/userId/' + userId  + '/joint-accounts/';
     return this.restService.get(true, this.urlString);
   }
 
@@ -1621,8 +1621,8 @@ export class ListingService {
     return this.restService.get(true, this.urlString);
   }
 
-  public getInvClientDocumentsList(clientID: Number): Observable<Object[]> {
-    this.urlString = 'inv-clients/clientID/' + clientID + '/documents/';
+  public getInvClientDocumentsList(clientID: Number , userId: Number): Observable<Object[]> {
+    this.urlString = 'inv-clients/clientID/' + clientID + '/userId/' + userId  + '/documents/';
     return this.restService.get(true, this.urlString);
   }
 
@@ -1638,8 +1638,8 @@ export class ListingService {
   }
 
 
-  public getInvClientMarketList(clientID: Number): Observable<Object[]> {
-    this.urlString = 'inv-clients/clientID/' + clientID + '/marekts/';
+  public getInvClientMarketList(clientID: Number , userId: Number): Observable<Object[]> {
+    this.urlString = 'inv-clients/clientID/' + clientID + '/userId/' + userId  + '/marekts/';
     return this.restService.get(true, this.urlString);
   }
 
