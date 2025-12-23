@@ -454,7 +454,7 @@
     <div class="modal-content">
         <div class="modal-body">
             <h2 class="page-title"> {{ 'Translation.Confirmation Dialog' | translate }}</h2>
-            <p>Are you sure you want to {{ action.toLowerCase() }} this pending order?</p>
+            <p>Are you sure you want to {{ action === pendingOrderAction.REJECT ? 'delete' : action.toLowerCase() }} this pending order?</p>
         </div>
         <div class="modal-footer">
             <button (click)="onConfirm()" class="btn btn-success wj-hide mx-1" style="outline:black;"
